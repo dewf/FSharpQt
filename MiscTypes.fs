@@ -217,7 +217,7 @@ with
                 | Move -> Enums.DropActionSet.Move
                 | Link -> Enums.DropActionSet.Link
             acc ||| flag)
-
+        
 type TextFormat =
     | PlainText
     | RichText
@@ -720,6 +720,13 @@ type SizePolicyDeferred private(deferred: Org.Whatever.MinimalQtForFSharp.SizePo
     member val internal QtValue = deferred
     
 // other =========================
+
+let internal qtDateFromDateOnly (date: DateOnly) =
+    Date.Deferred.FromYearMonthDay(date.Year, date.Month, date.Day)
+    
+let internal dateOnlyFromQtDate (qtDate: Org.Whatever.MinimalQtForFSharp.Date.Handle) =
+    let x = qtDate.ToYearMonthDay()
+    DateOnly(x.Year, x.Month, x.Day)
 
 type Icon private(deferred: Org.Whatever.MinimalQtForFSharp.Icon.Deferred) =
     member val internal QtValue = deferred

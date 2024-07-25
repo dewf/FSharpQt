@@ -128,15 +128,15 @@ with
                 false
         override this.Key =
             match this with
-            | DetailedText text -> "messagebox:detailedtext"
-            | IconAttr icon -> "messagebox:iconattr"
-            | InformativeText text -> "messagebox:informativetext"
-            | Options opts -> "messagebox:options"
-            | StandardButtons buttons -> "messagebox:standardbuttons"
-            | Text text -> "messagebox:text"
-            | TextFormat format -> "messagebox:textformat"
-            | TextInteractionFlags flags -> "messagebox:textinteractionflags"
-            | DefaultButton button -> "messagebox:defaultbutton"
+            | DetailedText _ -> "messagebox:detailedtext"
+            | IconAttr _ -> "messagebox:iconattr"
+            | InformativeText _ -> "messagebox:informativetext"
+            | Options _ -> "messagebox:options"
+            | StandardButtons _ -> "messagebox:standardbuttons"
+            | Text _ -> "messagebox:text"
+            | TextFormat _ -> "messagebox:textformat"
+            | TextInteractionFlags _ -> "messagebox:textinteractionflags"
+            | DefaultButton _ -> "messagebox:defaultbutton"
         override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
             match target with
             | :? AttrTarget as attrTarget ->
@@ -316,6 +316,18 @@ let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (s
 
 let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
+    
+type MessageBoxBinding internal(handle: MessageBox.Handle) =
+    inherit Dialog.DialogBinding(handle)
+    // inherits from Dialog, use .Exec() I guess?
+    // not sure if we want the other methods but ... we're staying true to the Qt API I guess
+    
+let bindNode (name: string) (map: Map<string, IViewBinding>) =
+    match map.TryFind name with
+    | Some (:? MessageBoxBinding as messageBox) ->
+        messageBox
+    | _ ->
+        failwith "MessageBox.bindNode fail"
 
 type MessageBox<'msg>() =
     inherit Props<'msg>()
@@ -349,15 +361,25 @@ type MessageBox<'msg>() =
         override this.Attachments =
             this.Attachments
 
-        override this.Binding = None
-
-// // use this in Cmd.Dialog invocation, it maps the raw int return value
-// // this keeps us from having to declare the MessageBoxButton in Reactor which didn't feel right -
-// //   maybe there will be other dialog types with different meanings to the .exec() return value
-// let execMessageBox<'msg> (id: string) (msgFunc: StandardButton -> 'msg) =
-//     let msgFunc2 intValue =
-//         intValue
-//         |> enum<MessageBox.StandardButton>
-//         |> StandardButton.FromQtValue
-//         |> msgFunc
-//     id, DialogOp.ExecWithResult msgFunc2
+        override this.Binding =
+            this.MaybeBoundName
+            |> Option.map (fun name ->
+                name, MessageBoxBinding(this.model.MessageBox))
+            
+let execMessageBox name (msgFunc: StandardButton -> 'msg) =
+    Cmd.ViewExec (fun bindings ->
+        viewexec bindings {
+            let! dialog = bindNode name
+            let code =
+                dialog.Exec()
+                |> enum<MessageBox.StandardButton>
+                |> StandardButton.FromQtValue
+            return (msgFunc code)
+        })
+    
+let execMessageBoxWithoutResult name =
+    Cmd.ViewExec (fun bindings ->
+        viewexec bindings {
+            let! dialog = bindNode name
+            dialog.Exec() |> ignore
+        })

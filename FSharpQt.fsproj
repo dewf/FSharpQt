@@ -64,6 +64,8 @@
         
         <Compile Include="Widgets\WindowSet.fs" />
         
+        <Compile Include="Widgets\CalendarWidget.fs" />
+        
         <Compile Include="Models\AbstractItemModel.fs" />
         
         <Compile Include="Models\AbstractListModel.fs" />
