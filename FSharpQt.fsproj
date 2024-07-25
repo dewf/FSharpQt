@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>FSharpQt</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Extensions.fs" />
+        <Compile Include="InputEnums.fs" />
+        <Compile Include="MiscTypes.fs" />
+        <Compile Include="ModelBindings.fs" />
+        <Compile Include="BuilderNode.fs" />
+        <Compile Include="Attrs.fs" />
+        <Compile Include="Reactor.fs" />
+        <Compile Include="Painting.fs" />
+        <Compile Include="EventDelegate.fs" />
+
+        <Compile Include="Widgets\QObject.fs" />
+
+        <!-- inherit from QObject -->
+        <Compile Include="Widgets\MenuAction.fs" />
+        <Compile Include="Widgets\Layout.fs" />
+        <Compile Include="Widgets\Timer.fs" />
+        <Compile Include="Widgets\Widget.fs" />
+        
+        <!-- inherit from Layout -->
+        <Compile Include="Widgets\BoxLayout.fs" />
+        <Compile Include="Widgets\GridLayout.fs" />
+        
+        <!-- inherit from Widget -->
+        <Compile Include="Widgets\CustomWidget.fs" />
+        <Compile Include="Widgets\Menu.fs" />
+        <Compile Include="Widgets\MenuBar.fs" />
+        <Compile Include="Widgets\AbstractButton.fs" />
+        <Compile Include="Widgets\PushButton.fs" />
+        <Compile Include="Widgets\RadioButton.fs" />
+        <Compile Include="Widgets\LineEdit.fs" />
+        <Compile Include="Widgets\Frame.fs" />
+        <Compile Include="Widgets\AbstractScrollArea.fs" />
+        <Compile Include="Widgets\PlainTextEdit.fs" />
+        <Compile Include="Widgets\AbstractSlider.fs" />
+        <Compile Include="Widgets\Slider.fs" />
+        <Compile Include="Widgets\ProgressBar.fs" />
+        <Compile Include="Widgets\ComboBox.fs" />
+        <Compile Include="Widgets\Label.fs" />
+        <Compile Include="Widgets\StatusBar.fs" />
+        <Compile Include="Widgets\GroupBox.fs" />
+        <Compile Include="Widgets\TabWidget.fs" />
+        <Compile Include="Widgets\ToolBar.fs" />
+        <Compile Include="Widgets\MainWindow.fs" />
+        <Compile Include="Widgets\ScrollArea.fs" />
+        
+        <Compile Include="Widgets\Dialog.fs" />
+        
+        <!-- inherit from Dialog -->
+        <Compile Include="Widgets\FileDialog.fs" />
+        <Compile Include="Widgets\MessageBox.fs" />
+        <Compile Include="Widgets\AbstractItemView.fs" />
+        
+        <Compile Include="Widgets\ListView.fs" />
+        <Compile Include="Widgets\TreeView.fs" />
+        
+        <Compile Include="Widgets\WindowSet.fs" />
+        
+        <Compile Include="Models\AbstractItemModel.fs" />
+        
+        <Compile Include="Models\AbstractListModel.fs" />
+        <Compile Include="Models\SimpleListModel.fs" />
+        <Compile Include="Models\AbstractProxyModel.fs" />
+        <Compile Include="Models\TrackedRows.fs" />
+        <Compile Include="Models\ListModelNode.fs" />
+        <Compile Include="Models\SortFilterProxyModel.fs" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\MinimalQtForFSharp\client\csharp\MinimalQtForFSharp\MinimalQtForFSharp.csproj" />
+    </ItemGroup>
+    
+</Project>
