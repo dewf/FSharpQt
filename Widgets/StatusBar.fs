@@ -3,8 +3,6 @@
 open FSharpQt.Attrs
 open FSharpQt.BuilderNode
 open System
-open FSharpQt.ModelBindings
-open FSharpQt.Reactor
 open Org.Whatever.MinimalQtForFSharp
 
 type private Signal =

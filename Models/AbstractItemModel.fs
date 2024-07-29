@@ -300,3 +300,6 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
     interface IDisposable with
         member this.Dispose() =
             absItemModel.Dispose()
+
+type AbstractItemModelBinding internal(handle: AbstractItemModel.Handle) =
+    inherit QObject.QObjectBinding(handle)

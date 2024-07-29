@@ -4,7 +4,6 @@ open FSharpQt.BuilderNode
 open System
 open Org.Whatever.MinimalQtForFSharp
 open FSharpQt.MiscTypes
-open FSharpQt.ModelBindings
 
 open FSharpQt.Attrs
 
@@ -338,13 +337,20 @@ let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (s
 
 let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
+    
+type SortFilterProxyModelBinding internal(handle: SortFilterProxyModel.Handle) =
+    inherit AbstractProxyModel.AbstractProxyModelBinding(handle)
+    
+let bindNode (name: string) (map: Map<string, IViewBinding>) =
+    match map.TryFind name with
+    | Some (:? SortFilterProxyModelBinding as sortFilterProxyModel) ->
+        sortFilterProxyModel
+    | _ ->
+        failwith "SortFilterProxyModel.bindNode fail"
 
 type SortFilterProxyModel<'msg>() =
     inherit Props<'msg>()
     [<DefaultValue>] val mutable private model: Model<'msg>
-    
-    let mutable maybeModelBinding: AbstractProxyModelBinding option = None
-    member this.ModelBinding with set value = maybeModelBinding <- Some value
     
     let mutable maybeSourceModel: IModelNode<'msg> option = None
     member this.SourceModel with set value = maybeSourceModel <- Some value
@@ -374,9 +380,6 @@ type SortFilterProxyModel<'msg>() =
 
         override this.Create dispatch buildContext =
             this.model <- create this.Attrs this.SignalMapList dispatch this.SignalMask
-            // assign the method proxy if one is requested
-            maybeModelBinding
-            |> Option.iter (fun mp -> mp.Handle <- this.model.SortFilterProxyModel)
             
         override this.AttachDeps () =
             maybeSourceModel
@@ -401,7 +404,9 @@ type SortFilterProxyModel<'msg>() =
         override this.Attachments =
             this.Attachments
             
-        override this.Binding = None
-            
+        override this.Binding =
+            this.MaybeBoundName
+            |> Option.map (fun name ->
+                name, SortFilterProxyModelBinding(this.model.SortFilterProxyModel))
 
        

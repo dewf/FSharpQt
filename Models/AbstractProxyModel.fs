@@ -2,6 +2,7 @@
 
 open System
 open FSharpQt.Attrs
+open FSharpQt.MiscTypes
 open Org.Whatever.MinimalQtForFSharp
 
 type private Signal =
@@ -123,3 +124,9 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
     interface IDisposable with
         member this.Dispose() =
             absProxyModel.Dispose()
+
+type AbstractProxyModelBinding internal(handle: AbstractProxyModel.Handle) =
+    inherit AbstractItemModel.AbstractItemModelBinding(handle)
+    member this.MapToSource (proxyIndex: ModelIndexProxy) =
+        let ret = handle.MapToSource(ModelIndex.Deferred.FromHandle(proxyIndex.Index))
+        new ModelIndexOwned(ret)   

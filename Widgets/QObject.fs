@@ -1,6 +1,7 @@
 ﻿module FSharpQt.Widgets.QObject
 
 open System
+open FSharpQt.BuilderNode
 open Org.Whatever.MinimalQtForFSharp
 
 open FSharpQt.MiscTypes
@@ -124,5 +125,6 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
     interface IDisposable with
         member this.Dispose() =
             object.Dispose()
-   
-            
+
+type QObjectBinding internal(handle: Object.Handle) =
+    interface IViewBinding

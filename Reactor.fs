@@ -30,6 +30,9 @@ type ViewExecBuilder(bindings: Map<string, IViewBinding>) =
         Some m
     member this.Zero() =
         None
+    member this.Using(m, f) =
+        use thing = m
+        f thing
         
 let viewexec = ViewExecBuilder
     

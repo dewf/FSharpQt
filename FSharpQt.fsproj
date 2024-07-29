@@ -10,7 +10,6 @@
         <Compile Include="Extensions.fs" />
         <Compile Include="InputEnums.fs" />
         <Compile Include="MiscTypes.fs" />
-        <Compile Include="ModelBindings.fs" />
         <Compile Include="BuilderNode.fs" />
         <Compile Include="Attrs.fs" />
         <Compile Include="Reactor.fs" />
