@@ -818,6 +818,7 @@ type KeySequence private(deferred: Org.Whatever.MinimalQtForFSharp.KeySequence.D
 [<RequireQualifiedAccess>]
 type Variant =
     | Empty
+    | Bool of value: bool
     | String of str: string
     | Int of value: int
     | Icon of icon: Icon
@@ -826,6 +827,7 @@ with
     member this.QtValue =
         match this with
         | Empty -> Variant.Deferred.Empty() :> Org.Whatever.MinimalQtForFSharp.Variant.Deferred
+        | Bool value -> Variant.Deferred.FromBool(value)
         | String str -> Variant.Deferred.FromString(str)
         | Int value -> Variant.Deferred.FromInt(value)
         | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)

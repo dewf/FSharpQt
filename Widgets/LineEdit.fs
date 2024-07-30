@@ -2,6 +2,7 @@
 
 open System
 open FSharpQt.BuilderNode
+open FSharpQt.Reactor
 open Org.Whatever.MinimalQtForFSharp
 
 open FSharpQt.MiscTypes
@@ -314,6 +315,32 @@ let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (s
 
 let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
+    
+type LineEditBinding internal(handle: LineEdit.Handle) =
+    inherit Widget.WidgetBinding(handle)
+    member this.Text =
+        handle.Text()
+    member this.Clear() =
+        handle.Clear()
+    member this.Copy() =
+        handle.Copy()
+    member this.Cut() =
+        handle.Cut()
+    member this.Paste() =
+        handle.Paste()
+    member this.Redo() =
+        handle.Redo()
+    member this.SelectAll() =
+        handle.SelectAll()
+    member this.Undo() =
+        handle.Undo()
+        
+let bindNode (name: string) (map: Map<string, IViewBinding>) =
+    match map.TryFind name with
+    | Some (:? LineEditBinding as lineEdit) ->
+        lineEdit
+    | _ ->
+        failwith "LineEdit.bindNode fail"
 
 type LineEdit<'msg>() =
     inherit Props<'msg>()
@@ -348,4 +375,16 @@ type LineEdit<'msg>() =
         override this.Attachments =
             this.Attachments
 
-        override this.Binding = None
+        override this.Binding =
+            this.MaybeBoundName
+            |> Option.map (fun name ->
+                name, LineEditBinding(this.model.LineEdit))
+
+let lineEditGetAndClear name msgFunc =
+    Cmd.ViewExec (fun bindings ->
+        viewexec bindings {
+            let! lineEdit = bindNode name
+            let text = lineEdit.Text
+            lineEdit.Clear()
+            return msgFunc text
+        })
