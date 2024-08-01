@@ -560,7 +560,7 @@ type ItemDataRole =
     | WhatsThisPropertyRole
     | UserRole of value: int   // over 0x0100
 with
-    member this.QtValue =
+    member internal this.QtValue =
         match this with
         | DisplayRole -> Enums.ItemDataRole.DisplayRole
         | DecorationRole -> Enums.ItemDataRole.DecorationRole
@@ -583,7 +583,7 @@ with
         | StatusTipPropertyRole -> Enums.ItemDataRole.StatusTipPropertyRole
         | WhatsThisPropertyRole -> Enums.ItemDataRole.WhatsThisPropertyRole
         | UserRole value -> enum<Enums.ItemDataRole> value
-    static member From (role: Enums.ItemDataRole) =
+    static member internal From (role: Enums.ItemDataRole) =
         match role with
         | Enums.ItemDataRole.DisplayRole -> DisplayRole
         | Enums.ItemDataRole.DecorationRole -> DecorationRole
