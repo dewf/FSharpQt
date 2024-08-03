@@ -536,6 +536,17 @@ type ThemeIcon =
     
 let internal toQtThemeIcon (icon: ThemeIcon) =
     enum<Icon.ThemeIcon> (int icon)
+
+type CheckState =
+    | Unchecked
+    | PartiallyChecked
+    | Checked
+with
+    member this.QtValue =
+        match this with
+        | Unchecked -> Enums.CheckState.Unchecked
+        | PartiallyChecked -> Enums.CheckState.PartiallyChecked
+        | Checked -> Enums.CheckState.Checked
     
 type ItemDataRole =
     | DisplayRole
@@ -611,6 +622,49 @@ with
                 UserRole value
             else
                 failwithf "DataRole.From: unknown input value [%d]" value
+                
+type ItemFlag =
+    | ItemIsSelectable
+    | ItemIsEditable
+    | ItemIsDragEnabled
+    | ItemIsDropEnabled
+    | ItemIsUserCheckable
+    | ItemIsEnabled
+    | ItemIsAutoTristate
+    | ItemNeverHasChildren
+    | ItemIsUserTristate
+with
+    member internal this.QtFlag =
+        match this with
+        | ItemIsSelectable -> AbstractListModel.ItemFlags.ItemIsSelectable
+        | ItemIsEditable -> AbstractListModel.ItemFlags.ItemIsEditable
+        | ItemIsDragEnabled -> AbstractListModel.ItemFlags.ItemIsDragEnabled
+        | ItemIsDropEnabled -> AbstractListModel.ItemFlags.ItemIsDropEnabled
+        | ItemIsUserCheckable -> AbstractListModel.ItemFlags.ItemIsUserCheckable
+        | ItemIsEnabled -> AbstractListModel.ItemFlags.ItemIsEnabled
+        | ItemIsAutoTristate -> AbstractListModel.ItemFlags.ItemIsAutoTristate
+        | ItemNeverHasChildren -> AbstractListModel.ItemFlags.ItemNeverHasChildren
+        | ItemIsUserTristate -> AbstractListModel.ItemFlags.ItemIsUserTristate
+    static member internal QtSetFrom (flags: ItemFlag seq) =
+        (enum<AbstractListModel.ItemFlags> 0, flags)
+        ||> Seq.fold (fun acc flag -> acc ||| flag.QtFlag)
+    static member internal SetFrom (inputFlags: AbstractListModel.ItemFlags) =
+        let pairs =
+            [ AbstractListModel.ItemFlags.ItemIsSelectable, ItemIsSelectable
+              AbstractListModel.ItemFlags.ItemIsEditable, ItemIsEditable
+              AbstractListModel.ItemFlags.ItemIsDragEnabled, ItemIsDragEnabled
+              AbstractListModel.ItemFlags.ItemIsDropEnabled, ItemIsDropEnabled
+              AbstractListModel.ItemFlags.ItemIsUserCheckable, ItemIsUserCheckable
+              AbstractListModel.ItemFlags.ItemIsEnabled, ItemIsEnabled
+              AbstractListModel.ItemFlags.ItemIsAutoTristate, ItemIsAutoTristate
+              AbstractListModel.ItemFlags.ItemNeverHasChildren, ItemNeverHasChildren
+              AbstractListModel.ItemFlags.ItemIsUserTristate, ItemIsUserTristate ]
+        (Set.empty<ItemFlag>, pairs)
+        ||> List.fold (fun acc (qtFlag, fsFlag) ->
+            if inputFlags.HasFlag qtFlag then
+                acc.Add(fsFlag)
+            else
+                acc)
                 
 // // for utility widgets (synthetic layout widgets etc)
 // NEW: just use Widget.CreateNoHandler()
@@ -814,6 +868,18 @@ type KeySequence private(deferred: Org.Whatever.MinimalQtForFSharp.KeySequence.D
                 |> Set.ofList
             KeySequence.Deferred.FromKey(toQtKey key, Modifier.QtSetFrom mods)
         KeySequence(deferred)
+        
+type VariantProxy internal(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
+    member val internal Handle = qtVariant
+    member this.ToBool() = qtVariant.ToBool()
+    member this.ToInt() = qtVariant.ToInt()
+    member this.ToStringValue() = qtVariant.ToString2()
+    member this.ToCheckState() =
+        match qtVariant.ToCheckState() with
+        | Enums.CheckState.Unchecked -> Unchecked
+        | Enums.CheckState.PartiallyChecked -> PartiallyChecked
+        | Enums.CheckState.Checked -> Checked
+        | _ -> failwith "VariantProxy.ToCheckState() - unknown incoming check state"
     
 [<RequireQualifiedAccess>]
 type Variant =
@@ -821,8 +887,10 @@ type Variant =
     | Bool of value: bool
     | String of str: string
     | Int of value: int
-    | Icon of icon: Icon
-    | Color of color: Color
+    | CheckState of state: CheckState
+    // | Icon of icon: Icon
+    // | Color of color: Color
+    | Unknown
 with
     member this.QtValue =
         match this with
@@ -830,8 +898,16 @@ with
         | Bool value -> Variant.Deferred.FromBool(value)
         | String str -> Variant.Deferred.FromString(str)
         | Int value -> Variant.Deferred.FromInt(value)
-        | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
-        | Color color -> Variant.Deferred.FromColor(color.QtValue)
+        | CheckState state -> Variant.Deferred.FromCheckState(state.QtValue)
+        // | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
+        // | Color color -> Variant.Deferred.FromColor(color.QtValue)
+        | Unknown -> failwith "Variant.QtValue: 'Unknown' variants cannot be sent to server side"
+    static member FromQtValue (value: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
+        match value.ToServerValue() with
+        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Bool as b -> Variant.Bool b.Value
+        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.String as s -> Variant.String s.Value
+        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Int as i -> Variant.Int i.Value
+        | _ -> Variant.Unknown
         
 type RegexOption =
     | CaseInsensitive
