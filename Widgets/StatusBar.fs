@@ -177,7 +177,7 @@ let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
     
 type StatusBarBinding internal(handle: StatusBar.Handle) =
-    interface IViewBinding
+    inherit Widget.WidgetBinding(handle)
     member this.ShowMessage(message: string, ?timeout: int) =
         handle.ShowMessage(message, timeout |> Option.defaultValue 0)
     member this.IsSizeGripEnabled =

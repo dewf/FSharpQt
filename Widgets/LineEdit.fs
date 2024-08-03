@@ -380,7 +380,7 @@ type LineEdit<'msg>() =
             |> Option.map (fun name ->
                 name, LineEditBinding(this.model.LineEdit))
 
-let lineEditGetAndClear name msgFunc =
+let cmdGetTextAndClear name msgFunc =
     Cmd.ViewExec (fun bindings ->
         viewexec bindings {
             let! lineEdit = bindNode name
