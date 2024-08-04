@@ -2,6 +2,7 @@
 
 open FSharpQt.BuilderNode
 open System
+open FSharpQt.Reactor
 open Org.Whatever.MinimalQtForFSharp
 open FSharpQt.MiscTypes
 
@@ -409,4 +410,14 @@ type SortFilterProxyModel<'msg>() =
             |> Option.map (fun name ->
                 name, SortFilterProxyModelBinding(this.model.SortFilterProxyModel))
 
-       
+let cmdMapToSource name index msgFunc =
+    Cmd.ViewExec (fun bindings ->
+        viewexec bindings {
+            let! proxyModel = bindNode name
+            // note 'converted' would be safely GC'ed even if we didn't know it was disposable
+            use converted =
+                proxyModel.MapToSource(index)
+            if converted.IsValid then
+                // emit a new message to actually update state
+                return msgFunc converted
+        })
