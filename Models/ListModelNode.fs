@@ -5,7 +5,6 @@ open FSharpQt.Attrs
 open FSharpQt.BuilderNode
 open FSharpQt.Models.SimpleListModel
 open FSharpQt.Models.TrackedRows
-open FSharpQt.MiscTypes
 
 type private Signal = unit
 
@@ -43,12 +42,12 @@ type Props<'msg>() =
     member this.Rows with set value =
         this.PushAttr(Rows value)
         
-    member this.Headers with set value =
-        this.PushAttr(Headers value)
+    member this.Headers with set (value: string seq) =
+        this.PushAttr(value |> List.ofSeq |> Headers)
 
-type Model<'msg,'row>(dispatch: 'msg -> unit, numColumns: int) as this =
+type Model<'msg,'row>(dispatch: 'msg -> unit, numColumns: int, simpleDelegate: ISimpleListModelDelegate<'msg,'row>) as this =
     inherit AbstractListModel.ModelCore<'msg>(dispatch)
-    let listModel = new SimpleListModel<'row>(numColumns)
+    let listModel = new SimpleListModel<'msg,'row>(dispatch, numColumns, simpleDelegate)
     let mutable headers: string list = []
     do
         this.AbstractListModel <- listModel.QtModel
@@ -56,8 +55,8 @@ type Model<'msg,'row>(dispatch: 'msg -> unit, numColumns: int) as this =
     member this.QtModel =
         listModel.QtModel
         
-    member this.DataFunc with set value =
-        listModel.DataFunc <- value
+    member this.SimpleDelegate with set value =
+        listModel.SimpleDelegate <- value
         
     interface AttrTarget with
         member this.ApplyListModelNodeAttr attr =
@@ -88,25 +87,24 @@ type Model<'msg,'row>(dispatch: 'msg -> unit, numColumns: int) as this =
         member this.Dispose() =
             (listModel :> IDisposable).Dispose()
             
-let private create (attrs: IAttr list) (dispatch: 'msg -> unit) (numColumns: int) (dataFunc: 'row -> int -> ItemDataRole -> Variant) =
-    let model = new Model<'msg, 'row>(dispatch, numColumns)
+let private create (attrs: IAttr list) (dispatch: 'msg -> unit) (numColumns: int) (simpleDelegate: ISimpleListModelDelegate<'msg,'row>) =
+    let model = new Model<'msg, 'row>(dispatch, numColumns, simpleDelegate)
     model.ApplyAttrs (attrs |> List.map (fun attr -> None, attr))
     // model.SignalMaps <- signalMaps
     // model.SignalMask <- signalMask
-    model.DataFunc <- dataFunc
     model
 
-let private migrate (model: Model<'msg,'row>) (attrs: (IAttr option * IAttr) list) (dataFunc: 'row -> int -> ItemDataRole -> Variant) =
+let private migrate (model: Model<'msg,'row>) (attrs: (IAttr option * IAttr) list) (simpleDelegate: ISimpleListModelDelegate<'msg,'row>) =
     model.ApplyAttrs attrs
     // model.SignalMaps <- signalMaps
     // model.SignalMask <- signalMask
+    model.SimpleDelegate <- simpleDelegate
     model
 
 let private dispose (model: Model<'msg,'row>) =
     (model :> IDisposable).Dispose()
 
-
-type ListModelNode<'msg,'row>(dataFunc: 'row -> int -> ItemDataRole -> Variant, ?numColumns: int) =
+type ListModelNode<'msg,'row>(simpleDelegate: ISimpleListModelDelegate<'msg,'row>, ?numColumns: int) =
     inherit Props<'msg>()
     [<DefaultValue>] val mutable model: Model<'msg,'row>
 
@@ -114,7 +112,7 @@ type ListModelNode<'msg,'row>(dataFunc: 'row -> int -> ItemDataRole -> Variant, 
         override this.Dependencies = []
 
         override this.Create dispatch buildContext =
-            this.model <- create this.Attrs dispatch (defaultArg numColumns 1) dataFunc
+            this.model <- create this.Attrs dispatch (defaultArg numColumns 1) simpleDelegate
             
         override this.AttachDeps () =
             ()
@@ -122,7 +120,7 @@ type ListModelNode<'msg,'row>(dataFunc: 'row -> int -> ItemDataRole -> Variant, 
         override this.MigrateFrom (left: IBuilderNode<'msg>) (depsChanges: (DepsKey * DepsChange) list) =
             let left' = (left :?> ListModelNode<'msg,'row>)
             let nextAttrs = diffAttrs left'.Attrs this.Attrs |> createdOrChanged
-            this.model <- migrate left'.model nextAttrs dataFunc
+            this.model <- migrate left'.model nextAttrs simpleDelegate
 
         override this.Dispose() =
             (this.model :> IDisposable).Dispose()

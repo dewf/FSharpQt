@@ -1,31 +1,56 @@
 ﻿module FSharpQt.Models.SimpleListModel
 
 open System
-open FSharpQt
 open Org.Whatever.MinimalQtForFSharp
-open MiscTypes
+open FSharpQt.MiscTypes
 
-let emptyIndex =
-    ModelIndex.Deferred.Empty()
+type ISimpleListModelDelegate<'msg,'row> =
+    interface
+        abstract member Data: 'row -> int -> ItemDataRole -> Variant
+        abstract member GetFlags: 'row -> int -> Set<ItemFlag> -> Set<ItemFlag>
+        abstract member SetData: int -> 'row -> int -> VariantProxy -> ItemDataRole -> 'msg option
+    end
 
-type SimpleListModel<'row>(numColumns: int) as this =
+[<AbstractClass>]
+type AbstractSimpleListModelDelegate<'msg,'row>() =
+    // must implement:
+    abstract member Data: 'row -> int -> ItemDataRole -> Variant
+    // optional:
+    abstract member GetFlags: 'row -> int -> Set<ItemFlag> -> Set<ItemFlag>
+    default this.GetFlags rowData col baseFlags =
+        baseFlags
+    abstract member SetData: int -> 'row -> int -> VariantProxy -> ItemDataRole -> 'msg option
+    default this.SetData rowIndex rowData col value role = None
+    // interface:
+    interface ISimpleListModelDelegate<'msg,'row> with
+        override this.Data rowData col role = this.Data rowData col role
+        override this.GetFlags rowData col baseFlags = this.GetFlags rowData col baseFlags
+        override this.SetData rowIndex rowData col value role = this.SetData rowIndex rowData col value role
+
+type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, numColumns: int, simpleDelegate: ISimpleListModelDelegate<'msg,'row>) as this =
     let mutable rows = [||]
+    let mutable simpleDelegate = simpleDelegate
     
+    let emptyIndex =
+        ModelIndex.Deferred.Empty()
+        
     let interior =
         let methodMask =
-            if numColumns > 1 then
-                AbstractListModel.MethodMask.HeaderData ||| AbstractListModel.MethodMask.ColumnCount
-            else
-                AbstractListModel.MethodMask.HeaderData
+            let zero =
+                enum<AbstractListModel.MethodMask> 0
+            AbstractListModel.MethodMask.HeaderData |||
+            AbstractListModel.MethodMask.Flags |||
+            AbstractListModel.MethodMask.SetData |||
+            (if numColumns > 1 then AbstractListModel.MethodMask.ColumnCount else zero)
         AbstractListModel
             .CreateSubclassed(this, methodMask)
             .GetInteriorHandle()
             
     let mutable maybeHeaders: string array option = None
-    let mutable dataFunc: 'row -> int -> ItemDataRole -> Variant = (fun _ _ _ -> Variant.Empty)
     
-    member this.DataFunc with set value =
-        dataFunc <- value
+    // needs to be re-assignable in case it's "user" state-dependent
+    member this.SimpleDelegate with set value =
+        simpleDelegate <- value
         
     member this.Headers with set value =
         let newValue = Some (value |> List.toArray)
@@ -41,18 +66,19 @@ type SimpleListModel<'row>(numColumns: int) as this =
             rows.Length
             
         member this.Data(index: ModelIndex.Handle, role: Enums.ItemDataRole) =
-            let rowIndex =
-                index.Row()
-            let colIndex =
-                index.Column()
-            if index.IsValid() && rowIndex < rows.Length && colIndex < numColumns then
-                let value =
-                    let row =
-                        rows[rowIndex]
-                    dataFunc row colIndex (ItemDataRole.From role)
-                value.QtValue
-            else
-                Variant.Empty.QtValue
+            let value =
+                if index.IsValid() then
+                    let rowIndex = index.Row()
+                    let colIndex = index.Column()
+                    if rowIndex < rows.Length && colIndex < numColumns then
+                        let row =
+                            rows[rowIndex]
+                        simpleDelegate.Data row colIndex (ItemDataRole.From role)
+                    else
+                        Variant.Empty
+                else
+                    Variant.Empty
+            value.QtValue
                 
         // optional depending on mask: ==================================================
         
@@ -72,10 +98,39 @@ type SimpleListModel<'row>(numColumns: int) as this =
             variant.QtValue
             
         member this.GetFlags(index: ModelIndex.Handle, baseFlags: AbstractListModel.ItemFlags) =
-            failwith "not yet implemented"
+            let result =
+                if index.IsValid() then
+                    let rowIndex = index.Row()
+                    let colIndex = index.Column()
+                    if rowIndex < rows.Length && colIndex < numColumns then
+                        let row =
+                            rows[rowIndex]
+                        simpleDelegate.GetFlags row colIndex (ItemFlag.SetFrom baseFlags)
+                    else
+                        Set.empty
+                else
+                    Set.empty
+            ItemFlag.QtSetFrom result
             
         member this.SetData(index: ModelIndex.Handle, value: Org.Whatever.MinimalQtForFSharp.Variant.Handle, role: Enums.ItemDataRole) =
-            failwith "not yet implemented"
+            let maybeMsg =
+                if index.IsValid() then
+                    let rowIndex = index.Row()
+                    let colIndex = index.Column()
+                    if rowIndex < rows.Length && colIndex < numColumns then
+                        let row =
+                            rows[rowIndex]
+                        simpleDelegate.SetData rowIndex row colIndex (VariantProxy value) (ItemDataRole.From role)
+                    else
+                        None
+                else
+                    None
+            match maybeMsg with
+            | Some msg ->
+                dispatch msg
+                true
+            | None ->
+                false
             
         member this.ColumnCount(parent: ModelIndex.Handle) =
             numColumns
