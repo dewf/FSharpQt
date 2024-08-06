@@ -223,6 +223,12 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.Dispose() =
             treeView.Dispose()
             
+type private ItemDelegateLocation =
+    | LocationAll
+    | LocationRow of row: int
+    | LocationCol of col: int
+    // not yet for ModelIndex
+            
 type private Model<'msg>(dispatch: 'msg -> unit) as this =
     inherit ModelCore<'msg>(dispatch)
     let treeView = TreeView.Create(this)
@@ -235,6 +241,15 @@ type private Model<'msg>(dispatch: 'msg -> unit) as this =
     member this.RemoveQtModel () =
         // well if it gets deleted (as a dependency), won't that delete from the view automatically?
         ()
+        
+    member this.AddItemDelegate (itemDelegate: AbstractItemDelegate.Handle) (loc: ItemDelegateLocation) =
+        match loc with
+        | LocationAll ->
+            treeView.SetItemDelegate(itemDelegate)
+        | LocationRow row ->
+            treeView.SetItemDelegateForRow(row, itemDelegate)
+        | LocationCol col ->
+            treeView.SetItemDelegateForColumn(col, itemDelegate)
 
 let private create (attrs: IAttr list) (signalMaps: ISignalMapFunc list) (dispatch: 'msg -> unit) (signalMask: TreeView.SignalMask) =
     let model = new Model<'msg>(dispatch)
@@ -251,13 +266,18 @@ let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (s
 
 let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
-
+    
 type TreeView<'msg>() =
     inherit Props<'msg>()
     [<DefaultValue>] val mutable private model: Model<'msg>
     
     let mutable maybeTreeModel: IModelNode<'msg> option = None
     member this.TreeModel with set value = maybeTreeModel <- Some value
+    
+    let mutable itemDelegates: (IAbstractItemDelegateNode<'msg> * ItemDelegateLocation) list = []
+    member this.SetItemDelegateForColumn(column: int, itemDelegate: IAbstractItemDelegateNode<'msg>) =
+        itemDelegates <- (itemDelegate, LocationCol column) :: itemDelegates
+        this
             
     member this.MigrateDeps (changeMap: Map<DepsKey, DepsChange>) =
         match changeMap.TryFind (StrKey "model") with
@@ -278,9 +298,14 @@ type TreeView<'msg>() =
     
     interface IWidgetNode<'msg> with
         override this.Dependencies =
-            maybeTreeModel
-            |> Option.map (fun node -> StrKey "model", node :> IBuilderNode<'msg>)
-            |> Option.toList
+            let modelList =
+                maybeTreeModel
+                |> Option.map (fun node -> StrKey "model", node :> IBuilderNode<'msg>)
+                |> Option.toList
+            let itemDelegates =
+                itemDelegates
+                |> List.mapi (fun i (node, _) -> StrIntKey("item-delegate", i), node :> IBuilderNode<'msg>)
+            modelList @ itemDelegates
 
         override this.Create dispatch buildContext =
             this.model <- create this.Attrs this.SignalMapList dispatch this.SignalMask
@@ -289,6 +314,9 @@ type TreeView<'msg>() =
             maybeTreeModel
             |> Option.iter (fun node ->
                 this.model.AddQtModel(node.QtModel))
+            itemDelegates
+            |> List.iter (fun (node, loc) ->
+                this.model.AddItemDelegate node.AbstractItemDelegate loc)
 
         override this.MigrateFrom (left: IBuilderNode<'msg>) (depsChanges: (DepsKey * DepsChange) list) =
             let left' = (left :?> TreeView<'msg>)

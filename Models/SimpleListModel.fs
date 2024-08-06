@@ -120,7 +120,7 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, numColumns: int
                     if rowIndex < rows.Length && colIndex < numColumns then
                         let row =
                             rows[rowIndex]
-                        simpleDelegate.SetData rowIndex row colIndex (VariantProxy value) (ItemDataRole.From role)
+                        simpleDelegate.SetData rowIndex row colIndex (new VariantProxy(value)) (ItemDataRole.From role)
                     else
                         None
                 else

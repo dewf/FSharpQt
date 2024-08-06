@@ -154,7 +154,7 @@ type Props<'msg>() =
     let mutable onIconSizeChanged: (Size -> 'msg) option = None
     let mutable onPressed: (ModelIndexProxy -> 'msg) option = None
     let mutable onViewportEntered: 'msg option = None
-
+    
     member internal this.SignalMask = enum<AbstractItemView.SignalMask> (int this._signalMask)
     
     member this.OnActivated with set value =

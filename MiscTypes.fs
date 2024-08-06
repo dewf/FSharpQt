@@ -694,7 +694,7 @@ type QObjectProxy internal(handle: Object.Handle) =
     let x = 10
 
 type WidgetProxy internal(handle: Widget.Handle) =
-    // member val widget = widget
+    member val internal Handle = handle
     member this.Rect =
         Rect.From(handle.Rect())
         
@@ -722,20 +722,88 @@ type MimeDataProxy internal(qMimeData: Widget.MimeData) =
     member this.Urls =
         qMimeData.Urls()
         
+type StyleOptionViewItemProxy internal(thing: StyleOptionViewItem.Handle) =
+    let x = 10
+    
+type ComboBoxProxy internal(model: ComboBox.Handle) =
+    member this.CurrentIndex
+        with get() =
+            model.CurrentIndex()
+        and set value =
+            model.SetCurrentIndex(value)
+    
+type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle, owned: bool) =
+    let mutable disposed = false
+    member val internal Handle = qtVariant
 
+    internal new(ownedVariant: Org.Whatever.MinimalQtForFSharp.Variant.OwnedHandle) =
+        new VariantProxy(ownedVariant, true)
+    internal new(unowned: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
+        new VariantProxy(unowned, false)
+
+    interface IDisposable with
+        member this.Dispose() =
+            if owned && not disposed then
+                qtVariant.Dispose()
+                disposed <- true
+
+    override this.Finalize() =
+        (this :> IDisposable).Dispose()
+        
+    member this.ToBool() = qtVariant.ToBool()
+    member this.ToInt() = qtVariant.ToInt()
+    member this.ToStringValue() = qtVariant.ToString2()
+    member this.ToCheckState() =
+        match qtVariant.ToCheckState() with
+        | Enums.CheckState.Unchecked -> Unchecked
+        | Enums.CheckState.PartiallyChecked -> PartiallyChecked
+        | Enums.CheckState.Checked -> Checked
+        | _ -> failwith "VariantProxy.ToCheckState() - unknown incoming check state"
+    
+[<RequireQualifiedAccess>]
+type Variant =
+    | Empty
+    | Bool of value: bool
+    | String of str: string
+    | Int of value: int
+    | CheckState of state: CheckState
+    // | Icon of icon: Icon
+    // | Color of color: Color
+    | Unknown
+with
+    member this.QtValue =
+        match this with
+        | Empty -> Variant.Deferred.Empty() :> Org.Whatever.MinimalQtForFSharp.Variant.Deferred
+        | Bool value -> Variant.Deferred.FromBool(value)
+        | String str -> Variant.Deferred.FromString(str)
+        | Int value -> Variant.Deferred.FromInt(value)
+        | CheckState state -> Variant.Deferred.FromCheckState(state.QtValue)
+        // | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
+        // | Color color -> Variant.Deferred.FromColor(color.QtValue)
+        | Unknown -> failwith "Variant.QtValue: 'Unknown' variants cannot be sent to server side"
+    static member FromQtValue (value: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
+        match value.ToServerValue() with
+        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Bool as b -> Variant.Bool b.Value
+        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.String as s -> Variant.String s.Value
+        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Int as i -> Variant.Int i.Value
+        | _ -> Variant.Unknown
+        
+    
 // might merge these ModelIndex types in the future, going to see how it plays out
 // kind of don't like putting IDisposable on the proxy/deferred versions since they aren't owned, and then get IDE warnings about using 'new' etc
 // but we'll see. juggling 3 different ones for different purposes seems kind of crazy (when they all represent a C++ QModelIndex in the end)
 // even 'from scratch' they need to be created from a model somewhere, so would the 'new' be that big a deal?
 
 type ModelIndexProxy internal(index: ModelIndex.Handle) =
-    member val internal Index = index
+    member val internal Handle = index
     member this.IsValid =
         index.IsValid()
     member this.Row =
         index.Row()
     member this.Column =
         index.Column()
+    member this.Data =
+        new VariantProxy(index.Data())
     
 type ModelIndexOwned internal(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.OwnedHandle) =
     let mutable disposed = false
@@ -762,6 +830,8 @@ type ModelIndexDeferred private(deferred: ModelIndex.Deferred) =
         ModelIndexDeferred(ModelIndex.Deferred.FromOwned(owned))
     internal new(handle: ModelIndex.Handle) =
         ModelIndexDeferred(ModelIndex.Deferred.FromHandle(handle))
+    internal new(proxy: ModelIndexProxy) =
+        ModelIndexDeferred(ModelIndex.Deferred.FromHandle(proxy.Handle))
         
 // persistent model index
         
@@ -772,6 +842,10 @@ type PersistentModelIndexProxy internal(index: PersistentModelIndex.Handle) =
 // maybe we need a "stack types" module or something?
 type SizePolicyDeferred private(deferred: Org.Whatever.MinimalQtForFSharp.SizePolicy.Deferred) =
     member val internal QtValue = deferred
+    
+type AbstractItemModelProxy internal(model: AbstractItemModel.Handle) =
+    member this.SetData (index: ModelIndexProxy) (value: Variant) =
+        model.SetData(ModelIndexDeferred(index).QtValue, value.QtValue)
     
 // other =========================
 
@@ -868,46 +942,6 @@ type KeySequence private(deferred: Org.Whatever.MinimalQtForFSharp.KeySequence.D
                 |> Set.ofList
             KeySequence.Deferred.FromKey(toQtKey key, Modifier.QtSetFrom mods)
         KeySequence(deferred)
-        
-type VariantProxy internal(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
-    member val internal Handle = qtVariant
-    member this.ToBool() = qtVariant.ToBool()
-    member this.ToInt() = qtVariant.ToInt()
-    member this.ToStringValue() = qtVariant.ToString2()
-    member this.ToCheckState() =
-        match qtVariant.ToCheckState() with
-        | Enums.CheckState.Unchecked -> Unchecked
-        | Enums.CheckState.PartiallyChecked -> PartiallyChecked
-        | Enums.CheckState.Checked -> Checked
-        | _ -> failwith "VariantProxy.ToCheckState() - unknown incoming check state"
-    
-[<RequireQualifiedAccess>]
-type Variant =
-    | Empty
-    | Bool of value: bool
-    | String of str: string
-    | Int of value: int
-    | CheckState of state: CheckState
-    // | Icon of icon: Icon
-    // | Color of color: Color
-    | Unknown
-with
-    member this.QtValue =
-        match this with
-        | Empty -> Variant.Deferred.Empty() :> Org.Whatever.MinimalQtForFSharp.Variant.Deferred
-        | Bool value -> Variant.Deferred.FromBool(value)
-        | String str -> Variant.Deferred.FromString(str)
-        | Int value -> Variant.Deferred.FromInt(value)
-        | CheckState state -> Variant.Deferred.FromCheckState(state.QtValue)
-        // | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
-        // | Color color -> Variant.Deferred.FromColor(color.QtValue)
-        | Unknown -> failwith "Variant.QtValue: 'Unknown' variants cannot be sent to server side"
-    static member FromQtValue (value: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
-        match value.ToServerValue() with
-        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Bool as b -> Variant.Bool b.Value
-        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.String as s -> Variant.String s.Value
-        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Int as i -> Variant.Int i.Value
-        | _ -> Variant.Unknown
         
 type RegexOption =
     | CaseInsensitive
