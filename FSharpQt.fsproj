@@ -47,6 +47,7 @@
         <Compile Include="Widgets\StatusBar.fs" />
         <Compile Include="Widgets\GroupBox.fs" />
         <Compile Include="Widgets\TabWidget.fs" />
+        <Compile Include="Widgets\TabBar.fs" />
         <Compile Include="Widgets\ToolBar.fs" />
         <Compile Include="Widgets\MainWindow.fs" />
         <Compile Include="Widgets\ScrollArea.fs" />

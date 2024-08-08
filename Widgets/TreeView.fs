@@ -3,6 +3,7 @@
 open FSharpQt.Attrs
 open FSharpQt.BuilderNode
 open System
+open FSharpQt.Reactor
 open Org.Whatever.MinimalQtForFSharp
 open FSharpQt.MiscTypes
 
@@ -267,6 +268,18 @@ let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (s
 let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
     
+type TreeViewBinding internal(handle: TreeView.Handle) =
+    inherit AbstractItemView.AbstractItemViewBinding(handle)
+    member this.ResizeColumnToContents(column: int) =
+        handle.ResizeColumnToContents(column)
+        
+let bindNode (name: string) (map: Map<string, IViewBinding>) =
+    match map.TryFind name with
+    | Some (:? TreeViewBinding as treeView) ->
+        treeView
+    | _ ->
+        failwith "TreeView.bindNode fail"
+    
 type TreeView<'msg>() =
     inherit Props<'msg>()
     [<DefaultValue>] val mutable private model: Model<'msg>
@@ -336,4 +349,14 @@ type TreeView<'msg>() =
         override this.Attachments =
             this.Attachments
 
-        override this.Binding = None
+        override this.Binding =
+            this.MaybeBoundName
+            |> Option.map (fun name ->
+                name, TreeViewBinding(this.model.TreeView))
+
+let cmdResizeAllColumnsToContents (name: string) (numColumns: int) =
+    Cmd.ViewExec (fun bindings ->
+        let treeView = bindNode name bindings
+        for i in 0 .. numColumns - 1 do
+            treeView.ResizeColumnToContents(i)
+        None)

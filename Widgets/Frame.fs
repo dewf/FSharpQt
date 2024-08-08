@@ -189,6 +189,9 @@ let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (s
 
 let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
+    
+type FrameBinding internal(handle: Frame.Handle) =
+    inherit Widget.WidgetBinding(handle)
 
 type Frame<'msg>() =
     inherit Props<'msg>()

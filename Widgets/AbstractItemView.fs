@@ -36,8 +36,8 @@ type EditTriggers =
     | EditKeyPressed
     | AnyKeyPressed
 with
-    static member internal None = enum<AbstractItemView.EditTriggers> 0
-    static member internal All = AbstractItemView.EditTriggers.AllEditTriggers
+    static member None = enum<AbstractItemView.EditTriggers> 0
+    static member All = [ CurrentChanged; DoubleClicked; SelectedClicked; EditKeyPressed; AnyKeyPressed ]
     static member internal QtFlagsFrom (values: EditTriggers seq) =
         (enum<AbstractItemView.EditTriggers> 0, values)
         ||> Seq.fold (fun acc item ->
@@ -366,3 +366,6 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
     interface IDisposable with
         member this.Dispose() =
             abstractItemView.Dispose()
+
+type AbstractItemViewBinding internal(handle: AbstractItemView.Handle) =
+    inherit AbstractScrollArea.AbstractScrollAreaBinding(handle)

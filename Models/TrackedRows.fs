@@ -8,6 +8,7 @@ type RowChangeItem<'row> =
     | RowDeleted of index: int
     | RangeDeleted of index: int * count: int
     | RowReplaced of index: int * newRow: 'row
+    | IndicesDeleted of indices: int list
 
 // so that the 'row doesn't poison our Attrs, leads to weird issues    
 type ITrackedRows =
@@ -85,6 +86,21 @@ type TrackedRows<'row> = {
             |> List.replaceAtIndex index (fun _ -> row)
         let nextChanges =
             this.Changes @ [ RowReplaced(index, row) ]
+        { this with Rows = nextRows; Changes = nextChanges }
+        
+    member this.DeleteWhere(matchFunc: 'row -> bool) =
+        let affected =
+            this.Rows
+            |> List.zipWithIndex
+            |> List.choose (fun (i, row) ->
+                match matchFunc row with
+                | true -> Some i
+                | false -> None)
+        let nextChanges =
+            this.Changes @ [ IndicesDeleted affected ]
+        let nextRows =
+            this.Rows
+            |> List.filter (matchFunc >> not)
         { this with Rows = nextRows; Changes = nextChanges }
         
     static member Init(rows: 'row list) =

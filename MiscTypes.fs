@@ -752,6 +752,7 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
         
     member this.ToBool() = qtVariant.ToBool()
     member this.ToInt() = qtVariant.ToInt()
+    member this.ToSize() = qtVariant.ToSize()
     member this.ToStringValue() = qtVariant.ToString2()
     member this.ToCheckState() =
         match qtVariant.ToCheckState() with
@@ -766,6 +767,7 @@ type Variant =
     | Bool of value: bool
     | String of str: string
     | Int of value: int
+    | Size of size: Size
     | CheckState of state: CheckState
     // | Icon of icon: Icon
     // | Color of color: Color
@@ -777,6 +779,7 @@ with
         | Bool value -> Variant.Deferred.FromBool(value)
         | String str -> Variant.Deferred.FromString(str)
         | Int value -> Variant.Deferred.FromInt(value)
+        | Size size -> Variant.Deferred.FromSize(size.QtValue)
         | CheckState state -> Variant.Deferred.FromCheckState(state.QtValue)
         // | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
         // | Color color -> Variant.Deferred.FromColor(color.QtValue)
@@ -802,8 +805,9 @@ type ModelIndexProxy internal(index: ModelIndex.Handle) =
         index.Row()
     member this.Column =
         index.Column()
-    member this.Data =
-        new VariantProxy(index.Data())
+    member this.Data(?role: ItemDataRole) =
+        let role = defaultArg role DisplayRole
+        new VariantProxy(index.Data(role.QtValue))
     
 type ModelIndexOwned internal(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.OwnedHandle) =
     let mutable disposed = false

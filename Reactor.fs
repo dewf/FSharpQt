@@ -136,7 +136,11 @@ type Reactor<'state, 'msg, 'signal, 'root when 'root :> IBuilderNode<'msg>>(
                     Application.ExecuteOnMainThread(inner)
                 subFunc safeDispatch
     do
+        // prevent diff-triggered dispatching with a guard (some widgets obnoxiously emit signals when programmatically setting properties)
+        disableDispatch <- true
         build dispatch root buildContext
+        disableDispatch <- false
+        //
         updateBindings()
         processCmd initCmd
         

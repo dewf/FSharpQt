@@ -1,51 +1,73 @@
-﻿module FSharpQt.Widgets.TabWidget
+﻿module FSharpQt.Widgets.TabBar
 
 open System
-open FSharpQt
 open FSharpQt.Attrs
 open FSharpQt.BuilderNode
-open FSharpQt.MiscTypes
 open Org.Whatever.MinimalQtForFSharp
+open FSharpQt.MiscTypes
 
 type private Signal =
     | CurrentChanged of index: int
     | TabBarClicked of index: int
     | TabBarDoubleClicked of index: int
     | TabCloseRequested of index: int
+    | TabMoved of fromIndex: int * toIndex: int
+    
+type ButtonPosition =
+    | LeftSide
+    | RightSide
+with
+    member internal this.QtValue =
+        match this with
+        | LeftSide -> TabBar.ButtonPosition.LeftSide
+        | RightSide -> TabBar.ButtonPosition.RightSide
+    
+type SelectionBehavior =
+    | SelectLeftTab
+    | SelectRightTab
+    | SelectPreviousTab
+with
+    member internal this.QtValue =
+        match this with
+        | SelectLeftTab -> TabBar.SelectionBehavior.SelectLeftTab
+        | SelectRightTab -> TabBar.SelectionBehavior.SelectRightTab
+        | SelectPreviousTab -> TabBar.SelectionBehavior.SelectPreviousTab
+    
+type Shape =
+    | RoundedNorth
+    | RoundedSouth
+    | RoundedWest
+    | RoundedEast
+    | TriangularNorth
+    | TriangularSouth
+    | TriangularWest
+    | TriangularEast
+with
+    member internal this.QtValue =
+        match this with
+        | RoundedNorth -> TabBar.Shape.RoundedNorth
+        | RoundedSouth -> TabBar.Shape.RoundedSouth
+        | RoundedWest -> TabBar.Shape.RoundedWest
+        | RoundedEast -> TabBar.Shape.RoundedEast
+        | TriangularNorth -> TabBar.Shape.TriangularNorth
+        | TriangularSouth -> TabBar.Shape.TriangularSouth
+        | TriangularWest -> TabBar.Shape.TriangularWest
+        | TriangularEast -> TabBar.Shape.TriangularEast
 
-type TabShape =
-    | Rounded
-    | Triangular
-with
-    member internal this.QtValue =
-        match this with
-        | Rounded -> TabWidget.TabShape.Rounded
-        | Triangular -> TabWidget.TabShape.Triangular
-    
-type TabPosition =
-    | North
-    | South
-    | East
-    | West
-with
-    member internal this.QtValue =
-        match this with
-        | North -> TabWidget.TabPosition.North
-        | South -> TabWidget.TabPosition.South
-        | East -> TabWidget.TabPosition.East
-        | West -> TabWidget.TabPosition.West
-    
 type internal Attr =
+    | AutoHide of value: bool
+    | ChangeCurrentOnDrag of value: bool
     | CurrentIndex of index: int
-    | DocumentMode of state: bool
+    | DocumentMode of value: bool
+    | DrawBase of value: bool
     | ElideMode of mode: TextElideMode
+    | Expanding of value: bool
     | IconSize of size: Size
-    | Movable of state: bool
-    | TabBarAutoHide of state: bool
-    | TabPosition of position: TabPosition
-    | TabShape of shape: TabShape
-    | TabsClosable of state: bool
-    | UsesScrollButtons of state: bool
+    | Movable of value: bool
+    | SelectionBehaviorOnRemove of behavior: SelectionBehavior
+    | Shape of shape: Shape
+    | TabsClosable of value: bool
+    | UsesScrollButtons of value: bool
 with
     interface IAttr with
         override this.AttrEquals other =
@@ -56,32 +78,35 @@ with
                 false
         override this.Key =
             match this with
-            | CurrentIndex _ -> "tabwidget:currentindex"
-            | DocumentMode _ -> "tabwidget:documentmode"
-            | ElideMode _ -> "tabwidget:elidemode"
-            | IconSize _ -> "tabwidget:iconsize"
-            | Movable _ -> "tabwidget:movable"
-            | TabBarAutoHide _ -> "tabwidget:tabbarautohide"
-            | TabPosition _ -> "tabwidget:tabposition"
-            | TabShape _ -> "tabwidget:tabshape"
-            | TabsClosable _ -> "tabwidget:tabsclosable"
-            | UsesScrollButtons _ -> "tabwidget:scrollbuttons"
+            | AutoHide _ -> "tabbar:autohide"
+            | ChangeCurrentOnDrag _ -> "tabbar:changecurrentondrag"
+            | CurrentIndex _ -> "tabbar:currentindex"
+            | DocumentMode _ -> "tabbar:documentmode"
+            | DrawBase _ -> "tabbar:drawbase"
+            | ElideMode _ -> "tabbar:elidemode"
+            | Expanding _ -> "tabbar:expanding"
+            | IconSize _ -> "tabbar:iconsize"
+            | Movable _ -> "tabbar:movable"
+            | SelectionBehaviorOnRemove _ -> "tabbar:selectionbehavioronremove"
+            | Shape _ -> "tabbar:shape"
+            | TabsClosable _ -> "tabbar:tabsclosable"
+            | UsesScrollButtons _ -> "tabbar:usesscrollbuttons"
         override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
             match target with
             | :? AttrTarget as attrTarget ->
-                attrTarget.ApplyTabWidgetAttr(this)
+                attrTarget.ApplyTabBarAttr(this)
             | _ ->
-                printfn "warning: TabWidget.Attr couldn't ApplyTo() unknown target type [%A]" target
+                printfn "warning: TabBar.Attr couldn't ApplyTo() unknown target type [%A]" target
                 
 and internal AttrTarget =
     interface
         inherit Widget.AttrTarget
-        abstract member ApplyTabWidgetAttr: Attr -> unit
+        abstract member ApplyTabBarAttr: Attr -> unit
     end
-
+          
 type private SignalMapFunc<'msg>(func) =
     inherit SignalMapFuncBase<Signal,'msg>(func)
-    
+
 type Props<'msg>() =
     inherit Widget.Props<'msg>()
     
@@ -89,25 +114,30 @@ type Props<'msg>() =
     let mutable onTabBarClicked: (int -> 'msg) option = None
     let mutable onTabBarDoubleClicked: (int -> 'msg) option = None
     let mutable onTabCloseRequested: (int -> 'msg) option = None
+    let mutable onTabMoved: (int * int -> 'msg) option = None
     
-    member internal this.SignalMask = enum<TabWidget.SignalMask> (int this._signalMask)
-        
+    member internal this.SignalMask = enum<TabBar.SignalMask> (int this._signalMask)
+
     member this.OnCurrentChanged with set value =
         onCurrentChanged <- Some value
-        this.AddSignal(int TabWidget.SignalMask.CurrentChanged)
+        this.AddSignal(int TabBar.SignalMask.CurrentChanged)
         
     member this.OnTabBarClicked with set value =
         onTabBarClicked <- Some value
-        this.AddSignal(int TabWidget.SignalMask.TabBarClicked)
+        this.AddSignal(int TabBar.SignalMask.TabBarClicked)
         
     member this.OnTabBarDoubleClicked with set value =
         onTabBarDoubleClicked <- Some value
-        this.AddSignal(int TabWidget.SignalMask.TabBarDoubleClicked)
+        this.AddSignal(int TabBar.SignalMask.TabBarDoubleClicked)
         
     member this.OnTabCloseRequested with set value =
         onTabCloseRequested <- Some value
-        this.AddSignal(int TabWidget.SignalMask.TabCloseRequested)
+        this.AddSignal(int TabBar.SignalMask.TabCloseRequested)
         
+    member this.OnTabMoved with set value =
+        onTabMoved <- Some value
+        this.AddSignal(int TabBar.SignalMask.TabMoved)
+  
     member internal this.SignalMapList =
         let thisFunc = function
             | CurrentChanged index ->
@@ -122,7 +152,16 @@ type Props<'msg>() =
             | TabCloseRequested index ->
                 onTabCloseRequested
                 |> Option.map (fun f -> f index)
+            | TabMoved (fromIndex, toIndex) ->
+                onTabMoved
+                |> Option.map (fun f -> f (fromIndex, toIndex))
         SignalMapFunc(thisFunc) :> ISignalMapFunc :: base.SignalMapList
+
+    member this.AutoHide with set value =
+        this.PushAttr(AutoHide value)
+        
+    member this.ChangeCurrentOnDrag with set value =
+        this.PushAttr(ChangeCurrentOnDrag value)
         
     member this.CurrentIndex with set value =
         this.PushAttr(CurrentIndex value)
@@ -130,8 +169,14 @@ type Props<'msg>() =
     member this.DocumentMode with set value =
         this.PushAttr(DocumentMode value)
         
+    member this.DrawBase with set value =
+        this.PushAttr(DrawBase value)
+        
     member this.ElideMode with set value =
         this.PushAttr(ElideMode value)
+        
+    member this.Expanding with set value =
+        this.PushAttr(Expanding value)
         
     member this.IconSize with set value =
         this.PushAttr(IconSize value)
@@ -139,26 +184,23 @@ type Props<'msg>() =
     member this.Movable with set value =
         this.PushAttr(Movable value)
         
-    member this.TabBarAutoHide with set value =
-        this.PushAttr(TabBarAutoHide value)
+    member this.SelectionBehaviorOnRemove with set value =
+        this.PushAttr(SelectionBehaviorOnRemove value)
         
-    member this.TabPosition with set value =
-        this.PushAttr(TabPosition value)
-        
-    member this.TabShape with set value =
-        this.PushAttr(TabShape value)
+    member this.Shape with set value =
+        this.PushAttr(Shape value)
         
     member this.TabsClosable with set value =
         this.PushAttr(TabsClosable value)
         
     member this.UsesScrollButtons with set value =
         this.PushAttr(UsesScrollButtons value)
-        
+
 type ModelCore<'msg>(dispatch: 'msg -> unit) =
     inherit Widget.ModelCore<'msg>(dispatch)
-    let mutable tabWidget: TabWidget.Handle = null
+    let mutable tabBar: TabBar.Handle = null
     let mutable signalMap: Signal -> 'msg option = (fun _ -> None)
-    let mutable currentMask = enum<TabWidget.SignalMask> 0
+    let mutable currentMask = enum<TabBar.SignalMask> 0
     
     // binding guards:
     let mutable lastCurrentIndex = -1
@@ -167,12 +209,12 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         signalMap s
         |> Option.iter dispatch
         
-    member this.TabWidget
-        with get() = tabWidget
+    member this.TabBar
+        with get() = tabBar
         and set value =
             // assign to base
             this.Widget <- value
-            tabWidget <- value
+            tabBar <- value
             
     member internal this.SignalMaps with set (mapFuncList: ISignalMapFunc list) =
         match mapFuncList with
@@ -181,45 +223,51 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             | :? SignalMapFunc<'msg> as smf ->
                 signalMap <- smf.Func
             | _ ->
-                failwith "TabWidget.ModelCore.SignalMaps: wrong func type"
+                failwith "TabBar.ModelCore.SignalMaps: wrong func type"
             // assign the remainder to parent class(es)
             base.SignalMaps <- etc
         | _ ->
-            failwith "TabWidget.ModelCore: signal map assignment didn't have a head element"
+            failwith "TabBar.ModelCore: signal map assignment didn't have a head element"
             
     member this.SignalMask with set value =
         if value <> currentMask then
             // we don't need to invoke the base version, the most derived widget handles the full signal stack from all super classes (at the C++/C# levels)
-            tabWidget.SetSignalMask(value)
+            tabBar.SetSignalMask(value)
             currentMask <- value
             
     interface AttrTarget with
-        member this.ApplyTabWidgetAttr attr =
+        member this.ApplyTabBarAttr attr =
             match attr with
+            | AutoHide value ->
+                tabBar.SetAutoHide(value)
+            | ChangeCurrentOnDrag value ->
+                tabBar.SetChangeCurrentOnDrag(value)
             | CurrentIndex index ->
                 if index <> lastCurrentIndex then
                     lastCurrentIndex <- index
-                    tabWidget.SetCurrentIndex(index)
-            | DocumentMode state ->
-                tabWidget.SetDocumentMode(state)
+                    tabBar.SetCurrentIndex(index)
+            | DocumentMode value ->
+                tabBar.SetDocumentMode(value)
+            | DrawBase value ->
+                tabBar.SetDrawBase(value)
             | ElideMode mode ->
-                tabWidget.SetElideMode(mode.QtValue)
+                tabBar.SetElideMode(mode.QtValue)
+            | Expanding value ->
+                tabBar.SetExpanding(value)
             | IconSize size ->
-                tabWidget.SetIconSize(size.QtValue)
-            | Movable state ->
-                tabWidget.SetMovable(state)
-            | TabBarAutoHide state ->
-                tabWidget.SetTabBarAutoHide(state)
-            | TabPosition position ->
-                tabWidget.SetTabPosition(position.QtValue)
-            | TabShape shape ->
-                tabWidget.SetTabShape(shape.QtValue)
-            | TabsClosable state ->
-                tabWidget.SetTabsClosable(state)
-            | UsesScrollButtons state ->
-                tabWidget.SetUsesScrollButtons(state)
-    
-    interface TabWidget.SignalHandler with
+                tabBar.SetIconSize(size.QtValue)
+            | Movable value ->
+                tabBar.SetMovable(value)
+            | SelectionBehaviorOnRemove behavior ->
+                tabBar.SetSelectionBehaviorOnRemove(behavior.QtValue)
+            | Shape shape ->
+                tabBar.SetShape(shape.QtValue)
+            | TabsClosable value ->
+                tabBar.SetTabsClosable(value)
+            | UsesScrollButtons value ->
+                tabBar.SetUsesScrollButtons(value)
+                
+    interface TabBar.SignalHandler with
         // Object =========================
         member this.Destroyed(obj: Object.Handle) =
             (this :> Object.SignalHandler).Destroyed(obj)
@@ -232,7 +280,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             (this :> Widget.SignalHandler).WindowIconChanged icon
         member this.WindowTitleChanged title =
             (this :> Widget.SignalHandler).WindowTitleChanged title
-        // TabWidget ======================
+        // TabBar =========================
         member this.CurrentChanged index =
             lastCurrentIndex <- index
             signalDispatch (CurrentChanged index)
@@ -242,30 +290,40 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             signalDispatch (TabBarDoubleClicked index)
         member this.TabCloseRequested index =
             signalDispatch (TabCloseRequested index)
+        member this.TabMoved(fromIndex, toIndex) =
+            signalDispatch (TabMoved (fromIndex, toIndex))
             
     interface IDisposable with
         member this.Dispose() =
-            tabWidget.Dispose()
-    
+            tabBar.Dispose()
+            
+type internal TabItemInternal =
+    | TextOnly of text: string
+    | WithIcon of icon: Icon * text: string
+
 type private Model<'msg>(dispatch: 'msg -> unit) as this =
     inherit ModelCore<'msg>(dispatch)
-    let tabWidget = TabWidget.Create(this)
+    let tabBar = TabBar.Create(this)
     do
-        this.TabWidget <- tabWidget
+        this.TabBar <- tabBar
     
-    member this.Refill(pages: (string * Widget.Handle) list) =
-        tabWidget.Clear()
-        for label, widget in pages do
-            tabWidget.AddTab(widget, label)
-
-let private create (attrs: IAttr list) (signalMaps: ISignalMapFunc list) (dispatch: 'msg -> unit) (signalMask: TabWidget.SignalMask) =
+    member this.Refill(items: TabItemInternal list) =
+        tabBar.RemoveAllTabs()
+        for item in items do
+            match item with
+            | TextOnly text ->
+                tabBar.AddTab(text) |> ignore
+            | WithIcon(icon, text) ->
+                tabBar.AddTab(icon.QtValue, text) |> ignore
+                
+let private create (attrs: IAttr list) (signalMaps: ISignalMapFunc list) (dispatch: 'msg -> unit) (signalMask: TabBar.SignalMask) =
     let model = new Model<'msg>(dispatch)
     model.ApplyAttrs (attrs |> List.map (fun attr -> None, attr))
     model.SignalMaps <- signalMaps
     model.SignalMask <- signalMask
     model
 
-let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (signalMaps: ISignalMapFunc list) (signalMask: TabWidget.SignalMask) =
+let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (signalMaps: ISignalMapFunc list) (signalMask: TabBar.SignalMask) =
     model.ApplyAttrs attrs
     model.SignalMaps <- signalMaps
     model.SignalMask <- signalMask
@@ -274,45 +332,45 @@ let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (s
 let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
 
-type TabWidget<'msg>() =
+type TabItem private(value: TabItemInternal) =
+    member val internal Value = value
+    new(text: string) =
+        TabItem(TextOnly text)
+    new(icon: Icon, text: string) =
+        TabItem(WithIcon(icon, text))
+
+type TabBar<'msg>() =
     inherit Props<'msg>()
     [<DefaultValue>] val mutable private model: Model<'msg>
 
     // page label doubles as string dependency key
     // probably need to make that more apparent ...
-    member val Pages: (string * IWidgetNode<'msg>) list = [] with get, set
+    member val Items: TabItem list = [] with get, set
     
-    member private this.MigrateContent(leftTabWidget: TabWidget<'msg>) =
-        let leftContents =
-            leftTabWidget.Pages
-            |> List.map (fun (label, node) -> label, node.ContentKey)
-        let thisContents =
-            this.Pages
-            |> List.map (fun (label, node) -> label, node.ContentKey)
-        if leftContents <> thisContents then
-            let pageLabelsAndHandles =
-                this.Pages
-                |> List.map (fun (label, node) -> label, node.Widget)
-            this.model.Refill(pageLabelsAndHandles)
+    member private this.MigrateContent(leftTabBar: TabBar<'msg>) =
+        let leftValues =
+            leftTabBar.Items
+            |> List.map (_.Value)
+        let rightValues =
+            this.Items
+            |> List.map (_.Value)
+        if leftValues <> rightValues then
+            this.model.Refill(rightValues)
         else
             ()
-        
+            
     interface IWidgetNode<'msg> with
-        override this.Dependencies =
-            this.Pages
-            |> List.map (fun (name, node) -> StrKey name, node :> IBuilderNode<'msg>)
+        override this.Dependencies = []
             
         override this.Create dispatch buildContext =
             this.model <- create this.Attrs this.SignalMapList dispatch this.SignalMask
+            this.model.Refill(this.Items |> List.map (_.Value))
             
         override this.AttachDeps () =
-            let pageLabelsAndHandles =
-                this.Pages
-                |> List.map (fun (label, widget) -> label, widget.Widget)
-            this.model.Refill(pageLabelsAndHandles)
+            ()
             
         override this.MigrateFrom (left: IBuilderNode<'msg>) (depsChanges: (DepsKey * DepsChange) list) =
-            let left' = (left :?> TabWidget<'msg>)
+            let left' = (left :?> TabBar<'msg>)
             let nextAttrs =
                 diffAttrs left'.Attrs this.Attrs
                 |> createdOrChanged
@@ -323,10 +381,10 @@ type TabWidget<'msg>() =
             (this.model :> IDisposable).Dispose()
 
         override this.Widget =
-            this.model.TabWidget
+            this.model.TabBar
             
         override this.ContentKey =
-            this.model.TabWidget
+            this.model.TabBar
             
         override this.Attachments =
             this.Attachments

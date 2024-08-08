@@ -76,6 +76,8 @@ type Model<'msg,'row>(dispatch: 'msg -> unit, numColumns: int, simpleDelegate: I
                             listModel.DeleteRowAt(index)
                         | RangeDeleted(index, count) ->
                             listModel.DeleteRowsAt(index, count)
+                        | IndicesDeleted indices ->
+                            listModel.DeleteIndices(indices)
                 | _ ->
                     printfn "ListModelNode weirdness"
             | Headers names ->

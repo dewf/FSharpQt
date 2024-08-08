@@ -166,3 +166,12 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, numColumns: int
         use bottomRight =
             interior.Index(index, numColumns - 1)
         interior.EmitDataChanged(ModelIndexDeferred(topLeft).QtValue, ModelIndexDeferred(bottomRight).QtValue, [||])
+        
+    member this.DeleteIndices(indices: int list) =
+        // over a certain threshold should probably just reset the model
+        let reversed =
+            indices |> List.sortDescending
+        for index in reversed do
+            interior.BeginRemoveRows(emptyIndex, index, index)
+            rows <- Array.removeAt index rows
+            interior.EndRemoveRows()

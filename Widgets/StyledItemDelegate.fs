@@ -113,7 +113,7 @@ type IEventDelegate<'msg> =
     end
     
 [<AbstractClass>]
-type ComboBoxDelegateBase<'msg>() =
+type ComboBoxItemDelegateBase<'msg>() =
     abstract member CreateEditor: StyleOptionViewItemProxy -> ModelIndexProxy -> FSharpQt.Widgets.ComboBox.ComboBox<'msg>
     abstract member SetEditorData: ComboBoxProxy -> ModelIndexProxy -> unit
     abstract member SetModelData: ComboBoxProxy -> AbstractItemModelProxy -> ModelIndexProxy -> unit

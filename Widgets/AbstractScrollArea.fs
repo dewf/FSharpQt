@@ -132,3 +132,6 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
     interface IDisposable with
         member this.Dispose() =
             abstractScrollArea.Dispose()
+
+type AbstractScrollAreaBinding internal(handle: Frame.Handle) =
+    inherit Frame.FrameBinding(handle)
