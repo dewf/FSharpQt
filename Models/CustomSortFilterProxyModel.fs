@@ -209,3 +209,9 @@ let cmdInvalidateFilter name =
 
 let cmdMapToSource =
     SortFilterProxyModel.cmdMapToSource
+
+let cmdSort =
+    SortFilterProxyModel.cmdSort
+
+let cmdSortWithOrder =
+    SortFilterProxyModel.cmdSortWithOrder

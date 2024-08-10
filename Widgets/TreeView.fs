@@ -293,6 +293,7 @@ type TreeView<'msg>() =
         this
             
     member this.MigrateDeps (changeMap: Map<DepsKey, DepsChange>) =
+        // model
         match changeMap.TryFind (StrKey "model") with
         | Some change ->
             match change with
@@ -308,6 +309,8 @@ type TreeView<'msg>() =
         | None ->
             // neither side had one
             ()
+        // item delegates are not migrated at present!
+        // I don't think that's something that's typically changed over the life of a treeview ...
     
     interface IWidgetNode<'msg> with
         override this.Dependencies =

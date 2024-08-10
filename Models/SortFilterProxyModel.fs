@@ -421,3 +421,17 @@ let cmdMapToSource name index msgFunc =
                 // emit a new message to actually update state
                 return msgFunc converted
         })
+
+let cmdSort name column =
+    Cmd.ViewExec (fun bindings ->
+        viewexec bindings {
+            let! proxyModel = bindNode name
+            proxyModel.Sort(column)
+        })
+
+let cmdSortWithOrder name column order =
+    Cmd.ViewExec (fun bindings ->
+        viewexec bindings {
+            let! proxyModel = bindNode name
+            proxyModel.Sort(column, order)
+        })

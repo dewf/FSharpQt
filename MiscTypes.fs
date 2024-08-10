@@ -547,6 +547,15 @@ with
         | Unchecked -> Enums.CheckState.Unchecked
         | PartiallyChecked -> Enums.CheckState.PartiallyChecked
         | Checked -> Enums.CheckState.Checked
+        
+type SortOrder =
+    | AscendingOrder
+    | DescendingOrder
+with
+    member internal this.QtValue =
+        match this with
+        | AscendingOrder -> Enums.SortOrder.AscendingOrder
+        | DescendingOrder -> Enums.SortOrder.DescendingOrder
     
 type ItemDataRole =
     | DisplayRole

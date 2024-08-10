@@ -3,6 +3,7 @@
 open System
 open FSharpQt.Attrs
 open FSharpQt.MiscTypes
+open FSharpQt.Reactor
 open FSharpQt.Widgets
 open Org.Whatever.MinimalQtForFSharp
 
@@ -303,3 +304,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
 
 type AbstractItemModelBinding internal(handle: AbstractItemModel.Handle) =
     inherit QObject.QObjectBinding(handle)
+    member this.Sort(column: int) =
+        handle.Sort(column)
+    member this.Sort(column: int, order: SortOrder) =
+        handle.Sort(column, order.QtValue)
