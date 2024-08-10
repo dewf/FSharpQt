@@ -771,6 +771,7 @@ type Variant =
     | CheckState of state: CheckState
     // | Icon of icon: Icon
     // | Color of color: Color
+    | Alignment of align: Alignment
     | Unknown
 with
     member this.QtValue =
@@ -783,6 +784,7 @@ with
         | CheckState state -> Variant.Deferred.FromCheckState(state.QtValue)
         // | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
         // | Color color -> Variant.Deferred.FromColor(color.QtValue)
+        | Alignment align -> Variant.Deferred.FromAligment(align.QtValue)
         | Unknown -> failwith "Variant.QtValue: 'Unknown' variants cannot be sent to server side"
     static member FromQtValue (value: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
         match value.ToServerValue() with
