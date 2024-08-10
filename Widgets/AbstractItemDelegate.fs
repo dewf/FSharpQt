@@ -142,7 +142,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.CommitData(editor: Widget.Handle) =
             signalDispatch (CommitData(WidgetProxy(editor)))
         member this.SizeHintChanged(index: ModelIndex.Handle) =
-            signalDispatch(SizeHintChanged(ModelIndexProxy(index)))
+            signalDispatch(SizeHintChanged(new ModelIndexProxy(index)))
             
     interface IDisposable with
         member this.Dispose() =

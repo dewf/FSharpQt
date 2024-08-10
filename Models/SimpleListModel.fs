@@ -165,7 +165,9 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, numColumns: int
             interior.Index(index, 0)
         use bottomRight =
             interior.Index(index, numColumns - 1)
-        interior.EmitDataChanged(ModelIndexDeferred(topLeft).QtValue, ModelIndexDeferred(bottomRight).QtValue, [||])
+        interior.EmitDataChanged(
+            ModelIndex.Deferred.FromOwned(topLeft),
+            ModelIndex.Deferred.FromOwned(bottomRight), [||])
         
     member this.DeleteIndices(indices: int list) =
         // over a certain threshold should probably just reset the model

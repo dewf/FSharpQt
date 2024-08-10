@@ -216,9 +216,9 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             (this :> AbstractItemView.SignalHandler).ViewportEntered()
         // TreeView =======================
         member this.Collapsed index =
-            signalDispatch (ModelIndexProxy(index) |> Collapsed)
+            signalDispatch (new ModelIndexProxy(index) |> Collapsed)
         member this.Expanded index =
-            signalDispatch (ModelIndexProxy(index) |> Expanded)
+            signalDispatch (new ModelIndexProxy(index) |> Expanded)
             
     interface IDisposable with
         member this.Dispose() =

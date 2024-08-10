@@ -126,10 +126,10 @@ type ComboBoxItemDelegateBase<'msg>() =
             // we don't have any inherent continuity of the raw opaque handles being passed from one side to another
             // so we need a way of "force-casting" an opaque handle, from the C++ side
             let combo = ComboBox.DowncastFrom(editor)
-            this.SetEditorData (ComboBoxProxy(combo)) (ModelIndexProxy(index))
+            this.SetEditorData (ComboBoxProxy(combo)) (new ModelIndexProxy(index))
         member this.SetModelDataRaw editor model index =
             let combo = ComboBox.DowncastFrom(editor)
-            this.SetModelData (ComboBoxProxy(combo)) (AbstractItemModelProxy(model)) (ModelIndexProxy(index))
+            this.SetModelData (ComboBoxProxy(combo)) (AbstractItemModelProxy(model)) (new ModelIndexProxy(index))
     
 // [<AbstractClass>]
 // type AbstractEventDelegate<'msg,'widgetProxy>(proxyFunc: Widget.Handle -> 'widgetProxy) =
@@ -160,7 +160,7 @@ type private Model<'msg>(dispatch: 'msg -> unit, eventDelegate: IEventDelegate<'
         
     interface StyledItemDelegate.MethodDelegate with
         member this.CreateEditor(parent, option, index) =
-            let root = eventDelegate.CreateEditor (StyleOptionViewItemProxy(option)) (ModelIndexProxy(index))
+            let root = eventDelegate.CreateEditor (StyleOptionViewItemProxy(option)) (new ModelIndexProxy(index))
             build dispatch (root :> IBuilderNode<'msg>) { ContainingWindow = None }
             root.Widget.SetParent(parent)
             root.Widget

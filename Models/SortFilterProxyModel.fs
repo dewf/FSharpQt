@@ -315,7 +315,7 @@ type private Model<'msg>(dispatch: 'msg -> unit) as this =
     let sfProxyModel = SortFilterProxyModel.Create(this)
     do
         this.SortFilterProxyModel <- sfProxyModel
-    
+
     member this.AddSourceModel (model: AbstractItemModel.Handle) =
         sfProxyModel.SetSourceModel(model)
         

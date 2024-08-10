@@ -128,5 +128,5 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
 type AbstractProxyModelBinding internal(handle: AbstractProxyModel.Handle) =
     inherit AbstractItemModel.AbstractItemModelBinding(handle)
     member this.MapToSource (proxyIndex: ModelIndexProxy) =
-        let ret = handle.MapToSource(ModelIndex.Deferred.FromHandle(proxyIndex.Handle))
-        new ModelIndexOwned(ret)   
+        let ret = handle.MapToSource(proxyIndex.AsDeferred)
+        new ModelIndexProxy(ret)
