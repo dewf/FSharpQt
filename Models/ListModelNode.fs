@@ -44,10 +44,10 @@ type Props<'msg>() =
         
     member this.Headers with set (value: string seq) =
         this.PushAttr(value |> List.ofSeq |> Headers)
-
+        
 type Model<'msg,'row>(dispatch: 'msg -> unit, numColumns: int, simpleDelegate: ISimpleListModelDelegate<'msg,'row>) as this =
     inherit AbstractListModel.ModelCore<'msg>(dispatch)
-    let listModel = new SimpleListModel<'msg,'row>(dispatch, numColumns, simpleDelegate)
+    let listModel = new SimpleListModel<'msg,'row>(dispatch, this, numColumns, simpleDelegate)
     let mutable headers: string list = []
     do
         this.AbstractListModel <- listModel.QtModel

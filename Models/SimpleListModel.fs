@@ -27,7 +27,7 @@ type AbstractSimpleListModelDelegate<'msg,'row>() =
         override this.GetFlags rowData col baseFlags = this.GetFlags rowData col baseFlags
         override this.SetData rowIndex rowData col value role = this.SetData rowIndex rowData col value role
 
-type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, numColumns: int, simpleDelegate: ISimpleListModelDelegate<'msg,'row>) as this =
+type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: AbstractListModel.SignalHandler, numColumns: int, simpleDelegate: ISimpleListModelDelegate<'msg,'row>) as this =
     let mutable rows = [||]
     let mutable simpleDelegate = simpleDelegate
     
@@ -42,9 +42,7 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, numColumns: int
             AbstractListModel.MethodMask.Flags |||
             AbstractListModel.MethodMask.SetData |||
             (if numColumns > 1 then AbstractListModel.MethodMask.ColumnCount else zero)
-        AbstractListModel
-            .CreateSubclassed(this, methodMask)
-            .GetInteriorHandle()
+        AbstractListModel.CreateSubclassed(handler, this, methodMask)
             
     let mutable maybeHeaders: string array option = None
     
