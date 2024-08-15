@@ -336,8 +336,13 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
 
 type private Model<'msg>(dispatch: 'msg -> unit) as this =
     inherit ModelCore<'msg>(dispatch)
+    let comboBox = ComboBox.Create(this)
     do
-        this.ComboBox <- ComboBox.Create(this)
+        this.ComboBox <- comboBox
+    
+    member this.SetQtModel (model: AbstractItemModel.Handle) =
+        comboBox.SetModel(model)
+    // as of now, no way to unset! (null not allowed according to Qt docs)
 
 let private create (attrs: IAttr list) (signalMaps: ISignalMapFunc list) (dispatch: 'msg -> unit) (signalMask: ComboBox.SignalMask) =
     let model = new Model<'msg>(dispatch)
@@ -354,19 +359,44 @@ let private migrate (model: Model<'msg>) (attrs: (IAttr option * IAttr) list) (s
 
 let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
-
+    
 type ComboBox<'msg>() =
     inherit Props<'msg>()
     [<DefaultValue>] val mutable private model: Model<'msg>
     
+    let mutable maybeModelNode: IModelNode<'msg> option = None
+    member this.Model with set value =
+        maybeModelNode <- Some value
+        
+    member private this.MigrateContent (left: ComboBox<'msg>) (changeMap: Map<DepsKey, DepsChange>) =
+        match changeMap.TryFind (StrKey "model") with
+        | Some change ->
+            match change with
+            | Unchanged ->
+                ()
+            | Added ->
+                this.model.SetQtModel(maybeModelNode.Value.QtModel)
+            | Removed ->
+                printfn "ComboBox: currently not possible to remove model after creation (but swapping is allowed)"
+            | Swapped ->
+                // can't remove old one (can't set to null according to Qt docs), just set the new one
+                this.model.SetQtModel(maybeModelNode.Value.QtModel)
+        | None ->
+            // neither side had a model
+            ()
+    
     interface IWidgetNode<'msg> with
-        override this.Dependencies = []
+        override this.Dependencies =
+            maybeModelNode
+            |> Option.map (fun node -> StrKey "model", node :> IBuilderNode<'msg>)
+            |> Option.toList
         
         override this.Create dispatch buildContext =
             this.model <- create this.Attrs this.SignalMapList dispatch this.SignalMask
             
         override this.AttachDeps () =
-            ()
+            maybeModelNode
+            |> Option.iter (fun node -> this.model.SetQtModel node.QtModel)
             
         override this.MigrateFrom (left: IBuilderNode<'msg>) (depsChanges: (DepsKey * DepsChange) list) =
             let left' = (left :?> ComboBox<'msg>)
@@ -374,6 +404,7 @@ type ComboBox<'msg>() =
                 diffAttrs left'.Attrs this.Attrs
                 |> createdOrChanged
             this.model <- migrate left'.model nextAttrs this.SignalMapList this.SignalMask
+            this.MigrateContent left' (depsChanges |> Map.ofList)
                 
         override this.Dispose() =
             (this.model :> IDisposable).Dispose()
