@@ -1,0 +1,8 @@
+module Pixmap;
+
+// import PaintDevice;
+// opaque Handle extends PaintDevice.Handle;
+
+sumtype Deferred {
+    Empty
+}

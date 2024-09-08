@@ -1,0 +1,67 @@
+module AbstractSlider;
+
+import Object;
+import Widget;
+import Common;
+import Icon;
+import Enums;
+
+namedbits SignalMask extends Widget.SignalMask {
+    ActionTriggered,
+    RangeChanged,
+    SliderMoved,
+    SliderPressed,
+    SliderReleased,
+    ValueChanged
+}
+
+enum SliderAction {
+    SliderNoAction,
+    SliderSingleStepAdd,
+    SliderSingleStepSub,
+    SliderPageStepAdd,
+    SliderPageStepSub,
+    SliderToMinimum,
+    SliderToMaximum,
+    SliderMove
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // AbstractSlider:
+    void actionTriggered(SliderAction action);
+    void rangeChanged(int min, int max);
+    void sliderMoved(int value);
+    void sliderPressed();
+    void sliderReleased();
+    void valueChanged(int value);
+}
+
+opaque Handle extends Widget.Handle {
+    void setInvertedAppearance(bool state);
+    void setInvertedControls(bool state);
+    void setMaximum(int value);
+    void setMinimum(int value);
+    void setOrientation(Orientation orient);
+    void setPageStep(int pageStep);
+    void setSingleStep(int step);
+    void setSliderDown(bool state);
+    void setSliderPosition(int pos);
+    void setTracking(bool value);
+    void setValue(int value);
+
+    // why not a property?
+    void setRange(int min, int max);
+
+    // abstract, no mask setter
+}
+
+// no direct creation, inherited by eg QSlider

@@ -1,0 +1,83 @@
+module TabBar;
+
+import Object;
+import Common;
+import Icon;
+import Widget;
+import Enums;
+
+namedbits SignalMask extends Widget.SignalMask {
+    CurrentChanged,
+    TabBarClicked,
+    TabBarDoubleClicked,
+    TabCloseRequested,
+    TabMoved
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // TabBar:
+    void currentChanged(int index);
+    void tabBarClicked(int index);
+    void tabBarDoubleClicked(int index);
+    void tabCloseRequested(int index);
+    void tabMoved(int fromIndex, int toIndex);
+}
+
+enum ButtonPosition {
+    LeftSide,
+    RightSide
+}
+
+enum SelectionBehavior {
+    SelectLeftTab,
+    SelectRightTab,
+    SelectPreviousTab
+}
+
+enum Shape {
+    RoundedNorth,
+    RoundedSouth,
+    RoundedWest,
+    RoundedEast,
+    TriangularNorth,
+    TriangularSouth,
+    TriangularWest,
+    TriangularEast
+}
+
+opaque Handle extends Widget.Handle {
+    // properties
+    void setAutoHide(bool value);
+    void setChangeCurrentOnDrag(bool value);
+    int count();
+    void setCurrentIndex(int value);
+    int currentIndex();
+    void setDocumentMode(bool value);
+    void setDrawBase(bool value);
+    void setElideMode(TextElideMode mode);
+    void setExpanding(bool value);
+    void setIconSize(Size size);
+    void setMovable(bool value);
+    void setSelectionBehaviorOnRemove(SelectionBehavior value);
+    void setShape(Shape shape);
+    void setTabsClosable(bool value);
+    void setUsesScrollButtons(bool value);
+
+    // methods
+    void removeAllTabs();   // our own method for convenience
+    int	addTab(string text);
+    int	addTab(Icon.Deferred icon, string text);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

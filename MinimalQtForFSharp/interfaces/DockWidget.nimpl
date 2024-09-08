@@ -1,0 +1,9 @@
+module DockWidget;
+
+import Widget;
+
+opaque Handle extends Widget.Handle {
+    void nothingYet();
+}
+
+// no create yet

@@ -1,0 +1,89 @@
+module ListView;
+
+import Object;
+import Common;
+import Enums;
+import Icon;
+import AbstractListModel;
+import ModelIndex;
+import AbstractItemView;
+
+namedbits SignalMask extends AbstractItemView.SignalMask {
+    IndexesMoved
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Frame:
+    // (none)
+
+    // AbstractScrollArea:
+    // (none)
+
+    // AbstractItemView:
+    void activated(ModelIndex.Handle index);
+    void clicked(ModelIndex.Handle index);
+    void doubleClicked(ModelIndex.Handle index);
+    void entered(ModelIndex.Handle index);
+    void iconSizeChanged(Size size);
+    void pressed(ModelIndex.Handle index);
+    void viewportEntered();
+
+    // ListView:
+    void indexesMoved(Array<ModelIndex.Handle> indexes);
+}
+
+enum Movement {
+    Static,
+    Free,
+    Snap
+}
+
+enum Flow {
+    LeftToRight,
+    TopToBottom
+}
+
+enum ResizeMode {
+    Fixed,
+    Adjust
+}
+
+enum LayoutMode {
+    SinglePass,
+    Batched
+}
+
+enum ViewMode {
+    ListMode,
+    IconMode
+}
+
+opaque Handle extends AbstractItemView.Handle {
+    void setBatchSize(int size);
+    void setFlow(Flow flow);
+    void setGridSize(Size size);
+    void setWrapping(bool wrapping);
+    void setItemAlignment(Alignment align);
+    void setLayoutMode(LayoutMode mode);
+    void setModelColumn(int column);
+    void setMovement(Movement value);
+    void setResizeMode(ResizeMode mode);
+    void setSelectionRectVisible(bool visible);
+    void setSpacing(int spacing);
+    void setUniformItemSizes(bool state);
+    void setViewMode(ViewMode mode);
+    void setWordWrap(bool state);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

@@ -1,0 +1,58 @@
+module ToolBar;
+
+import Object;
+import Common;
+import Icon;
+import Enums;
+import Widget;
+import Action;
+
+namedbits SignalMask extends Widget.SignalMask {
+    ActionTriggered,
+    AllowedAreasChanged,
+    IconSizeChanged,
+    MovableChanged,
+    OrientationChanged,
+    ToolButtonStyleChanged,
+    TopLevelChanged,
+    VisibilityChanged
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // ToolBar:
+    void actionTriggered(Action.Handle action);
+    void allowedAreasChanged(ToolBarAreas allowed);
+    void iconSizeChanged(Size size);
+    void movableChanged(bool movable);
+    void orientationChanged(Orientation value);
+    void toolButtonStyleChanged(ToolButtonStyle style);
+    void topLevelChanged(bool topLevel);
+    void visibilityChanged(bool visible);
+}
+
+opaque Handle extends Widget.Handle {
+    void setAllowedAreas(ToolBarAreas allowed);
+    void setFloatable(bool floatable);
+    bool isFloating();                                // readonly
+    void setIconSize(Size size);
+    void setMovable(bool value);
+    void setOrientation(Orientation value);
+    void setToolButtonStyle(ToolButtonStyle style);
+
+    Action.Handle addSeparator();
+    void addWidget(Widget.Handle widget);
+    void clear();
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

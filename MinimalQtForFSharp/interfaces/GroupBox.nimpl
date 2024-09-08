@@ -1,0 +1,39 @@
+module GroupBox;
+
+import Object;
+import Common;
+import Icon;
+import Enums;
+import Widget;
+
+namedbits SignalMask extends Widget.SignalMask {
+    Clicked,
+    Toggled
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // GroupBox:
+    void clicked(bool checked_);
+    void toggled(bool state);
+}
+
+opaque Handle extends Widget.Handle {
+    void setAlignment(Alignment align);
+    void setCheckable(bool state);
+    void setChecked(bool state);
+    void setFlat(bool state);
+    void setTitle(string title);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

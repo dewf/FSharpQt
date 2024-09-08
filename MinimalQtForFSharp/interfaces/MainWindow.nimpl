@@ -1,0 +1,70 @@
+module MainWindow;
+
+import Object;
+import Common;
+import Widget;
+import Layout;
+import MenuBar;
+import Icon;
+import DockWidget;
+import Enums;
+import ToolBar;
+import StatusBar;
+import TabWidget;
+
+namedbits SignalMask extends Widget.SignalMask {
+    IconSizeChanged,
+    TabifiedDockWidgetActivated,
+    ToolButtonStyleChanged,
+
+    // custom:
+    WindowClosed
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // MainWindow:
+    void iconSizeChanged(Size iconSize);
+    void tabifiedDockWidgetActivated(DockWidget.Handle dockWidget);
+    void toolButtonStyleChanged(ToolButtonStyle style);
+    
+    // MainWindow (custom):
+    void windowClosed();
+}
+
+flags DockOptions {
+    AnimatedDocks = 0x01,
+    AllowNestedDocks = 0x02,
+    AllowTabbedDocks = 0x04,
+    ForceTabbedDocks = 0x08,  // implies AllowTabbedDocks, !AllowNestedDocks
+    VerticalTabs = 0x10,      // implies AllowTabbedDocks
+    GroupedDragging = 0x20    // implies AllowTabbedDocks
+}
+
+opaque Handle extends Widget.Handle {
+    void setAnimated(bool state);
+    void setDockNestingEnabled(bool state);
+    void setDockOptions(DockOptions dockOptions);
+    void setDocumentMode(bool state);
+    void setIconSize(Size size);
+    void setTabShape(TabShape tabShape);
+    void setToolButtonStyle(ToolButtonStyle style);
+    void setUnifiedTitleAndToolBarOnMac(bool state);
+
+    void setCentralWidget(Widget.Handle widget);
+    void setMenuBar(MenuBar.Handle menubar);
+    void setStatusBar(StatusBar.Handle statusbar);
+    void addToolBar(ToolBar.Handle toolbar); // TODO: area to add
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

@@ -1,0 +1,20 @@
+module Object;
+
+namedbits SignalMask {
+    Destroyed,
+    ObjectNameChanged
+}
+
+interface SignalHandler {
+    void destroyed(Handle obj);
+    void objectNameChanged(string objectName);
+}
+
+opaque Handle {
+    void setObjectName(string name);
+
+    void dumpObjectTree();
+    // no setSignalMask because abstract
+}
+
+// no create() because abstract

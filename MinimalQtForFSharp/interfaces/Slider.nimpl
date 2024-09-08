@@ -1,0 +1,50 @@
+module Slider;
+
+import Object;
+import Common;
+import Icon;
+import AbstractSlider;
+
+namedbits SignalMask extends AbstractSlider.SignalMask {
+    // no extra signals
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // AbstractSlider:
+    void actionTriggered(SliderAction action);
+    void rangeChanged(int min, int max);
+    void sliderMoved(int value);
+    void sliderPressed();
+    void sliderReleased();
+    void valueChanged(int value);
+
+    // Slider:
+    // (none)
+}
+
+enum TickPosition {
+    NoTicks = 0,
+    TicksAbove = 1,
+    TicksLeft = TicksAbove,
+    TicksBelow = 2,
+    TicksRight = TicksBelow,
+    TicksBothSides = 3
+}
+
+opaque Handle extends AbstractSlider.Handle {
+    void setTickInterval(int interval);
+    void setTickPosition(TickPosition tpos);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

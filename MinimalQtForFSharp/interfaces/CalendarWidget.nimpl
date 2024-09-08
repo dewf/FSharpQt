@@ -1,0 +1,68 @@
+module CalendarWidget;
+
+import Common;
+import Icon;
+import Object;
+import Widget;
+import Date;
+import Enums;
+
+namedbits SignalMask extends Widget.SignalMask {
+    Activated,
+    Clicked,
+    CurrentPageChanged,
+    SelectionChanged
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // CalendarWidget
+    void activated(Date.Handle date);
+    void clicked(Date.Handle date);
+    void currentPageChanged(int year, int month);
+    void selectionChanged();
+}
+
+enum HorizontalHeaderFormat {
+    NoHorizontalHeader,
+    SingleLetterDayNames,
+    ShortDayNames,
+    LongDayNames
+}
+
+enum VerticalHeaderFormat {
+    NoVerticalHeader,
+    ISOWeekNumbers
+}
+
+enum SelectionMode {
+    NoSelection,
+    SingleSelection
+}
+
+opaque Handle extends Widget.Handle {
+    void setDateEditAcceptDelay(int value);
+    void setDateEditEnabled(bool enabled);
+    void setFirstDayOfWeek(QDayOfWeek value);
+    void setGridVisible(bool visible);
+    void setHorizontalHeaderFormat(HorizontalHeaderFormat format);
+    void setMaximumDate(Date.Deferred value);
+    void setMinimumDate(Date.Deferred value);
+    void setNavigationBarVisible(bool visible);
+    Date.OwnedHandle selectedDate();
+    void setSelectedDate(Date.Deferred selected);
+    void setSelectionMode(SelectionMode mode);
+    void setVerticalHeaderFormat(VerticalHeaderFormat format);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

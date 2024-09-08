@@ -1,0 +1,43 @@
+module Dialog;
+
+import Object;
+import Common;
+import Icon;
+import Widget;
+
+namedbits SignalMask extends Widget.SignalMask {
+    Accepted,
+    Finished,
+    Rejected
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Dialog:
+    void accepted();
+    void finished(int result);
+    void rejected();
+}
+
+opaque Handle extends Widget.Handle {
+    void setModal(bool state);
+    void setSizeGripEnabled(bool enabled);
+
+    void setParentDialogFlags(Widget.Handle parent); // a version where we're setting WindowFlags (Qt::Dialog) - otherwise it won't work
+
+    void accept();
+    void reject();
+    int exec();
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(Widget.Handle parent, SignalHandler handler);

@@ -1,0 +1,40 @@
+module MenuBar;
+
+import Object;
+import Common;
+import Icon;
+import Widget;
+import Menu;
+import Action;
+
+namedbits SignalMask extends Widget.SignalMask {
+    Hovered,
+    Triggered
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // MenuBar:
+    void hovered(Action.Handle action);
+    void triggered(Action.Handle action);
+}
+
+opaque Handle extends Widget.Handle {
+    void setDefaultUp(bool state);
+    void setNativeMenuBar(bool state);
+
+    void clear();
+    void addMenu(Menu.Handle menu);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

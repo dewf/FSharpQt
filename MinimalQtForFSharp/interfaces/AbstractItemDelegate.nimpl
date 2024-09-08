@@ -1,0 +1,32 @@
+module AbstractItemDelegate;
+
+import Object;
+import Widget;
+import ModelIndex;
+
+namedbits SignalMask extends Object.SignalMask {
+    CloseEditor,
+    CommitData,
+    SizeHintChanged
+}
+
+enum EndEditHint {
+    NoHint,
+    EditNextItem,
+    EditPreviousItem,
+    SubmitModelCache,
+    RevertModelCache
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // AbstractItemDelegate:
+    void closeEditor(Widget.Handle editor, EndEditHint hint);
+    void commitData(Widget.Handle editor);
+    void sizeHintChanged(ModelIndex.Handle index);
+}
+
+opaque Handle extends Object.Handle;

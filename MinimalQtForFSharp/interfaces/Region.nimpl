@@ -1,0 +1,9 @@
+module Region;
+
+opaque Handle;
+
+opaque OwnedHandle extends Handle;
+
+sumtype Deferred {
+    Todo
+}

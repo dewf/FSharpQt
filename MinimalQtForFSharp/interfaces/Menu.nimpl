@@ -1,0 +1,47 @@
+module Menu;
+
+import Object;
+import Common;
+import Widget;
+import Action;
+import Icon;
+
+namedbits SignalMask extends Widget.SignalMask {
+    AboutToHide,
+    AboutToShow,
+    Hovered,
+    Triggered
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Menu:
+    void aboutToHide();
+    void aboutToShow();
+    void hovered(Action.Handle action);
+    void triggered(Action.Handle action);
+}
+
+opaque Handle extends Widget.Handle {
+    void setIcon(Icon.Deferred icon);
+    void setSeparatorsCollapsible(bool state);
+    void setTearOffEnabled(bool state);
+    void setTitle(string title);
+    void setToolTipsVisible(bool visible);
+
+    void clear();
+    Action.Handle addSeparator();
+    void popup(Point p);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

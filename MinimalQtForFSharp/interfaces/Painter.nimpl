@@ -1,0 +1,53 @@
+module Painter;
+
+import Common;
+import PaintResources;
+import Enums;
+
+enum RenderHint {
+    Antialiasing = 0x01,
+    TextAntialiasing = 0x02,
+    SmoothPixmapTransform = 0x04,
+    VerticalSubpixelPositioning = 0x08,
+    LosslessImageRendering = 0x40,
+    NonCosmeticBrushPatterns = 0x80
+}
+
+flags RenderHintSet {
+    Antialiasing = 0x01,
+    TextAntialiasing = 0x02,
+    SmoothPixmapTransform = 0x04,
+    VerticalSubpixelPositioning = 0x08,
+    LosslessImageRendering = 0x40,
+    NonCosmeticBrushPatterns = 0x80
+}
+
+@nodispose
+opaque Handle {
+    void setRenderHint(RenderHint hint, bool on);
+    void setRenderHints(RenderHintSet hints, bool on);
+
+    void setPen(Pen pen);
+    void setBrush(Brush brush);
+    void setFont(Font font);
+    void drawText(Rect rect, Alignment align, string text);
+
+    void fillPath(PainterPath path, Brush brush);
+    void strokePath(PainterPath path, Pen pen);
+
+    void fillRect(Rect rect, Brush brush);
+    void fillRect(Rect rect, Color color);
+
+    void drawRect(Rect rect);
+    void drawRect(RectF rect);
+    void drawRect(int x, int y, int width, int height);
+
+    void drawEllipse(RectF rectangle);
+    void drawEllipse(Rect rectangle);
+    void drawEllipse(int x, int y, int width, int height);
+    void drawEllipse(PointF center, double rx, double ry);
+    void drawEllipse(Point center, int rx, int ry);
+
+    void drawPolyline(Array<PointF> points);
+    void drawPolyline(Array<Point> points);
+}

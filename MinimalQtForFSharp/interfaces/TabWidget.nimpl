@@ -1,0 +1,58 @@
+module TabWidget;
+
+import Object;
+import Common;
+import Icon;
+import Enums;
+import Widget;
+
+namedbits SignalMask extends Widget.SignalMask {
+    CurrentChanged,
+    TabBarClicked,
+    TabBarDoubleClicked,
+    TabCloseRequested
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // TabWidget:
+    void currentChanged(int index);
+    void tabBarClicked(int index);
+    void tabBarDoubleClicked(int index);
+    void tabCloseRequested(int index);
+}
+
+enum TabShape { Rounded, Triangular }
+enum TabPosition { North, South, West, East }
+
+opaque Handle extends Widget.Handle {
+    int count();                        // readonly
+    void setCurrentIndex(int index);
+    void setDocumentMode(bool state);
+    void setElideMode(TextElideMode mode);
+    void setIconSize(Size size);
+    void setMovable(bool state);
+    void setTabBarAutoHide(bool state);
+    void setTabPosition(TabPosition position);
+    void setTabShape(TabShape shape);
+    void setTabsClosable(bool state);
+    void setUsesScrollButtons(bool state);
+
+    void addTab(Widget.Handle page, string label);
+    void insertTab(int index, Widget.Handle page, string label);
+    Widget.Handle widgetAt(int index);                              // get page @ position (note: Qt method "widget", but that causes a C# name collision, hence "widgetAt")
+    void clear();                                                   // remove all widgets without destroying
+    void removeTab(int index);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

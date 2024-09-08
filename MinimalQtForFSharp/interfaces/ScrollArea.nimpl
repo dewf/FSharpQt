@@ -1,0 +1,43 @@
+module ScrollArea;
+
+import Object;
+import Common;
+import Icon;
+import Enums;
+import Widget;
+import AbstractScrollArea;
+
+namedbits SignalMask extends AbstractScrollArea.SignalMask {
+    // none extra
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Frame:
+    // (none)
+
+    // AbstractScrollArea:
+    // (none)
+
+    // ScrollArea:
+    // (none)
+}
+
+opaque Handle extends AbstractScrollArea.Handle {
+    void setAlignment(Alignment align);
+    void setWidgetResizable(bool resizable);
+
+    void setWidget(Widget.Handle widget);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

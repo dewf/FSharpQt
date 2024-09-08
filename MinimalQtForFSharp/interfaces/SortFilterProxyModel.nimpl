@@ -1,0 +1,96 @@
+module SortFilterProxyModel;
+
+import Object;
+import Enums;
+import AbstractItemModel;
+import AbstractProxyModel;
+import RegularExpression;
+import ModelIndex;
+import PersistentModelIndex;
+
+namedbits SignalMask extends AbstractProxyModel.SignalMask {
+    AutoAcceptChildRowsChanged,
+    FilterCaseSensitivityChanged,
+    FilterRoleChanged,
+    RecursiveFilteringEnabledChanged,
+    SortCaseSensitivityChanged,
+    SortLocaleAwareChanged,
+    SortRoleChanged
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // AbstractItemModel:
+    void columnsAboutToBeInserted(ModelIndex.Handle parent, int first, int last);
+    void columnsAboutToBeMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationColumn);
+    void columnsAboutToBeRemoved(ModelIndex.Handle parent, int first, int last);
+    void columnsInserted(ModelIndex.Handle parent, int first, int last);
+    void columnsMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationColumn);
+    void columnsRemoved(ModelIndex.Handle parent, int first, int last);
+    void dataChanged(ModelIndex.Handle topLeft, ModelIndex.Handle bottomRight, Array<ItemDataRole> roles);
+    void headerDataChanged(Orientation orientation, int first, int last);
+    void layoutAboutToBeChanged(Array<PersistentModelIndex.Handle> parents, LayoutChangeHint hint);
+    void layoutChanged(Array<PersistentModelIndex.Handle> parents, LayoutChangeHint hint);
+    void modelAboutToBeReset();
+    void modelReset();
+    void rowsAboutToBeInserted(ModelIndex.Handle parent, int start, int end);
+    void rowsAboutToBeMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationRow);
+    void rowsAboutToBeRemoved(ModelIndex.Handle parent, int first, int last);
+    void rowsInserted(ModelIndex.Handle parent, int first, int last);
+    void rowsMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationRow);
+    void rowsRemoved(ModelIndex.Handle parent, int first, int last);
+
+    // AbstractProxyModel:
+    void sourceModelChanged();
+
+    // SortFilterProxyModel:
+    void autoAcceptChildRowsChanged(bool autoAcceptChildRows);
+    void filterCaseSensitivityChanged(CaseSensitivity filterCaseSensitivity);
+    void filterRoleChanged(ItemDataRole filterRole);
+    void recursiveFilteringEnabledChanged(bool recursiveFilteringEnabled);
+    void sortCaseSensitivityChanged(CaseSensitivity sortCaseSensitivity);
+    void sortLocaleAwareChanged(bool sortLocaleAware);
+    void sortRoleChanged(ItemDataRole sortRole);
+}
+
+opaque Handle extends AbstractProxyModel.Handle {
+    void setAutoAcceptChildRows(bool state);
+    void setDynamicSortFilter(bool state);
+    void setFilterCaseSensitivity(CaseSensitivity sensitivity);
+    void setFilterKeyColumn(int filterKeyColumn); // -1 = all columns
+    void setFilterRegularExpression(RegularExpression.Deferred regex);
+    void setFilterRole(ItemDataRole filterRole);
+    void setSortLocaleAware(bool state);
+    void setRecursiveFilteringEnabled(bool enabled);
+    void setSortCaseSensitivity(CaseSensitivity sensitivity);
+    void setSortRole(ItemDataRole sortRole);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);
+
+// subclassing ==============================================
+
+opaque Interior extends Handle {
+    void invalidateColumnsFilter();
+    void invalidateRowsFilter();
+    void invalidateFilter();
+}
+
+namedbits MethodMask {
+    FilterAcceptsColumn,
+    FilterAcceptsRow,
+    LessThan
+}
+
+interface MethodDelegate {
+    bool filterAcceptsColumn(int sourceColumn, ModelIndex.Handle sourceParent);
+    bool filterAcceptsRow(int sourceRow, ModelIndex.Handle sourceParent);
+    bool lessThan(ModelIndex.Handle sourceLeft, ModelIndex.Handle sourceRight);
+}
+
+Interior createSubclassed(SignalHandler handler, MethodDelegate methodDelegate, MethodMask methodMask);

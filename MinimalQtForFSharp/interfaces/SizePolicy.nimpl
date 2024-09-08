@@ -1,0 +1,27 @@
+module SizePolicy;
+
+flags Policy {
+    // in Qt these are defined separately as "PolicyFlag"
+    // but our flags handling is still primitive so we just put them here
+    GrowFlag = 1,
+    ExpandFlag = 2,
+    ShrinkFlag = 4,
+    IgnoreFlag = 8,
+
+    // actual Policy flags:
+    Fixed = 0,
+    Minimum = GrowFlag,
+    Maximum = ShrinkFlag,
+    Preferred = GrowFlag | ShrinkFlag,
+    MinimumExpanding = GrowFlag | ExpandFlag,
+    Expanding = GrowFlag | ShrinkFlag | ExpandFlag,
+    Ignored = ShrinkFlag | GrowFlag | IgnoreFlag
+}
+
+opaque Handle;
+
+opaque OwnedHandle extends Handle;
+
+sumtype Deferred {
+    Todo
+}

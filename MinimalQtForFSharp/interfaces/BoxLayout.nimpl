@@ -1,0 +1,48 @@
+module BoxLayout;
+
+import Common;
+import Widget;
+import Layout;
+import Enums;
+import Object;
+
+namedbits SignalMask extends Layout.SignalMask {
+    // none extra
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Layout:
+    // (none)
+
+    // none of our own
+}
+
+
+enum Direction {
+    LeftToRight,
+    RightToLeft,
+    TopToBottom,
+    BottomToTop
+}
+
+opaque Handle extends Layout.Handle {
+    void setDirection(Direction dir);
+
+    // item adding:
+    void addSpacing(int size);
+    void addStretch(int stretch);
+    void addWidget(Widget.Handle widget);
+    void addWidget(Widget.Handle widget, int stretch);
+    void addWidget(Widget.Handle widget, int stretch, Alignment align);
+    void addLayout(Layout.Handle layout);
+    void addLayout(Layout.Handle layout, int stretch);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(Direction dir, SignalHandler handler);
+Handle createNoHandler(Direction dir);

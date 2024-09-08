@@ -1,0 +1,7 @@
+module StyleOptionViewItem;
+
+import StyleOption;
+
+// TODO: owned/unowned stuff?
+
+opaque Handle extends StyleOption.Handle;

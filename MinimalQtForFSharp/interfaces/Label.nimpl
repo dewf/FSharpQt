@@ -1,0 +1,51 @@
+module Label;
+
+import Object;
+import Common;
+import Frame;
+import Icon;
+import Enums;
+import Pixmap;
+
+namedbits SignalMask extends Frame.SignalMask {
+    LinkActivated,
+    LinkHovered
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Frame:
+    // (none)
+
+    // Label:
+    void linkActivated(string link);
+    void linkHovered(string link);
+}
+
+opaque Handle extends Frame.Handle {
+    void setAlignment(Alignment align);
+    bool hasSelectedText();
+    void setIndent(int indent);
+    void setMargin(int margin);
+    void setOpenExternalLinks(bool state);
+    void setPixmap(Pixmap.Deferred pixmap);
+    void setScaledContents(bool state);
+    string selectedText();
+    void setText(string text);
+    void setTextFormat(TextFormat format);
+    void setTextInteractionFlags(TextInteractionFlags interactionFlags);
+    void setWordWrap(bool state);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);
+Handle createNoHandler();

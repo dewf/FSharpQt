@@ -1,0 +1,38 @@
+module RadioButton;
+
+import Object;
+import Common;
+import Icon;
+import AbstractButton;
+
+namedbits SignalMask extends AbstractButton.SignalMask {
+    // none extra
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // AbstractButton:
+    void clicked(bool checkState);
+    void pressed();
+    void released();
+    void toggled(bool checkState);
+
+    // RadioButton:
+    // (none)
+}
+
+opaque Handle extends AbstractButton.Handle {
+    // no properties
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

@@ -1,0 +1,40 @@
+module PushButton;
+
+import Object;
+import Common;
+import Icon;
+import AbstractButton;
+
+namedbits SignalMask extends AbstractButton.SignalMask {
+    // none extra
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // AbstractButton:
+    void clicked(bool checkState);
+    void pressed();
+    void released();
+    void toggled(bool checkState);
+
+    // PushButton:
+    // (none)
+}
+
+opaque Handle extends AbstractButton.Handle {
+    void setAutoDefault(bool value);
+    void setDefault(bool value);
+    void setFlat(bool value);
+    
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

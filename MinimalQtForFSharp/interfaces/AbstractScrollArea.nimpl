@@ -1,0 +1,49 @@
+module AbstractScrollArea;
+
+import Object;
+import Common;
+import Icon;
+import Frame;
+
+namedbits SignalMask extends Frame.SignalMask {
+    // none of our own
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Frame:
+    // (none)
+
+    // AbstractScrollArea:
+    // (none)
+}
+
+enum SizeAdjustPolicy {
+    AdjustIgnored,
+    AdjustToContentsOnFirstShow,
+    AdjustToContents
+}
+
+enum ScrollBarPolicy {
+    ScrollBarAsNeeded,
+    ScrollBarAlwaysOff,
+    ScrollBarAlwaysOn
+}
+
+opaque Handle extends Frame.Handle {
+    void setHorizontalScrollBarPolicy(ScrollBarPolicy policy);
+    void setSizeAdjustPolicy(SizeAdjustPolicy policy);
+    void setVerticalScrollBarPolicy(ScrollBarPolicy policy);
+
+    // abstract class, so no signal mask setter
+}
+
+// no create

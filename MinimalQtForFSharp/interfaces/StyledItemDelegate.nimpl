@@ -1,0 +1,51 @@
+module StyledItemDelegate;
+
+import AbstractItemDelegate;
+import Object;
+import Common;
+import Widget;
+import AbstractItemModel;
+import ModelIndex;
+import StyleOptionViewItem;
+
+namedbits SignalMask extends AbstractItemDelegate.SignalMask {
+    // no extra signals
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // AbstractItemDelegate:
+    void closeEditor(Widget.Handle editor, EndEditHint hint);
+    void commitData(Widget.Handle editor);
+    void sizeHintChanged(ModelIndex.Handle index);
+
+    // StyledItemDelegate:
+    // (none)
+}
+
+opaque Handle extends AbstractItemDelegate.Handle {
+    // TODO: methods
+
+    void setSignalMask(SignalMask mask);
+}
+
+// subclass stuff ===============
+
+namedbits MethodMask {
+    // just supporting a few for now
+    CreateEditor,
+    SetEditorData,
+    SetModelData
+    // others: TODO
+}
+
+interface MethodDelegate {
+    Widget.Handle createEditor(Widget.Handle parent, StyleOptionViewItem.Handle option, ModelIndex.Handle index);
+    void setEditorData(Widget.Handle editor, ModelIndex.Handle index);
+    void setModelData(Widget.Handle editor, AbstractItemModel.Handle model, ModelIndex.Handle index);
+}
+
+Handle createdSubclassed(MethodDelegate methodDelegate, MethodMask methodMask, SignalHandler handler);

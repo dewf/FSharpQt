@@ -1,0 +1,3 @@
+module StyleOption;
+
+opaque Handle;

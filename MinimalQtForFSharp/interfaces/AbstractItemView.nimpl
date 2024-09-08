@@ -1,0 +1,109 @@
+module AbstractItemView;
+
+import Object;
+import Common;
+import Enums;
+import Icon;
+import AbstractScrollArea;
+import AbstractItemModel;
+import ModelIndex;
+import AbstractItemDelegate;
+
+namedbits SignalMask extends AbstractScrollArea.SignalMask {
+    Activated,
+    Clicked,
+    DoubleClickedBit, // 'Bit' to distinguish from a Qt-defined enum/flag
+    Entered,
+    IconSizeChanged,
+    Pressed,
+    ViewportEntered
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Frame:
+    // (none)
+
+    // AbstractScrollArea:
+    // (none)
+
+    // AbstractItemView:
+    void activated(ModelIndex.Handle index);
+    void clicked(ModelIndex.Handle index);
+    void doubleClicked(ModelIndex.Handle index);
+    void entered(ModelIndex.Handle index);
+    void iconSizeChanged(Size size);
+    void pressed(ModelIndex.Handle index);
+    void viewportEntered();
+}
+
+enum DragDropMode {
+    NoDragDrop,
+    DragOnly,
+    DropOnly,
+    DragDrop,
+    InternalMove
+}
+
+flags EditTriggers {
+    NoEditTriggers = 0,
+    CurrentChanged = 1,
+    DoubleClicked = 2,
+    SelectedClicked = 4,
+    EditKeyPressed = 8,
+    AnyKeyPressed = 16,
+    AllEditTriggers = 31
+}
+
+enum ScrollMode {
+    ScrollPerItem,
+    ScrollPerPixel
+}
+
+enum SelectionBehavior {
+    SelectItems,
+    SelectRows,
+    SelectColumns
+}
+
+enum SelectionMode {
+    NoSelection,
+    SingleSelection,
+    MultiSelection,
+    ExtendedSelection,
+    ContiguousSelection
+}
+
+@nodispose
+opaque Handle extends AbstractScrollArea.Handle {
+    void setAlternatingRowColors(bool state);
+    void setAutoScroll(bool state);
+    void setAutoScrollMargin(int margin);
+    void setDefaultDropAction(DropAction action);
+    void setDragDropMode(DragDropMode mode);
+    void setDragDropOverwriteMode(bool mode);
+    void setDragEnabled(bool enabled);
+    void setEditTriggers(EditTriggers triggers);
+    void setHorizontalScrollMode(ScrollMode mode);
+    void setIconSize(Size size);
+    void setSelectionBehavior(SelectionBehavior behavior);
+    void setSelectionMode(SelectionMode mode);
+    void setDropIndicatorShown(bool state);
+    void setTabKeyNavigation(bool state);
+    void setTextElideMode(TextElideMode mode);
+    void setVerticalScrollMode(ScrollMode mode);
+
+    void setModel(AbstractItemModel.Handle model);
+
+    void setItemDelegate(AbstractItemDelegate.Handle itemDelegate);
+    void setItemDelegateForColumn(int column, AbstractItemDelegate.Handle itemDelegate);
+    void setItemDelegateForRow(int row, AbstractItemDelegate.Handle itemDelegate);
+}

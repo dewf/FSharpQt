@@ -1,0 +1,176 @@
+module PaintResources;
+
+import Common;
+
+@nodispose
+opaque Color {
+    static {
+        enum Constant {
+            Black,
+            White,
+            DarkGray,
+            Gray,
+            LightGray,
+            Red,
+            Green,
+            Blue,
+            Cyan,
+            Magenta,
+            Yellow,
+            DarkRed,
+            DarkGreen,
+            DarkBlue,
+            DarkCyan,
+            DarkMagenta,
+            DarkYellow,
+            Transparent
+        }
+        sumtype Deferred {
+            FromConstant(Color.Constant name),
+            FromRGB(int r, int g, int b),
+            FromRGBA(int r, int g, int b, int a),
+            FromRGBF(float r, float g, float b),
+            FromRGBAF(float r, float g, float b, float a)
+        }
+    }
+}
+
+@nodispose
+opaque Gradient {
+    void setColorAt(double location, Color color);
+}
+
+@nodispose
+opaque RadialGradient extends Gradient;
+
+@nodispose
+opaque LinearGradient extends Gradient;
+
+@nodispose
+opaque Brush {
+    static {
+        enum Style {
+            NoBrush = 0,
+            SolidPattern = 1,
+            Dense1Pattern = 2,
+            Dense2Pattern = 3,
+            Dense3Pattern = 4,
+            Dense4Pattern = 5,
+            Dense5Pattern = 6,
+            Dense6Pattern = 7,
+            Dense7Pattern = 8,
+            HorPattern = 9,
+            VerPattern = 10,
+            CrossPattern = 11,
+            BDiagPattern = 12,
+            FDiagPattern = 13,
+            DiagCrossPattern = 14,
+            LinearGradientPattern = 15,
+            ConicalGradientPattern = 17,
+            RadialGradientPattern = 16,
+            TexturePattern = 24
+        }
+    }
+}
+
+@nodispose
+opaque Pen {
+    static {
+        enum Style {
+            NoPen,
+            SolidLine,
+            DashLine,
+            DotLine,
+            DashDotLine,
+            DashDotDotLine,
+            CustomDashLine // uses .setDashPattern() elsewhere?
+        }
+        enum CapStyle {
+            Flat,
+            Square,
+            Round
+        }
+        enum JoinStyle {
+            Miter,
+            Bevel,
+            Round,
+            SvgMiter
+        }
+    }
+    void setBrush(Brush brush);
+    void setWidth(int width);
+    void setWidth(double width);
+}
+
+@nodispose
+opaque Font {
+    static {
+        enum Weight {
+            Thin = 100,
+            ExtraLight = 200,
+            Light = 300,
+            Normal = 400,
+            Medium = 500,
+            DemiBold = 600,
+            Bold = 700,
+            ExtraBold = 800,
+            Black = 900
+        }
+    }
+}
+
+@nodispose
+opaque PainterPath {
+    void moveTo(PointF p);
+    void moveTo(double x, double y);
+    void lineto(PointF p);
+    void lineTo(double x, double y);
+    
+    void cubicTo(PointF c1, PointF c2, PointF endPoint);
+    void cubicTo(double c1X, double c1Y, double c2X, double c2Y, double endPointX, double endPointY);
+}
+
+@nodispose
+opaque PainterPathStroker {
+    void setWidth(double width);
+    void setJoinStyle(Pen.JoinStyle style);
+    void setCapStyle(Pen.CapStyle style);
+
+    void setDashPattern(Pen.Style style);
+    void setDashPattern(Array<double> dashPattern);
+
+    PainterPath createStroke(PainterPath path);
+}
+
+opaque Handle {
+    Color createColor(Color.Constant name);
+    Color createColor(int r, int g, int b);
+    Color createColor(int r, int g, int b, int a);
+    Color createColor(float r, float g, float b);
+    Color createColor(float r, float g, float b, float a);
+
+    RadialGradient createRadialGradient(Common.PointF center, double radius);
+    LinearGradient createLinearGradient(Common.PointF start, Common.PointF stop);
+    LinearGradient createLinearGradient(double x1, double y1, double x2, double y2);
+
+    Brush createBrush(Brush.Style style);
+    Brush createBrush(Color color); // + BrushStyle in the future
+    Brush createBrush(Gradient gradient);
+
+    Pen createPen();
+    Pen createPen(Pen.Style style);
+    Pen createPen(Color color);
+    Pen createPen(Brush brush, double width, Pen.Style style, Pen.CapStyle cap, Pen.JoinStyle join);
+
+    Font createFont(string family, int pointSize);
+    Font createFont(string family, int pointSize, Font.Weight weight);
+    Font createFont(string family, int pointSize, Font.Weight weight, bool italic);
+
+    PainterPath createPainterPath();
+    PainterPathStroker createPainterPathStroker();
+
+    // will be invoked by PainterPathStroker.createStroke, because we need to track the created path (add to internal vector)
+    PainterPath createStrokeInternal(PainterPathStroker stroker, PainterPath path);
+}
+
+Handle create();

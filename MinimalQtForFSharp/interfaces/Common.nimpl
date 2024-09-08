@@ -1,0 +1,30 @@
+module Common;
+
+struct Point {
+    int x;
+    int y;
+}
+
+struct PointF {
+    double x;
+    double y;
+}
+
+struct Size {
+    int width;
+    int height;
+}
+
+struct Rect {
+    int x;
+    int y;
+    int width;
+    int height;
+}
+
+struct RectF {
+    double x;
+    double y;
+    double width;
+    double height;
+}

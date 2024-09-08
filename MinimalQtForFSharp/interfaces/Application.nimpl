@@ -1,0 +1,18 @@
+module Application;
+
+opaque Handle {
+    // from QGuiApplication:
+    void setQuitOnLastWindowClosed(bool state);
+}
+
+// so far all the "methods" are static ...
+void setStyle(string name);
+int exec();
+void quit();
+Array<string> availableStyles();
+
+Handle create(Array<string> args);
+
+
+delegate void MainThreadFunc();
+void executeOnMainThread(MainThreadFunc func);

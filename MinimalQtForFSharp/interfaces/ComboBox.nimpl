@@ -1,0 +1,86 @@
+module ComboBox;
+
+import Object;
+import Common;
+import Enums;
+import Widget;
+import Variant;
+import AbstractItemModel;
+import Icon;
+
+namedbits SignalMask extends Widget.SignalMask {
+    Activated,
+    CurrentIndexChanged,
+    CurrentTextChanged,
+    EditTextChanged,
+    Highlighted,
+    TextActivated,
+    TextHighlighted
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // ComboBox:
+    void activated(int index);
+    void currentIndexChanged(int index);
+    void currentTextChanged(string text);
+    void editTextChanged(string text);
+    void highlighted(int index);
+    void textActivated(string text);
+    void textHighlighted(string text);
+}
+
+enum InsertPolicy {
+    NoInsert,
+    InsertAtTop,
+    InsertAtCurrent,
+    InsertAtBottom,
+    InsertAfterCurrent,
+    InsertBeforeCurrent,
+    InsertAlphabetically
+}
+
+enum SizeAdjustPolicy {
+    AdjustToContents,
+    AdjustToContentsOnFirstShow,
+    AdjustToMinimumContentsLengthWithIcon
+}
+
+opaque Handle extends Widget.Handle {
+    int count();                                        // read-only
+    Variant.OwnedHandle currentData();                  // read-only
+    Variant.OwnedHandle currentData(ItemDataRole role); // read-only
+    int currentIndex();
+    void setCurrentIndex(int index);
+    void setCurrentText(string text);
+    void setDuplicatesEnabled(bool enabled);
+    void setEditable(bool editable);
+    void setFrame(bool hasFrame);
+    void setIconSize(Size size);
+    void setInsertPolicy(InsertPolicy policy);
+    void setMaxCount(int count);
+    void setMaxVisibleItems(int count);
+    void setMinimumContentsLength(int length);
+    void setModelColumn(int column);
+    void setPlaceholderText(string text);
+    void setSizeAdjustPolicy(SizeAdjustPolicy policy);
+
+    void clear();
+    void addItem(string text, Variant.Deferred userData);
+    void addItem(Icon.Deferred icon, string text, Variant.Deferred userData);
+    void addItems(Array<string> texts);
+    void setModel(AbstractItemModel.Handle model);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);
+Handle downcastFrom(Widget.Handle widget);

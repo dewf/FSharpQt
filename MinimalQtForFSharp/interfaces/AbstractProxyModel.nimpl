@@ -1,0 +1,53 @@
+module AbstractProxyModel;
+
+import Object;
+import Enums;
+import AbstractItemModel;
+import ModelIndex;
+import PersistentModelIndex;
+
+namedbits SignalMask extends AbstractItemModel.SignalMask {
+    SourceModelChanged
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // AbstractItemModel:
+    void columnsAboutToBeInserted(ModelIndex.Handle parent, int first, int last);
+    void columnsAboutToBeMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationColumn);
+    void columnsAboutToBeRemoved(ModelIndex.Handle parent, int first, int last);
+    void columnsInserted(ModelIndex.Handle parent, int first, int last);
+    void columnsMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationColumn);
+    void columnsRemoved(ModelIndex.Handle parent, int first, int last);
+    void dataChanged(ModelIndex.Handle topLeft, ModelIndex.Handle bottomRight, Array<ItemDataRole> roles);
+    void headerDataChanged(Orientation orientation, int first, int last);
+    void layoutAboutToBeChanged(Array<PersistentModelIndex.Handle> parents, LayoutChangeHint hint);
+    void layoutChanged(Array<PersistentModelIndex.Handle> parents, LayoutChangeHint hint);
+    void modelAboutToBeReset();
+    void modelReset();
+    void rowsAboutToBeInserted(ModelIndex.Handle parent, int start, int end);
+    void rowsAboutToBeMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationRow);
+    void rowsAboutToBeRemoved(ModelIndex.Handle parent, int first, int last);
+    void rowsInserted(ModelIndex.Handle parent, int first, int last);
+    void rowsMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationRow);
+    void rowsRemoved(ModelIndex.Handle parent, int first, int last);
+
+    // AbstractProxyModel:
+    void sourceModelChanged();
+}
+
+@nodispose
+opaque Handle extends AbstractItemModel.Handle {
+    AbstractItemModel.Handle sourceModel();
+    void setSourceModel(AbstractItemModel.Handle sourceModel);
+
+    // owned, must be released! (heap allocated copy)
+    ModelIndex.OwnedHandle mapToSource(ModelIndex.Deferred proxyIndex);
+
+    // abstract, no signal mask setter
+}
+
+// abstract, no create()

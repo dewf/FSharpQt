@@ -1,0 +1,44 @@
+module Layout;
+
+import Object;
+
+namedbits SignalMask extends Object.SignalMask {
+    // none extra
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Handle obj);
+    void objectNameChanged(string objectName);
+
+    // none of our own
+}
+
+
+enum SizeConstraint {
+    SetDefaultConstraint,
+    SetNoConstraint,
+    SetMinimumSize,
+    SetFixedSize,
+    SetMaximumSize,
+    SetMinAndMaxSize
+}
+
+// TODO: inherit from LayoutItem instead?
+opaque Handle extends Object.Handle {
+    void setEnabled(bool enabled);
+    void setSpacing(int spacing);
+    void setContentsMargins(int left, int top, int right, int bottom);
+    void setSizeConstraint(SizeConstraint constraint);
+
+    // custom to remove all widgets
+    void removeAll();
+
+    // not really sure what these do yet ...
+    void activate();
+    void update();
+
+    // no setsignalmask because abstract
+}
+
+// no create because abstract

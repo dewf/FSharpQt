@@ -1,0 +1,103 @@
+module AbstractListModel;
+
+import Object;
+import Enums;
+import AbstractItemModel;
+import Variant;
+import ModelIndex;
+import PersistentModelIndex;
+
+namedbits SignalMask extends AbstractItemModel.SignalMask {
+    // none extra
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // AbstractItemModel:
+    void columnsAboutToBeInserted(ModelIndex.Handle parent, int first, int last);
+    void columnsAboutToBeMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationColumn);
+    void columnsAboutToBeRemoved(ModelIndex.Handle parent, int first, int last);
+    void columnsInserted(ModelIndex.Handle parent, int first, int last);
+    void columnsMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationColumn);
+    void columnsRemoved(ModelIndex.Handle parent, int first, int last);
+    void dataChanged(ModelIndex.Handle topLeft, ModelIndex.Handle bottomRight, Array<ItemDataRole> roles);
+    void headerDataChanged(Orientation orientation, int first, int last);
+    void layoutAboutToBeChanged(Array<PersistentModelIndex.Handle> parents, LayoutChangeHint hint);
+    void layoutChanged(Array<PersistentModelIndex.Handle> parents, LayoutChangeHint hint);
+    void modelAboutToBeReset();
+    void modelReset();
+    void rowsAboutToBeInserted(ModelIndex.Handle parent, int start, int end);
+    void rowsAboutToBeMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationRow);
+    void rowsAboutToBeRemoved(ModelIndex.Handle parent, int first, int last);
+    void rowsInserted(ModelIndex.Handle parent, int first, int last);
+    void rowsMoved(ModelIndex.Handle sourceParent, int sourceStart, int sourceEnd, ModelIndex.Handle destinationParent, int destinationRow);
+    void rowsRemoved(ModelIndex.Handle parent, int first, int last);
+
+    // AbstractListModel:
+    // (none)
+}
+
+// confusion reigns re: @nodipose on this, see project notes
+// (as it is, the @nodispose feature needs work for inheritance scenarios)
+opaque Handle extends AbstractItemModel.Handle {
+    void setSignalMask(SignalMask mask);
+}
+
+// subclass stuff ==========================================================
+
+opaque Interior extends Handle { // this opaque allows the method delegate to call internal methods as if it's a direct subclass
+    // signal emission
+    void emitDataChanged(ModelIndex.Deferred topLeft, ModelIndex.Deferred bottomRight, Array<ItemDataRole> roles);
+    void emitHeaderDataChanged(Orientation orientation, int first, int last);
+
+    // for access to protected stuff from MethodDelegate
+    void beginInsertRows(ModelIndex.Deferred parent, int first, int last);
+    void endInsertRows();
+
+    void beginRemoveRows(ModelIndex.Deferred parent, int first, int last);
+    void endRemoveRows();
+
+    void beginResetModel();
+    void endResetModel();
+}
+
+flags ItemFlags {
+    NoItemFlags = 0,
+    ItemIsSelectable = 1,
+    ItemIsEditable = 2,
+    ItemIsDragEnabled = 4,
+    ItemIsDropEnabled = 8,
+    ItemIsUserCheckable = 16,
+    ItemIsEnabled = 32,
+    ItemIsAutoTristate = 64,
+    ItemNeverHasChildren = 128,
+    ItemIsUserTristate = 256
+}
+
+flags MethodMask {
+    // required, so not in mask:
+    // RowCount
+    // Data
+
+    // optional:
+    HeaderData = 1,
+    Flags = 1 << 1,
+    SetData = 1 << 2,
+    ColumnCount = 1 << 3    // from the docs it seems like AbstractListModel is not supposed to do multi-column stuff, but why not? seems to work (with a tree view)
+}
+
+interface MethodDelegate {
+    int rowCount(ModelIndex.Handle parent);
+    Variant.Deferred data(ModelIndex.Handle index, ItemDataRole role);
+    
+    // "optional" (we still have to implement, but only active if mask flag is set)
+    Variant.Deferred headerData(int section, Orientation orientation, ItemDataRole role);
+    ItemFlags getFlags(ModelIndex.Handle index, ItemFlags baseFlags);
+    bool setData(ModelIndex.Handle index, Variant.Handle value, ItemDataRole role);
+    int columnCount(ModelIndex.Handle parent);
+}
+
+Interior createSubclassed(SignalHandler handler, MethodDelegate methodDelegate, MethodMask methodMask);

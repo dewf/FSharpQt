@@ -1,0 +1,95 @@
+module FileDialog;
+
+import Object;
+import Common;
+import Icon;
+import Dialog;
+import Widget;
+
+namedbits SignalMask extends Dialog.SignalMask {
+    CurrentChanged,
+    CurrentUrlChanged,
+    DirectoryEntered,
+    DirectoryUrlEntered,
+    FileSelected,
+    FilesSelected,
+    FilterSelected,
+    UrlSelected,
+    UrlsSelected
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Dialog:
+    void accepted();
+    void finished(int result);
+    void rejected();
+
+    // FileDialog:
+    void currentChanged(string path);
+    void currentUrlChanged(string url);
+    void directoryEntered(string dir);
+    void directoryUrlEntered(string url);
+    void fileSelected(string file);
+    void filesSelected(Array<string> selected);
+    void filterSelected(string filter);
+    void urlSelected(string url);
+    void urlsSelected(Array<string> urls);
+}
+
+enum FileMode {
+    AnyFile,
+    ExistingFile,
+    Directory,
+    ExistingFiles
+}
+
+enum ViewMode {
+    Detail,
+    List
+}
+
+enum AcceptMode {
+    Open,
+    Save
+}
+
+flags Options {
+    ShowDirsOnly                = 0x00000001,
+    DontResolveSymlinks         = 0x00000002,
+    DontConfirmOverwrite        = 0x00000004,
+    DontUseNativeDialog         = 0x00000008,
+    ReadOnly                    = 0x00000010,
+    HideNameFilterDetails       = 0x00000020,
+    DontUseCustomDirectoryIcons = 0x00000040
+}
+
+opaque Handle extends Dialog.Handle {
+    // properties
+    void setAcceptMode(AcceptMode mode);
+    void setDefaultSuffix(string suffix);
+    void setFileMode(FileMode mode);
+    void setOptions(Options opts);
+    void setSupportedSchemes(Array<string> schemes);
+    void setViewMode(ViewMode mode);
+    
+    // others:
+    void setNameFilter(string filter);
+    void setNameFilters(Array<string> filters);
+    void setMimeTypeFilters(Array<string> filters);
+    void setDirectory(string dir);
+    void selectFile(string file);
+    Array<string> selectedFiles();
+    
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(Widget.Handle parent, SignalHandler handler);

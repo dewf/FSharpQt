@@ -1,0 +1,65 @@
+module TreeView;
+
+import Object;
+import Common;
+import Icon;
+import Enums;
+import AbstractItemView;
+import ModelIndex;
+
+namedbits SignalMask extends AbstractItemView.SignalMask {
+    Collapsed,
+    Expanded
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Frame:
+    // (none)
+
+    // AbstractScrollArea:
+    // (none)
+
+    // AbstractItemView:
+    void activated(ModelIndex.Handle index);
+    void clicked(ModelIndex.Handle index);
+    void doubleClicked(ModelIndex.Handle index);
+    void entered(ModelIndex.Handle index);
+    void iconSizeChanged(Size size);
+    void pressed(ModelIndex.Handle index);
+    void viewportEntered();
+
+    // TreeView:
+    void collapsed(ModelIndex.Handle index);
+    void expanded(ModelIndex.Handle index);
+}
+
+opaque Handle extends AbstractItemView.Handle {
+    // properties:
+    void setAllColumnsShowFocus(bool value);
+    void setAnimated(bool value);
+    void setAutoExpandDelay(int value);
+    void setExpandsOnDoubleClick(bool value);
+    void setHeaderHidden(bool value);
+    void setIndentation(int value);
+    void setItemsExpandable(bool value);
+    void setRootIsDecorated(bool value);
+    void setSortingEnabled(bool value);
+    void setUniformRowHeights(bool value);
+    void setWordWrap(bool value);
+
+    // methods:
+    void resizeColumnToContents(int column);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

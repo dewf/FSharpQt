@@ -1,0 +1,75 @@
+module Action;
+
+import Object;
+import KeySequence;
+import Icon;
+import Enums;
+
+namedbits SignalMask extends Object.SignalMask {
+    Changed,
+    CheckableChanged,
+    EnabledChanged,
+    Hovered,
+    Toggled,
+    Triggered,
+    VisibleChanged
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Action:
+    void changed();
+    void checkableChanged(bool checkable);
+    void enabledChanged(bool enabled);
+    void hovered();
+    void toggled(bool checked_);
+    void triggered(bool checked_);
+    void visibleChanged();
+}
+
+enum MenuRole { 
+    NoRole = 0, 
+    TextHeuristicRole, 
+    ApplicationSpecificRole, 
+    AboutQtRole, 
+    AboutRole, 
+    PreferencesRole, 
+    QuitRole
+}
+
+enum Priority { 
+    LowPriority = 0, 
+    NormalPriority = 128, 
+    HighPriority = 256
+}
+
+opaque Handle extends Object.Handle {
+    void setAutoRepeat(bool state);
+    void setCheckable(bool checkable);
+    void setChecked(bool checked_);
+    void setEnabled(bool enabled);
+    // void setFont(Font.Deferred font); // TODO
+    void setIcon(Icon.Deferred icon);
+    void setIconText(string text);
+    void setIconVisibleInMenu(bool visible);
+    void setMenuRole(MenuRole role);
+    void setPriority(Priority priority);
+    void setShortcut(KeySequence.Deferred shortcut);
+    void setShortcutContext(Enums.ShortcutContext context);
+    void setShortcutVisibleInContextMenu(bool visible);
+    void setStatusTip(string tip);
+    void setText(string text);
+    void setToolTip(string tip);
+    void setVisible(bool visible);
+    void setWhatsThis(string text);
+    // end properties
+
+    void setSeparator(bool state);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(Object.Handle owner, SignalHandler handler);

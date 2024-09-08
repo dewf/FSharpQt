@@ -1,0 +1,46 @@
+module GridLayout;
+
+import Common;
+import Widget;
+import Layout;
+import Enums;
+import Object;
+
+namedbits SignalMask extends Layout.SignalMask {
+    // none extra
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Layout:
+    // (none)
+
+    // none of our own
+}
+
+
+opaque Handle extends Layout.Handle {
+    void setHorizontalSpacing(int value);
+    void setVerticalSpacing(int value);
+
+    void addWidget(Widget.Handle widget, int row, int col);
+    void addWidget(Widget.Handle widget, int row, int col, Alignment align);
+    void addWidget(Widget.Handle widget, int row, int col, int rowSpan, int colSpan);
+    void addWidget(Widget.Handle widget, int row, int col, int rowSpan, int colSpan, Alignment align);
+    void addLayout(Layout.Handle layout, int row, int col);
+    void addLayout(Layout.Handle layout, int row, int col, Alignment align);
+    void addLayout(Layout.Handle layout, int row, int col, int rowSpan, int colSpan);
+    void addLayout(Layout.Handle layout, int row, int col, int rowSpan, int colSpan, Alignment align);
+
+    void setRowMinimumHeight(int row, int minHeight);
+    void setRowStretch(int row, int stretch);
+    void setColumnMinimumWidth(int column, int minWidth);
+    void setColumnStretch(int column, int stretch);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

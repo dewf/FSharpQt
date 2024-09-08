@@ -1,0 +1,210 @@
+module Widget;
+
+import Object;
+import Common;
+import Layout;
+import Painter;
+import Icon;
+import Enums;
+import Action;
+import Region;
+import Cursor;
+import SizePolicy;
+
+int WIDGET_SIZE_MAX;   // pass-through of QWIDGETSIZE_MAX
+
+namedbits SignalMask extends Object.SignalMask {
+    CustomContextMenuRequested,
+    WindowIconChanged,
+    WindowTitleChanged
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+}
+
+opaque Handle extends Object.Handle {
+    // properties
+    void setAcceptDrops(bool state);
+    void setAccessibleDescription(string desc);
+    void setAccessibleName(string name);
+    void setAutoFillBackground(bool state);
+    void setBaseSize(Size size);
+    Rect childrenRect();
+    Region.OwnedHandle childrenRegion();
+    void setContextMenuPolicy(ContextMenuPolicy policy);
+    Cursor.OwnedHandle getCursor();
+    void setEnabled(bool enabled);
+    bool hasFocus();
+    void setFocusPolicy(FocusPolicy policy);
+
+    // TODO: need to fix the PaintResources font stuff so it doesn't collide, and then they need to be merged in the future
+    // void setFont(Font.Deferred font);
+
+    Rect frameGeometry();
+    Size frameSize();
+    bool isFullscreen();
+    void setGeometry(Rect rect);
+    void setGeometry(int x, int y, int width, int height);
+    int height();
+    void setInputMethodHints(InputMethodHints hints);
+    bool isActiveWindow();
+    void setLayoutDirection(LayoutDirection direction);
+
+    // TODO:
+    // locale : QLocale
+
+    bool isMaximized();
+    void setMaximumHeight(int height);
+    void setMaximumWidth(int width);
+    void setMaximumSize(Size size);
+    bool isMinimized();
+    void setMinimumHeight(int height);
+    void setMinimumSize(Size size);
+    Size minimumSizeHint();
+    void setMinimumWidth(int width);
+    bool isModal();
+    void setMouseTracking(bool state);
+    Rect normalGeometry();
+
+    // TODO:
+    // palette : QPalette
+
+    void move(Point p);
+    void move(int x, int y);
+    Rect rect();
+    void resize(Size size);
+    void resize(int width, int height);
+    Size sizeHint();
+    void setSizeIncrement(Size size);
+    void setSizeIncrement(int w, int h);
+    void setSizePolicy(SizePolicy.Deferred policy);
+    void setSizePolicy(SizePolicy.Policy hPolicy, SizePolicy.Policy vPolicy);
+    void setStatusTip(string tip);
+    void setStyleSheet(string styles);
+    void setTabletTracking(bool state);
+    void setToolTip(string tip);
+    void setToolTipDuration(int duration);
+    void setUpdatesEnabled(bool enabled);
+    void setVisible(bool visible);
+    void setWhatsThis(string text);
+    int width();
+    void setWindowFilePath(string path);
+    void setWindowFlags(WindowFlags flags_);
+    void setWindowIcon(Icon.Deferred icon);
+    void setWindowModality(WindowModality modality);
+    void setWindowModified(bool modified);
+    void setWindowOpacity(double opacity);
+    void setWindowTitle(string title);
+    int x();
+    int y();
+    // end properties
+
+    void addAction(Action.Handle action);
+    
+    void setParent(Handle parent);
+    Handle getWindow();
+
+    void updateGeometry();
+    void adjustSize();
+
+    void setFixedWidth(int width);
+    void setFixedHeight(int height);
+    void setFixedSize(int width, int height);
+
+    void show();
+    void hide();
+
+    void update();
+    void update(int x, int y, int width, int height);
+    void update(Rect rect);
+
+    void setLayout(Layout.Handle layout);
+    Layout.Handle getLayout();
+
+    Point mapToGlobal(Point p);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);
+Handle createNoHandler();
+
+// SUBCLASSING ===========================================================
+
+@nodispose
+opaque Event {
+    void accept();
+    void ignore();
+}
+
+@nodispose // owned by Qt once used
+opaque MimeData {
+    Array<string> formats();
+    bool hasFormat(string mimeType);
+    
+    string text();
+    void setText(string text);
+
+    Array<string> urls();
+    void setUrls(Array<string> urls);
+}
+MimeData createMimeData();
+
+@nodispose // owned by Qt once used
+opaque Drag {
+    void setMimeData(MimeData data);
+    DropAction exec(DropActionSet supportedActions, DropAction defaultAction);
+}
+Drag createDrag(Handle parent);  // the parent will be responsible for cleanup (and neither do we own the MimeData assigned)
+
+@nodispose // not owned, temporary wrapper for method delegate
+opaque DragMoveEvent extends Event {
+    DropAction proposedAction();
+    void acceptProposedAction();
+    DropActionSet possibleActions();
+
+    // slight variation on the real methods:
+    void acceptDropAction(DropAction action); // will internally call either .acceptProposedAction or .accept() after setting drop action
+}
+
+// sadly client will have to implement all of these, BUT empty methods / returning default values will be OK
+// because only those included in the "method mask" will actually be invoked
+
+flags MethodMask {
+    PaintEvent = 1 << 0,
+    MousePressEvent = 1 << 1,
+    MouseMoveEvent = 1 << 2,
+    MouseReleaseEvent = 1 << 3,
+    EnterEvent = 1 << 4,
+    LeaveEvent = 1 << 5,
+    SizeHint = 1 << 6,
+    ResizeEvent = 1 << 7,
+
+    DropEvents = 1 << 8      // dragenter, dragmove, dragleave
+}
+
+interface MethodDelegate {
+    Size sizeHint();
+    void paintEvent(Painter.Handle painter, Rect updateRect);
+    void mousePressEvent(Point pos, MouseButton button, Modifiers modifiers);
+    void mouseMoveEvent(Point pos, MouseButtonSet buttons, Modifiers modifiers);
+    void mouseReleaseEvent(Point pos, MouseButton button, Modifiers modifiers);
+    void enterEvent(Point pos);
+    void leaveEvent();
+    void resizeEvent(Size oldSize, Size newSize);
+
+    // dragMove does double duty, also an 'enter' event - check isEnterEvent flag
+    void dragMoveEvent(Point pos, Modifiers modifiers, MimeData mimeData, DragMoveEvent moveEvent, bool isEnterEvent);
+    void dragLeaveEvent();
+    void dropEvent(Point pos, Modifiers modifiers, MimeData mimeData, DropAction action);
+}
+
+Handle createSubclassed(MethodDelegate methodDelegate, MethodMask methodMask, SignalHandler handler);

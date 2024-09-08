@@ -1,0 +1,17 @@
+module RegularExpression;
+
+flags PatternOptions {
+    NoPatternOption                = 0x0000,
+    CaseInsensitiveOption          = 0x0001,
+    DotMatchesEverythingOption     = 0x0002,
+    MultilineOption                = 0x0004,
+    ExtendedPatternSyntaxOption    = 0x0008,
+    InvertedGreedinessOption       = 0x0010,
+    DontCaptureOption              = 0x0020,
+    UseUnicodePropertiesOption     = 0x0040
+}
+
+sumtype Deferred {
+    Empty,                                        // empty QString()
+    Regex(string pattern, PatternOptions opts)
+}

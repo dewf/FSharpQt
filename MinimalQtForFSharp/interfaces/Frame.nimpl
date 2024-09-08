@@ -1,0 +1,58 @@
+module Frame;
+
+import Object;
+import Common;
+import Icon;
+import Widget;
+
+namedbits SignalMask extends Widget.SignalMask {
+    // none of our own
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Frame:
+    // (none)
+}
+
+enum Shape {
+    NoFrame = 0,
+    Box = 0x1,
+    Panel = 0x2,
+    StyledPanel = 0x6,
+    HLine = 0x4,
+    VLine = 0x5,
+    WinPanel = 0x3
+}
+
+enum Shadow {
+    Plain = 0x10,
+    Raised = 0x20,
+    Sunken = 0x30
+}
+
+// enum Style
+// Qt's frame style is just a bitwise-OR between shape and shadow
+
+opaque Handle extends Widget.Handle {
+    void setFrameRect(Rect rect);
+    void setFrameShadow(Shadow shadow);
+    void setFrameShape(Shape shape);
+    int frameWidth();
+    void setLineWidth(int width);
+    void setMidLineWidth(int width);
+
+    void setFrameStyle(Shape shape, Shadow shadow);
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

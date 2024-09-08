@@ -1,0 +1,78 @@
+module PlainTextEdit;
+
+import Object;
+import Common;
+import Icon;
+import Enums;
+import AbstractScrollArea;
+import TextOption;
+
+namedbits SignalMask extends AbstractScrollArea.SignalMask {
+    BlockCountChanged,
+    CopyAvailable,
+    CursorPositionChanged,
+    ModificationChanged,
+    RedoAvailable,
+    SelectionChanged,
+    TextChanged,
+    UndoAvailable,
+    UpdateRequest
+}
+
+interface SignalHandler {
+    // from Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // Frame:
+    // (none)
+
+    // AbstractScrollArea:
+    // (none)
+
+    // PlainTextEdit:
+    void blockCountChanged(int newBlockCount);
+    void copyAvailable(bool yes);
+    void cursorPositionChanged();
+    void modificationChanged(bool changed);
+    void redoAvailable(bool available);
+    void selectionChanged();
+    void textChanged();
+    void undoAvailable(bool available);
+    void updateRequest(Rect rect, int dy);
+}
+
+enum LineWrapMode {
+    NoWrap,
+    WidgetWidth
+}
+
+opaque Handle extends AbstractScrollArea.Handle {
+    void setBackgroundVisible(bool visible);
+    int blockCount();                           // readonly
+    void setCenterOnScroll(bool state);
+    void setCursorWidth(int width);
+    void setDocumentTitle(string title);
+    void setLineWrapMode(LineWrapMode mode);
+    void setMaximumBlockCount(int count);
+    void setOverwriteMode(bool overwrite);
+    void setPlaceholderText(string text);
+    void setPlainText(string text);
+    void setReadOnly(bool state);
+    void setTabChangesFocus(bool state);
+    void setTabStopDistance(double distance);
+    void setTextInteractionFlags(TextInteractionFlags tiFlags);
+    void setUndoRedoEnabled(bool enabled);
+    void setWordWrapMode(TextOption.WrapMode mode);
+    
+    string toPlainText();
+
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);

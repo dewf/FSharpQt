@@ -1,0 +1,80 @@
+module LineEdit;
+
+import Object;
+import Widget;
+import Common;
+import Icon;
+import Enums;
+
+namedbits SignalMask extends Widget.SignalMask {
+    CursorPositionChanged,
+    EditingFinished,
+    InputRejected,
+    ReturnPressed,
+    SelectionChanged,
+    TextChanged,
+    TextEdited
+}
+
+interface SignalHandler {
+    // Object:
+    void destroyed(Object.Handle obj);
+    void objectNameChanged(string objectName);
+
+    // Widget:
+    void customContextMenuRequested(Point pos);
+    void windowIconChanged(Icon.Handle icon);
+    void windowTitleChanged(string title);
+
+    // LineEdit:
+    void cursorPositionChanged(int oldPos, int newPos);
+    void editingFinished();
+    void inputRejected();
+    void returnPressed();
+    void selectionChanged();
+    void textChanged(string text);
+    void textEdited(string text);
+}
+
+enum EchoMode { Normal, NoEcho, Password, PasswordEchoOnEdit }
+
+opaque Handle extends Widget.Handle {
+    // properties:
+    bool hasAcceptableInput();          // read-only
+    void setAlignment(Alignment align);
+    void setClearButtonEnabled(bool enabled);
+    void setCursorMoveStyle(CursorMoveStyle style);
+    void setCursorPosition(int pos);
+    string displayText();               // read-only
+    void setDragEnabled(bool enabled);
+    void setEchoMode(EchoMode mode);
+    void setFrame(bool enabled);
+    bool hasSelectedText();             // read-only
+    void setInputMask(string mask);
+    void setMaxLength(int length);
+
+    // not sure about these two, might not need the setter?
+    bool isModified();                  
+    void setModified(bool modified);
+
+    void setPlaceholderText(string text);
+    void setReadOnly(bool value);
+    bool isRedoAvailable();             // read-only
+    string selectedText();              // read-only
+    void setText(string text);
+    string text();
+    bool isUndoAvailable();             // read-only
+
+    // slots:
+    void clear();
+    void copy();
+    void cut();
+    void paste();
+    void redo();
+    void selectAll();
+    void undo();
+    
+    void setSignalMask(SignalMask mask);
+}
+
+Handle create(SignalHandler handler);
