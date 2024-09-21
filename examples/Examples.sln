@@ -20,6 +20,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DropTesting", "DropTesting\
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PathStroking", "PathStroking\PathStroking.fsproj", "{5D1ADA91-33DE-4C08-BCD1-8A65C5999FFA}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TodoMVC", "TodoMVC\TodoMVC.fsproj", "{D3106491-115F-42F9-AF1E-D829AE85A753}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{5D1ADA91-33DE-4C08-BCD1-8A65C5999FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D1ADA91-33DE-4C08-BCD1-8A65C5999FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D1ADA91-33DE-4C08-BCD1-8A65C5999FFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3106491-115F-42F9-AF1E-D829AE85A753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3106491-115F-42F9-AF1E-D829AE85A753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3106491-115F-42F9-AF1E-D829AE85A753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3106491-115F-42F9-AF1E-D829AE85A753}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
