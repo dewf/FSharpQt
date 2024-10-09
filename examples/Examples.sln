@@ -22,6 +22,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PathStroking", "PathStrokin
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TodoMVC", "TodoMVC\TodoMVC.fsproj", "{D3106491-115F-42F9-AF1E-D829AE85A753}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Component", "Component\Component.fsproj", "{0657CFCF-D653-4B95-8929-EA9493FD2EF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,9 @@ Global
 		{D3106491-115F-42F9-AF1E-D829AE85A753}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3106491-115F-42F9-AF1E-D829AE85A753}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3106491-115F-42F9-AF1E-D829AE85A753}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0657CFCF-D653-4B95-8929-EA9493FD2EF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0657CFCF-D653-4B95-8929-EA9493FD2EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0657CFCF-D653-4B95-8929-EA9493FD2EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0657CFCF-D653-4B95-8929-EA9493FD2EF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
