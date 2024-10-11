@@ -161,6 +161,8 @@ namespace Widget
 
     void Handle_setFixedSize__wrapper();
 
+    void Handle_setFixedSize_overload1__wrapper();
+
     void Handle_show__wrapper();
 
     void Handle_hide__wrapper();

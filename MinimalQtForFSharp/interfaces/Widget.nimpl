@@ -117,6 +117,7 @@ opaque Handle extends Object.Handle {
 
     void setFixedWidth(int width);
     void setFixedHeight(int height);
+    void setFixedSize(Size size);
     void setFixedSize(int width, int height);
 
     void show();

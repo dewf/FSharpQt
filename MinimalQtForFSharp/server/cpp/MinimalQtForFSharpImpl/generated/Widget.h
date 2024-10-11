@@ -130,6 +130,7 @@ namespace Widget
     void Handle_adjustSize(HandleRef _this);
     void Handle_setFixedWidth(HandleRef _this, int32_t width);
     void Handle_setFixedHeight(HandleRef _this, int32_t height);
+    void Handle_setFixedSize(HandleRef _this, Common::Size size);
     void Handle_setFixedSize(HandleRef _this, int32_t width, int32_t height);
     void Handle_show(HandleRef _this);
     void Handle_hide(HandleRef _this);

@@ -216,6 +216,10 @@ type internal Attr =
     | WindowModified of modified: bool
     | WindowOpacity of opacity: double
     | WindowTitle of title: string
+    // non-properties/convenience methods (not sure the distinction even matters in this context)
+    | FixedWidth of width: int
+    | FixedHeight of height: int
+    | FixedSize of size: Size
 with
     interface IAttr with
         override this.AttrEquals other =
@@ -264,6 +268,10 @@ with
             | WindowModified _ -> "widget:WindowModified"
             | WindowOpacity _ -> "widget:WindowOpacity"
             | WindowTitle _ -> "widget:WindowTitle"
+            // setter methods:
+            | FixedWidth _ -> "widget:FixedWidth"
+            | FixedHeight _ -> "widget:FixedHeight"
+            | FixedSize _ -> "widget:FixedSize"
         override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
             match target with
             | :? AttrTarget as attrTarget ->
@@ -429,6 +437,16 @@ type Props<'msg>() =
     member this.WindowTitle with set value =
         this.PushAttr(WindowTitle value)
         
+    // setter methods:
+    member this.FixedWidth with set value =
+        this.PushAttr(FixedWidth value)
+        
+    member this.FixedHeight with set value =
+        this.PushAttr(FixedHeight value)
+        
+    member this.FixedSize with set value =
+        this.PushAttr(FixedSize value)
+        
 type ModelCore<'msg>(dispatch: 'msg -> unit) =
     inherit QObject.ModelCore<'msg>(dispatch)
     let mutable widget: Widget.Handle = null
@@ -551,6 +569,13 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
                 if title <> lastWindowTitle then
                     lastWindowTitle <- title
                     widget.SetWindowTitle(title)
+            // setter methods
+            | FixedWidth width ->
+                widget.SetFixedWidth(width)
+            | FixedHeight height ->
+                widget.SetFixedHeight(height)
+            | FixedSize size ->
+                widget.SetFixedSize(size.QtValue)
         
     interface Widget.SignalHandler with
         // object =========================

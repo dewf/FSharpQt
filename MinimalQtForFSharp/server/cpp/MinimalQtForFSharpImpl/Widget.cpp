@@ -338,6 +338,10 @@ namespace Widget
         THIS->setFixedHeight(height);
     }
 
+    void Handle_setFixedSize(HandleRef _this, Size size) {
+        THIS->setFixedSize(toQSize(size));
+    }
+
     void Handle_setFixedSize(HandleRef _this, int32_t width, int32_t height) {
         THIS->setFixedSize(width, height);
     }

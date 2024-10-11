@@ -578,6 +578,12 @@ namespace Widget
 
     void Handle_setFixedSize__wrapper() {
         auto _this = Handle__pop();
+        auto size = Size__pop();
+        Handle_setFixedSize(_this, size);
+    }
+
+    void Handle_setFixedSize_overload1__wrapper() {
+        auto _this = Handle__pop();
         auto width = ni_popInt32();
         auto height = ni_popInt32();
         Handle_setFixedSize(_this, width, height);
@@ -1067,6 +1073,7 @@ namespace Widget
         ni_registerModuleMethod(m, "Handle_setFixedWidth", &Handle_setFixedWidth__wrapper);
         ni_registerModuleMethod(m, "Handle_setFixedHeight", &Handle_setFixedHeight__wrapper);
         ni_registerModuleMethod(m, "Handle_setFixedSize", &Handle_setFixedSize__wrapper);
+        ni_registerModuleMethod(m, "Handle_setFixedSize_overload1", &Handle_setFixedSize_overload1__wrapper);
         ni_registerModuleMethod(m, "Handle_show", &Handle_show__wrapper);
         ni_registerModuleMethod(m, "Handle_hide", &Handle_hide__wrapper);
         ni_registerModuleMethod(m, "Handle_update", &Handle_update__wrapper);

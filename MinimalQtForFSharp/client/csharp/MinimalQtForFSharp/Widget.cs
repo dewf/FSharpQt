@@ -100,6 +100,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static ModuleMethodHandle _handle_setFixedWidth;
         internal static ModuleMethodHandle _handle_setFixedHeight;
         internal static ModuleMethodHandle _handle_setFixedSize;
+        internal static ModuleMethodHandle _handle_setFixedSize_overload1;
         internal static ModuleMethodHandle _handle_show;
         internal static ModuleMethodHandle _handle_hide;
         internal static ModuleMethodHandle _handle_update;
@@ -752,12 +753,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setFixedHeight);
             }
+            public void SetFixedSize(Size size)
+            {
+                Size__Push(size, false);
+                Handle__Push(this);
+                NativeImplClient.InvokeModuleMethod(_handle_setFixedSize);
+            }
             public void SetFixedSize(int width, int height)
             {
                 NativeImplClient.PushInt32(height);
                 NativeImplClient.PushInt32(width);
                 Handle__Push(this);
-                NativeImplClient.InvokeModuleMethod(_handle_setFixedSize);
+                NativeImplClient.InvokeModuleMethod(_handle_setFixedSize_overload1);
             }
             public void Show()
             {
@@ -1304,6 +1311,7 @@ namespace Org.Whatever.MinimalQtForFSharp
             _handle_setFixedWidth = NativeImplClient.GetModuleMethod(_module, "Handle_setFixedWidth");
             _handle_setFixedHeight = NativeImplClient.GetModuleMethod(_module, "Handle_setFixedHeight");
             _handle_setFixedSize = NativeImplClient.GetModuleMethod(_module, "Handle_setFixedSize");
+            _handle_setFixedSize_overload1 = NativeImplClient.GetModuleMethod(_module, "Handle_setFixedSize_overload1");
             _handle_show = NativeImplClient.GetModuleMethod(_module, "Handle_show");
             _handle_hide = NativeImplClient.GetModuleMethod(_module, "Handle_hide");
             _handle_update = NativeImplClient.GetModuleMethod(_module, "Handle_update");
