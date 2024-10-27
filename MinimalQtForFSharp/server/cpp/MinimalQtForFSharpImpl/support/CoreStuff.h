@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 #define NIHANDLE(x) struct ni_##x; typedef struct ni_##x* ni_##x##Ref
