@@ -9,5 +9,6 @@ copy ..\MinimalQtForFSharp\server\_dllproject\build\cmake-build-debug\MinimalQtF
 copy ..\MinimalQtForFSharp\server\_dllproject\build\cmake-build-debug\MinimalQtForFSharpServer.dll "PathStroking\bin\Debug\net8.0"
 copy ..\MinimalQtForFSharp\server\_dllproject\build\cmake-build-debug\MinimalQtForFSharpServer.dll "TodoMVC\bin\Debug\net8.0"
 copy ..\MinimalQtForFSharp\server\_dllproject\build\cmake-build-debug\MinimalQtForFSharpServer.dll "Component\bin\Debug\net8.0"
+copy ..\MinimalQtForFSharp\server\_dllproject\build\cmake-build-debug\MinimalQtForFSharpServer.dll "MultiPaint\bin\Debug\net8.0"
 
 pause

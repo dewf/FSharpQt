@@ -8,6 +8,3 @@ rem copy /y .\cmake-build-debug\*.dll ..\..\..\..\SevenGuisFsharp\bin\Debug\net8
 rem robocopy cmake-build-debug\plugins ..\..\..\..\SevenGuisFsharp\bin\Debug\net8.0\plugins /e
 
 pause
-
-
-	

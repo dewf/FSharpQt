@@ -16,6 +16,8 @@ type private Signal =
     | SelectionChanged
     | TextChanged of text: string  // also emitted when the text is changed programmatically
     | TextEdited of text: string   // user input only
+    // synthetic:
+    | Submitted of text: string    // rides on ReturnPressed
     
 type EchoMode =
     | Normal
@@ -90,6 +92,7 @@ type Props<'msg>() =
     let mutable onEditingFinished: 'msg option = None
     let mutable onInputRejected: 'msg option = None
     let mutable onReturnPressed: 'msg option = None
+    let mutable onSubmitted: (string -> 'msg) option = None
     let mutable onSelectionChanged: 'msg option = None
     let mutable onTextChanged: (string -> 'msg) option = None
     let mutable onTextEdited: (string -> 'msg) option = None
@@ -110,6 +113,11 @@ type Props<'msg>() =
         
     member this.OnReturnPressed with set value =
         onReturnPressed <- Some value
+        this.AddSignal(int LineEdit.SignalMask.ReturnPressed)
+        
+    // synthetic signal riding on ReturnPressed - carries string payload as well
+    member this.OnSubmitted with set value =
+        onSubmitted <- Some value
         this.AddSignal(int LineEdit.SignalMask.ReturnPressed)
         
     member this.OnSelectionChanged with set value =
@@ -135,6 +143,9 @@ type Props<'msg>() =
                 onInputRejected
             | ReturnPressed ->
                 onReturnPressed
+            | Submitted text ->
+                onSubmitted
+                |> Option.map (fun f -> f text)
             | SelectionChanged ->
                 onSelectionChanged
             | TextChanged text ->
@@ -282,6 +293,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             signalDispatch InputRejected
         member this.ReturnPressed () =
             signalDispatch ReturnPressed
+            signalDispatch (lineEdit.Text() |> Submitted)
         member this.SelectionChanged () =
             signalDispatch SelectionChanged
         member this.TextChanged text =

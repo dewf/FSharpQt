@@ -24,6 +24,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TodoMVC", "TodoMVC\TodoMVC.
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Component", "Component\Component.fsproj", "{0657CFCF-D653-4B95-8929-EA9493FD2EF0}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MultiPaint", "MultiPaint\MultiPaint.fsproj", "{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,5 +80,9 @@ Global
 		{0657CFCF-D653-4B95-8929-EA9493FD2EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0657CFCF-D653-4B95-8929-EA9493FD2EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0657CFCF-D653-4B95-8929-EA9493FD2EF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
