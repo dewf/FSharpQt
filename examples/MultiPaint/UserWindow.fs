@@ -38,8 +38,7 @@ type OtherUser = {
 type State = {
     OurName: string option
     OtherUsers: TrackedRows<OtherUser>
-    // keep colors separately, so that we don't have to do any fancing merging logic when otherusers updates
-    // (to preserve user choice - everything else can be overwritten)
+    // keep color preferences separately, so we can keep the other-users update/merge logic simple
     ColorMap: Map<int, ColorConstant>
     Drawing: Stroke list
     MouseDown: bool
