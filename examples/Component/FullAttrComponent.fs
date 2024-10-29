@@ -15,42 +15,33 @@ type State = {
     Enabled: bool
 }
 
-type private Attr =
-    | Label of string
-    | Enabled of bool
-with
-    interface IAttr with
-        override this.AttrEquals other =
-            match other with
-            | :? Attr as otherAttr ->
-                this = otherAttr
-            | _ ->
-                false
-        override this.Key =
-            match this with
-            | Label _ -> "fullattrcomponent:label"
-            | Enabled _ -> "fullattrcomponent:enabled"
-        override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
-            match target with
-            | :? ComponentStateTarget<State> as stateTarget ->
-                let state =
-                    stateTarget.State
-                let nextState =
-                    match this with
-                    | Label text ->
-                        if text <> state.Label then
-                            { state with Label = text }
-                        else
-                            state
-                    | Enabled value ->
-                        if value <> state.Enabled then
-                            { state with Enabled = value }
-                        else
-                            state
-                stateTarget.Update(nextState)
-            | _ ->
-                failwith "nope"
-    
+type LabelAttr(value: string) =
+    inherit ComponentAttrBase<string, State>(value)
+    override this.Key = "fullattrcomponent:label"
+    override this.Update state =
+        { state with Label = value }
+        
+type EnabledAttr(value: bool) =
+    inherit ComponentAttrBase<bool, State>(value)
+    override this.Key = "fullattrcomponent:enabled"
+    override this.Update state =
+        { state with Enabled = value }
+        
+// // if you have a lot of attributes, it's probably easier to declare them this way:
+// type private Attr =
+//     | Label of string
+//     | Enabled of bool
+// let private keyFunc = function
+//     | Label _ -> "fullattrcomponent:label"
+//     | Enabled _ -> "fullattrcomponent:enabled"
+// let private updateFunc state = function
+//     | Label text ->
+//         { state with Label = text }
+//     | Enabled value ->
+//         { state with Enabled = value }
+//         
+// // use with: ComponentAttr(value, keyFunc, updateFunc)
+
 type Msg =
     | Clicked
     
@@ -89,7 +80,13 @@ type FullAttrComponent<'outerMsg>() =
         | ClickedFiveTimes -> onClickedFiveTimes
         
     member this.Label with set value =
-        this.PushAttr(Label value)
+        // per-attribute class:
+        this.PushAttr(LabelAttr(value))
+        // using a single DU with key/update functions:
+        // this.PushAttr(ComponentAttr(Label value, keyFunc, updateFunc))
         
     member this.Enabled with set value =
-        this.PushAttr(Enabled value)
+        // per-attribute class:
+        this.PushAttr(EnabledAttr(value))
+        // using a single DU with key/update functions:
+        // this.PushAttr(ComponentAttr(Enabled value, keyFunc, updateFunc))

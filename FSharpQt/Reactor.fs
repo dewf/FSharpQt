@@ -65,7 +65,26 @@ type ComponentAttrBase<'T,'State when 'T: equality>(value: 'T) =
                 |> stateTarget.Update
             | _ ->
                 failwith "ComponentAttrBase can only .ApplyTo ComponentStateTarget<'State>"
-    
+type ComponentAttr<'T,'State when 'T: equality>(value: 'T, keyFunc: 'T -> string, updateFunc: 'State -> 'T -> 'State) =
+    member this.Value = value
+    interface IAttr with
+        override this.AttrEquals other =
+            match other with
+            | :? ComponentAttrBase<'T,'State> as otherAttr ->
+                value = otherAttr.Value
+            | _ ->
+                false
+        override this.Key =
+            keyFunc value
+        override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
+            match target with
+            | :? ComponentStateTarget<'State> as stateTarget ->
+                let nextState =
+                    updateFunc stateTarget.State value
+                stateTarget.Update(nextState)
+            | _ ->
+                failwith "ComponentAttr can only .ApplyTo ComponentStateTarget<'State>"
+                
 type private StateMutator<'state>(init: 'state) =
     let mutable current = init
     interface ComponentStateTarget<'state> with
