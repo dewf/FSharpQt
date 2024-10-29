@@ -194,6 +194,7 @@ type Reactor<'state, 'msg, 'signal, 'root when 'root :> IBuilderNode<'msg>>(
         let mutator =
             StateMutator(state)
         for maybePrev, attr in attrs do
+            // the attr list has already been filtered to created-or-changed, so we don't have to worry about checking prev vs. next equivalence
             attr.ApplyTo(mutator, maybePrev)
         state <- (mutator :> ComponentStateTarget<'state>).State
         root <- view state

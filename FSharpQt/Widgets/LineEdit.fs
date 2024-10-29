@@ -16,8 +16,12 @@ type private Signal =
     | SelectionChanged
     | TextChanged of text: string  // also emitted when the text is changed programmatically
     | TextEdited of text: string   // user input only
-    // synthetic:
-    | Submitted of text: string    // rides on ReturnPressed
+    // // synthetic:
+    // | Submitted of text: string    // rides on ReturnPressed
+    
+    // actually, instead of a synthetic 'Submitted' event with a text payload,
+    // you'll have to roll your own with a cmdGetText after a ReturnPressed or EditingFinished.
+    // this is to allow for developer preference regarding whether tab/focus change should result in a submit event
     
 type EchoMode =
     | Normal
@@ -115,10 +119,10 @@ type Props<'msg>() =
         onReturnPressed <- Some value
         this.AddSignal(int LineEdit.SignalMask.ReturnPressed)
         
-    // synthetic signal riding on ReturnPressed - carries string payload as well
-    member this.OnSubmitted with set value =
-        onSubmitted <- Some value
-        this.AddSignal(int LineEdit.SignalMask.ReturnPressed)
+    // // synthetic signal riding on ReturnPressed - carries string payload as well
+    // member this.OnSubmitted with set value =
+    //     onSubmitted <- Some value
+    //     this.AddSignal(int LineEdit.SignalMask.ReturnPressed)
         
     member this.OnSelectionChanged with set value =
         onSelectionChanged <- Some value
@@ -143,9 +147,9 @@ type Props<'msg>() =
                 onInputRejected
             | ReturnPressed ->
                 onReturnPressed
-            | Submitted text ->
-                onSubmitted
-                |> Option.map (fun f -> f text)
+            // | Submitted text ->
+            //     onSubmitted
+            //     |> Option.map (fun f -> f text)
             | SelectionChanged ->
                 onSelectionChanged
             | TextChanged text ->
@@ -293,7 +297,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             signalDispatch InputRejected
         member this.ReturnPressed () =
             signalDispatch ReturnPressed
-            signalDispatch (lineEdit.Text() |> Submitted)
+            // signalDispatch (lineEdit.Text() |> Submitted)
         member this.SelectionChanged () =
             signalDispatch SelectionChanged
         member this.TextChanged text =
@@ -392,6 +396,14 @@ type LineEdit<'msg>() =
             |> Option.map (fun name ->
                 name, LineEditBinding(this.model.LineEdit))
 
+let cmdGetText name msgFunc =
+    Cmd.ViewExec (fun bindings ->
+        viewexec bindings {
+            let! lineEdit = bindNode name
+            let text = lineEdit.Text
+            return msgFunc text
+        })
+    
 let cmdGetTextAndClear name msgFunc =
     Cmd.ViewExec (fun bindings ->
         viewexec bindings {

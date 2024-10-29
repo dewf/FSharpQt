@@ -3,7 +3,6 @@
 open System
 open FSharpQt
 open BuilderNode
-open FSharpQt.Attrs
 open FSharpQt.Widgets.Dialog
 open Reactor
 open FSharpQt.Widgets
@@ -17,7 +16,7 @@ open MiscTypes
 
 type Value =
     | Empty
-    | Invalid
+    | Invalid of text: string
     | Valid of date: DateOnly
     
 type Signal =
@@ -32,62 +31,41 @@ type State = {
     MaybeMaxDate: DateOnly option
 }
 
-type Attr =
+type private Attr =
     | Value of value: Value
     | Enabled of value: bool
     | DialogTitle of title: string
     | MinDate of value: DateOnly
     | MaxDate of value: DateOnly
-with
-    interface IAttr with
-        override this.AttrEquals other =
-            match other with
-            | :? Attr as otherAttr ->
-                this = otherAttr
-            | _ ->
-                false
-        override this.Key =
-            match this with
-            | Value _ -> "datepicker:value"
-            | Enabled _ -> "datepicker:enabled"
-            | DialogTitle _ -> "datepicker:dialogtitle"
-            | MinDate _ -> "datepicker:mindate"
-            | MaxDate _ -> "datepicker:maxdate"
-        override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
-            match target with
-            | :? ComponentStateTarget<State> as stateTarget ->
-                let state =
-                    stateTarget.State
-                let nextState =
-                    match this with
-                    | Value value ->
-                        if value <> state.Value then
-                            match value with
-                            | Empty ->
-                                { state with Value = Empty; Raw = "" }
-                            | Invalid ->
-                                // unlikely to be assigned from outside except as a 2-way echo
-                                // we'd only get here if the parent component explicitly changed the value to invalid
-                                { state with Value = Invalid; Raw = "??invalid??" }
-                            | Valid dt ->
-                                { state with Value = Valid dt; Raw = dt.ToShortDateString() }
-                        else
-                            state
-                    | Enabled value ->
-                        { state with Enabled = value }
-                    | DialogTitle title ->
-                        { state with DialogTitle = title }
-                    | MinDate date ->
-                        { state with MaybeMinDate = Some date }
-                    | MaxDate date ->
-                        { state with MaybeMaxDate = Some date }
-                stateTarget.Update(nextState)
-            | _ ->
-                failwith "nope"
-
+    
+let private keyFunc = function
+    | Value _ -> "datepicker:value"
+    | Enabled _ -> "datepicker:enabled"
+    | DialogTitle _ -> "datepicker:dialogtitle"
+    | MinDate _ -> "datepicker:mindate"
+    | MaxDate _ -> "datepicker:maxdate"
+    
+let private attrUpdate state = function
+    | Value value ->
+        match value with
+        | Empty ->
+            { state with Value = Empty; Raw = "" }
+        | Invalid text ->
+            { state with Value = Invalid text; Raw = text } // "??invalid??"
+        | Valid dt ->
+            { state with Value = Valid dt; Raw = dt.ToShortDateString() }
+    | Enabled value ->
+        { state with Enabled = value }
+    | DialogTitle title ->
+        { state with DialogTitle = title }
+    | MinDate date ->
+        { state with MaybeMinDate = Some date }
+    | MaxDate date ->
+        { state with MaybeMaxDate = Some date }
+        
 type Msg =
-    | EditChanged of str: string
-    | EditSubmitted
+    | EditingFinished           // from return or tab                   
+    | Submitted of str: string  // our synthetic event with the text payload, via viewexec
     | ShowCalendar
     | AcceptDialog
     | RejectDialog
@@ -111,7 +89,11 @@ let tryParseDate (str: string) =
     
 let update (state: State) (msg: Msg) =
     match msg with
-    | EditChanged str ->
+    | EditingFinished ->
+        // get the content of the text field - we either tabbed or returned out of it
+        state, cmdGetText "edit" Submitted
+    | Submitted str ->
+        // synthetic event created from EditingFinished above
         let nextValue =
             match tryParseDate str with
             | Some value ->
@@ -120,15 +102,13 @@ let update (state: State) (msg: Msg) =
                 if str = "" then
                     Empty
                 else
-                    Invalid
+                    Invalid str
         let cmd =
             if nextValue <> state.Value then
                 Cmd.Signal (ValueChanged nextValue)
             else
                 Cmd.None
         { state with Raw = str; Value = nextValue }, cmd
-    | EditSubmitted ->
-        state, Cmd.None
     | ShowCalendar ->
         state, execDialog "pickerDialog"
     | AcceptDialog ->
@@ -155,13 +135,23 @@ let update (state: State) (msg: Msg) =
 
 let view (state: State) =
     let edit =
-        LineEdit(Text = state.Raw, Enabled = state.Enabled, OnTextChanged = EditChanged, OnReturnPressed = EditSubmitted)
+        LineEdit(
+            Name = "edit",
+            Text = state.Raw,
+            Enabled = state.Enabled,
+            OnEditingFinished = EditingFinished,
+            OnReturnPressed = EditingFinished)
     let button =
         PushButton(Text = "Pick", Enabled = state.Enabled, OnClicked = ShowCalendar)
     let dialog =
         let calendar =
+            let date =
+                match state.Value with
+                | Valid date -> date
+                | _ ->  DateOnly.FromDateTime(DateTime.Now)
             let node = 
-                CalendarWidget(Name = "calendarWidget")
+                CalendarWidget(Name = "calendarWidget", SelectedDate = date)
+            // optional settings ...
             state.MaybeMinDate
             |> Option.iter (fun minDate -> node.MinimumDate <- minDate)
             state.MaybeMaxDate
@@ -213,16 +203,16 @@ type DatePicker<'outerMsg>() =
             |> Option.map (fun f -> f value)
             
     member this.Value with set value =
-        this.PushAttr(Value value)
+        this.PushAttr(ComponentAttr(Value value, keyFunc, attrUpdate))
         
     member this.Enabled with set value =
-        this.PushAttr(Enabled value)
+        this.PushAttr(ComponentAttr(Enabled value, keyFunc, attrUpdate))
         
     member this.DialogTitle with set value =
-        this.PushAttr(DialogTitle value)
+        this.PushAttr(ComponentAttr(DialogTitle value, keyFunc, attrUpdate))
         
     member this.MinDate with set value =
-        this.PushAttr(MinDate value)
+        this.PushAttr(ComponentAttr(MinDate value, keyFunc, attrUpdate))
         
     member this.MaxDate with set value =
-        this.PushAttr(MaxDate value)
+        this.PushAttr(ComponentAttr(MaxDate value, keyFunc, attrUpdate))

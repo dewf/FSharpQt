@@ -75,7 +75,7 @@ let canBookAndStatus (state: State) =
                 true, "ready to book"
             else
                 false, "departure date must be today or later"
-        | Invalid ->
+        | Invalid _ ->
             false, "invalid departure date"
         | Empty ->
             false, "departure date required"
@@ -91,13 +91,31 @@ let canBookAndStatus (state: State) =
                 false, "departure date must be today or later"
         | Empty, _ ->
             false, "departure date required"
-        | Invalid, _ ->
+        | Invalid _, _ ->
             false, "invalid departure date"
         | _, Empty ->
             false, "return date required"
-        | _, Invalid ->
+        | _, Invalid _ ->
             false, "invalid return date"
-
+            
+let labeledPicker labelText value changeMsg enabled minDate =
+    let label =
+        Label(Text = labelText)
+    let picker =
+        DatePicker(
+            MinDate = minDate,
+            Value = value,
+            Enabled = enabled,
+            DialogTitle = $"Select '{labelText}' Date",
+            OnValueChanged = changeMsg)
+    HBoxLayout(
+        ContentsMargins = (0, 0, 0, 0),
+        Spacing = 10,
+        Items = [
+            BoxItem(label)
+            BoxItem(picker)
+        ])
+    
 let view (state: State) =
     let canBook, status =
         canBookAndStatus state
@@ -112,23 +130,6 @@ let view (state: State) =
             | Some 1 -> ModeChanged RoundTrip
             | _ -> failwith "whoops"
         ComboBox(StringItems = items, OnCurrentIndexChanged = indexToMsg)
-    let labeledPicker labelText value changeMsg enabled minDate =
-        let label =
-            Label(Text = labelText)
-        let picker =
-            DatePicker(
-                MinDate = minDate,
-                Value = value,
-                Enabled = enabled,
-                DialogTitle = $"Select '{labelText}' Date",
-                OnValueChanged = changeMsg)
-        HBoxLayout(
-            ContentsMargins = (0, 0, 0, 0),
-            Spacing = 10,
-            Items = [
-                BoxItem(label)
-                BoxItem(picker)
-            ])
     let today =
         DateOnly.FromDateTime(DateTime.Today)
     let depart =
