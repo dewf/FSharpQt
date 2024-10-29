@@ -49,46 +49,30 @@ type State = {
     Animating: bool
 }
 
-type Attr =
+type private Attr =
     | CapStyle of style: CapStyle
     | JoinStyle of style: JoinStyle
     | PenStyle of style: PenStyle
     | PenWidth of width: int
     | LineStyle of style: LineStyle
     | Animating of value: bool
-with
-    interface IAttr with
-        override this.AttrEquals other =
-            match other with
-            | :? Attr as otherAttr ->
-                this = otherAttr
-            | _ ->
-                false
-        override this.Key =
-            match this with
-            | CapStyle _ -> "pathstroking:renderer:capstyle"
-            | JoinStyle _ -> "pathstroking:renderer:joinstyle"
-            | PenStyle _ -> "pathstroking:renderer:penstyle"
-            | PenWidth _ -> "pathstroking:renderer:penwidth"
-            | LineStyle _ -> "pathstroking:renderer:linestyle"
-            | Animating _ -> "pathstroking:renderer:animating"
-        override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
-            match target with
-            | :? ComponentStateTarget<State> as stateTarget ->
-                let state =
-                    stateTarget.State
-                let nextState =
-                    match this with
-                    | CapStyle style -> { state with CapStyle = style }
-                    | JoinStyle style -> { state with JoinStyle = style }
-                    | PenStyle style -> { state with PenStyle = style }
-                    | PenWidth width -> { state with PenWidth = width }
-                    | LineStyle style -> { state with LineStyle = style }
-                    | Animating value -> { state with Animating = value }
-                stateTarget.Update(nextState)
-            | _ ->
-                failwith "nope"
-
+    
+let private keyFunc = function
+    | CapStyle _ -> "pathstroking:renderer:capstyle"
+    | JoinStyle _ -> "pathstroking:renderer:joinstyle"
+    | PenStyle _ -> "pathstroking:renderer:penstyle"
+    | PenWidth _ -> "pathstroking:renderer:penwidth"
+    | LineStyle _ -> "pathstroking:renderer:linestyle"
+    | Animating _ -> "pathstroking:renderer:animating"
+    
+let private attrUpdate state = function
+    | CapStyle style -> { state with CapStyle = style }
+    | JoinStyle style -> { state with JoinStyle = style }
+    | PenStyle style -> { state with PenStyle = style }
+    | PenWidth width -> { state with PenWidth = width }
+    | LineStyle style -> { state with LineStyle = style }
+    | Animating value -> { state with Animating = value }
+    
 type Msg =
     | Resized of rect: RectF
     | TimerTick of elapsed: double
@@ -387,19 +371,19 @@ type PathStrokeRenderer<'outerMsg>() =
     inherit WidgetReactorNode<'outerMsg, State, Msg, Signal>(init, update, view)
 
     member this.CapStyle with set value =
-        this.PushAttr(CapStyle value)
+        this.PushAttr(ComponentAttr(CapStyle value, keyFunc, attrUpdate))
         
     member this.JoinStyle with set value =
-        this.PushAttr(JoinStyle value)
+        this.PushAttr(ComponentAttr(JoinStyle value, keyFunc, attrUpdate))
 
     member this.PenStyle with set value =
-        this.PushAttr(PenStyle value)
+        this.PushAttr(ComponentAttr(PenStyle value, keyFunc, attrUpdate))
         
     member this.PenWidth with set value =
-        this.PushAttr(PenWidth value)
+        this.PushAttr(ComponentAttr(PenWidth value, keyFunc, attrUpdate))
         
     member this.LineStyle with set value =
-        this.PushAttr(LineStyle value)
+        this.PushAttr(ComponentAttr(LineStyle value, keyFunc, attrUpdate))
         
     member this.Animating with set value =
-        this.PushAttr(Animating value)
+        this.PushAttr(ComponentAttr(Animating value, keyFunc, attrUpdate))
