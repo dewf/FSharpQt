@@ -65,7 +65,8 @@ let randomColor () =
     possibleColors[r.Next() % 12]
 
 type Msg =
-    | UsernameSubmitted of name: string
+    | UsernameSubmitted             // for return/tab, requires cmd to get text value
+    | GotUsername of name: string
     | WindowClosedMsg
     | BeginStroke of p: Point
     | ContinueStroke of p: Point
@@ -103,7 +104,9 @@ let init() =
 
 let update (state: State) (msg: Msg) =
     match msg with
-    | UsernameSubmitted name ->
+    | UsernameSubmitted ->
+        state, cmdGetText "username-edit" GotUsername
+    | GotUsername name ->
         { state with OurName = Some name }, Cmd.Signal (LoggedIn (name, state.Drawing))
     | WindowClosedMsg ->
         state, Cmd.Signal WindowClosedSignal
@@ -207,10 +210,12 @@ let view (state: State) =
                 | Some name -> $"Logged in as '{name}'"
                 | None -> ""
             LineEdit(
+                Name = "username-edit",
                 Text = text,
                 Enabled = state.OurName.IsNone,
                 PlaceholderText = "Username please?",
-                OnSubmitted = UsernameSubmitted)
+                OnEditingFinished = UsernameSubmitted,
+                OnReturnPressed = UsernameSubmitted)
         let label =
             Label(Text = "Other users:")
         let userList =
