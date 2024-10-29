@@ -43,6 +43,29 @@ type ComponentStateTarget<'state> =
         abstract member Update: 'state -> unit
     end
     
+[<AbstractClass>]
+type ComponentAttrBase<'T,'State when 'T: equality>(value: 'T) =
+    member this.Value = value
+    abstract member Key: string
+    abstract member Update: 'State -> 'State
+    interface IAttr with
+        override this.AttrEquals other =
+            match other with
+            | :? ComponentAttrBase<'T,'State> as otherAttr ->
+                value = otherAttr.Value
+            | _ ->
+                false
+        override this.Key =
+            this.Key
+        override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
+            match target with
+            | :? ComponentStateTarget<'State> as stateTarget ->
+                stateTarget.State
+                |> this.Update
+                |> stateTarget.Update
+            | _ ->
+                failwith "ComponentAttrBase can only .ApplyTo ComponentStateTarget<'State>"
+    
 type private StateMutator<'state>(init: 'state) =
     let mutable current = init
     interface ComponentStateTarget<'state> with

@@ -71,45 +71,25 @@ type Msg =
     | ContinueStroke of p: Point
     | EndStroke
     | EraseDrawing
-
-type private Attr =
-    | OtherUsers of OtherUser list
-with
-    interface IAttr with
-        override this.AttrEquals other =
-            match other with
-            | :? Attr as otherAttr ->
-                this = otherAttr
-            | _ ->
-                false
-        override this.Key =
-            match this with
-            | OtherUsers _ -> "userwindow:otherusers"
-        override this.ApplyTo (target: IAttrTarget, maybePrev: IAttr option) =
-            match target with
-            | :? ComponentStateTarget<State> as stateTarget ->
-                let state =
-                    stateTarget.State
-                let nextState =
-                    match this with
-                    | OtherUsers incoming ->
-                        let nextUsers =
-                            state.OtherUsers
-                                .BeginChanges()
-                                .DiffUpdate(incoming, _.Id)
-                        let nextColorMap =
-                            (state.ColorMap, incoming)
-                            ||> List.fold (fun acc user ->
-                                if not (acc.ContainsKey user.Id) then
-                                    // new color for new as-yet-unseen users only
-                                    acc.Add(user.Id, randomColor())
-                                else
-                                    acc)
-                        // in a serious program we would also remove unused mappings, not worth bothering with here
-                        { state with OtherUsers = nextUsers; ColorMap = nextColorMap }
-                stateTarget.Update(nextState)
-            | _ ->
-                failwith "nope"
+    
+type OtherUsersAttr(value: OtherUser list) =
+    inherit ComponentAttrBase<OtherUser list, State>(value)
+    override this.Key = "userwindow:otherusers"
+    override this.Update state =
+        let nextUsers =
+            state.OtherUsers
+                .BeginChanges()
+                .DiffUpdate(value, _.Id)
+        let nextColorMap =
+            (state.ColorMap, value)
+            ||> List.fold (fun acc user ->
+                if not (acc.ContainsKey user.Id) then
+                    // new color for new as-yet-unseen users only
+                    acc.Add(user.Id, randomColor())
+                else
+                    acc)
+        // in a serious program we would also remove unused mappings, not worth bothering with here
+        { state with OtherUsers = nextUsers; ColorMap = nextColorMap }
     
 let init() =
     let state = {
@@ -293,4 +273,4 @@ type UserWindow<'outerMsg>() =
             onDrawingChanged
             |> Option.map (fun f -> f strokes)
     member this.OtherUsers with set value =
-        this.PushAttr(OtherUsers value)
+        this.PushAttr(OtherUsersAttr(value))
