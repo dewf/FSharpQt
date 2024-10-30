@@ -31,9 +31,11 @@ type EnabledAttr(value: bool) =
 // type private Attr =
 //     | Label of string
 //     | Enabled of bool
+//
 // let private keyFunc = function
 //     | Label _ -> "fullattrcomponent:label"
 //     | Enabled _ -> "fullattrcomponent:enabled"
+//
 // let private updateFunc state = function
 //     | Label text ->
 //         { state with Label = text }

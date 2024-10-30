@@ -213,7 +213,6 @@ let view (state: State) =
                 Text = text,
                 Enabled = state.OurName.IsNone,
                 PlaceholderText = "Username please?",
-                OnEditingFinished = UsernameSubmitted,
                 OnReturnPressed = UsernameSubmitted)
         let label =
             Label(Text = "Other users:")
