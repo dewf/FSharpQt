@@ -827,7 +827,7 @@ type ModelIndexProxy private(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.H
     interface IDisposable with
         member this.Dispose() =
             if owned && not disposed then
-                index.Dispose()
+                (index :?> ModelIndex.OwnedHandle).Dispose()
                 disposed <- true
 
     override this.Finalize() =

@@ -3,7 +3,7 @@ module ModelIndex;
 import Variant;
 import Enums;
 
-// should be @nodispose but that requires some codegen work because OwnedHandle inherits and needs the _disposed field + IDisposable
+@nodispose
 opaque Handle {
     bool isValid();
     int row();
