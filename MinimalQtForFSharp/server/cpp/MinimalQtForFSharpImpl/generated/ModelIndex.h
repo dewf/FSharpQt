@@ -31,7 +31,6 @@ namespace ModelIndex
     int32_t Handle_column(HandleRef _this);
     Variant::OwnedHandleRef Handle_data(HandleRef _this);
     Variant::OwnedHandleRef Handle_data(HandleRef _this, Enums::ItemDataRole role);
-    void Handle_dispose(HandleRef _this);
 
     void OwnedHandle_dispose(OwnedHandleRef _this);
 

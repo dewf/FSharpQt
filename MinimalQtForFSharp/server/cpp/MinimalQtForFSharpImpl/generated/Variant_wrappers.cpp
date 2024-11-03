@@ -5,14 +5,14 @@
 #include "Icon_wrappers.h"
 using namespace ::Icon;
 
-#include "PaintResources_wrappers.h"
-using namespace ::PaintResources;
-
 #include "Common_wrappers.h"
 using namespace ::Common;
 
 #include "Enums_wrappers.h"
 using namespace ::Enums;
+
+#include "PaintResources_wrappers.h"
+using namespace ::PaintResources;
 
 namespace Variant
 {

@@ -21,12 +21,10 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static ModuleMethodHandle _handle_column;
         internal static ModuleMethodHandle _handle_data;
         internal static ModuleMethodHandle _handle_data_overload1;
-        internal static ModuleMethodHandle _handle_dispose;
         internal static ModuleMethodHandle _ownedHandle_dispose;
-        public class Handle : IComparable, IDisposable
+        public class Handle : IComparable
         {
             internal readonly IntPtr NativeHandle;
-            protected bool _disposed;
             internal Handle(IntPtr nativeHandle)
             {
                 NativeHandle = nativeHandle;
@@ -38,15 +36,6 @@ namespace Org.Whatever.MinimalQtForFSharp
                     return NativeHandle.CompareTo(other.NativeHandle);
                 }
                 throw new Exception("CompareTo: wrong type");
-            }
-            public virtual void Dispose()
-            {
-                if (!_disposed)
-                {
-                    Handle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_handle_dispose);
-                    _disposed = true;
-                }
             }
             public bool IsValid()
             {
@@ -93,12 +82,13 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ptr = NativeImplClient.PopPtr();
             return ptr != IntPtr.Zero ? new Handle(ptr) : null;
         }
-        public class OwnedHandle : Handle
+        public class OwnedHandle : Handle, IDisposable
         {
+            protected bool _disposed;
             internal OwnedHandle(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public override void Dispose()
+            public virtual void Dispose()
             {
                 if (!_disposed)
                 {
@@ -199,7 +189,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             _handle_column = NativeImplClient.GetModuleMethod(_module, "Handle_column");
             _handle_data = NativeImplClient.GetModuleMethod(_module, "Handle_data");
             _handle_data_overload1 = NativeImplClient.GetModuleMethod(_module, "Handle_data_overload1");
-            _handle_dispose = NativeImplClient.GetModuleMethod(_module, "Handle_dispose");
             _ownedHandle_dispose = NativeImplClient.GetModuleMethod(_module, "OwnedHandle_dispose");
 
             // no static init

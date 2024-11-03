@@ -17,8 +17,6 @@ namespace ModelIndex
 
     void Handle_data_overload1__wrapper();
 
-    void Handle_dispose__wrapper();
-
     void OwnedHandle__push(OwnedHandleRef value);
     OwnedHandleRef OwnedHandle__pop();
 

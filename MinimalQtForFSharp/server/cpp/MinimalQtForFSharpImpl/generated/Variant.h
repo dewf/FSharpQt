@@ -13,12 +13,12 @@
 
 #include "Icon.h"
 using namespace ::Icon;
-#include "PaintResources.h"
-using namespace ::PaintResources;
 #include "Common.h"
 using namespace ::Common;
 #include "Enums.h"
 using namespace ::Enums;
+#include "PaintResources.h"
+using namespace ::PaintResources;
 
 namespace Variant
 {

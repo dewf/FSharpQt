@@ -9,9 +9,9 @@ using Org.Whatever.MinimalQtForFSharp.Support;
 using ModuleHandle = Org.Whatever.MinimalQtForFSharp.Support.ModuleHandle;
 
 using static Org.Whatever.MinimalQtForFSharp.Icon;
-using static Org.Whatever.MinimalQtForFSharp.PaintResources;
 using static Org.Whatever.MinimalQtForFSharp.Common;
 using static Org.Whatever.MinimalQtForFSharp.Enums;
+using static Org.Whatever.MinimalQtForFSharp.PaintResources;
 
 namespace Org.Whatever.MinimalQtForFSharp
 {

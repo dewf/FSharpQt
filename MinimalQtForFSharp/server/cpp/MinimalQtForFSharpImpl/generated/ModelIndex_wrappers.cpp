@@ -43,11 +43,6 @@ namespace ModelIndex
         auto role = ItemDataRole__pop();
         Variant::OwnedHandle__push(Handle_data(_this, role));
     }
-
-    void Handle_dispose__wrapper() {
-        auto _this = Handle__pop();
-        Handle_dispose(_this);
-    }
     void OwnedHandle__push(OwnedHandleRef value) {
         ni_pushPtr(value);
     }
@@ -117,7 +112,6 @@ namespace ModelIndex
         ni_registerModuleMethod(m, "Handle_column", &Handle_column__wrapper);
         ni_registerModuleMethod(m, "Handle_data", &Handle_data__wrapper);
         ni_registerModuleMethod(m, "Handle_data_overload1", &Handle_data_overload1__wrapper);
-        ni_registerModuleMethod(m, "Handle_dispose", &Handle_dispose__wrapper);
         ni_registerModuleMethod(m, "OwnedHandle_dispose", &OwnedHandle_dispose__wrapper);
         return 0; // = OK
     }
