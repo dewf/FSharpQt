@@ -45,6 +45,7 @@ interface SignalHandler {
     void valueChanged(int value);
 }
 
+@nodispose
 opaque Handle extends Widget.Handle {
     void setInvertedAppearance(bool state);
     void setInvertedControls(bool state);

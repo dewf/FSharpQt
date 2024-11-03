@@ -38,6 +38,7 @@ enum ScrollBarPolicy {
     ScrollBarAlwaysOn
 }
 
+@nodispose
 opaque Handle extends Frame.Handle {
     void setHorizontalScrollBarPolicy(ScrollBarPolicy policy);
     void setSizeAdjustPolicy(SizeAdjustPolicy policy);

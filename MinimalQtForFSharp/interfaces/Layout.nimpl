@@ -25,6 +25,7 @@ enum SizeConstraint {
 }
 
 // TODO: inherit from LayoutItem instead? an issue since we can't do multiple inheritance, and IIRC LayoutItem doesn't inherit QObject
+@nodispose
 opaque Handle extends Object.Handle {
     void setEnabled(bool enabled);
     void setSpacing(int spacing);

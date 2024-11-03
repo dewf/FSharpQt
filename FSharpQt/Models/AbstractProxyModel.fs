@@ -121,9 +121,9 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.SourceModelChanged() =
             signalDispatch SourceModelChanged
 
-    interface IDisposable with
-        member this.Dispose() =
-            absProxyModel.Dispose()
+    // interface IDisposable with
+    //     member this.Dispose() =
+    //         absProxyModel.Dispose()
 
 type AbstractProxyModelBinding internal(handle: AbstractProxyModel.Handle) =
     inherit AbstractItemModel.AbstractItemModelBinding(handle)

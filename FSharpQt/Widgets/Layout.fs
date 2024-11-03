@@ -109,6 +109,6 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             | SizeConstraint value ->
                 layout.SetSizeConstraint(value.QtValue)
 
-    interface IDisposable with
-        member this.Dispose() =
-            layout.Dispose()
+    // interface IDisposable with
+    //     member this.Dispose() =
+    //         layout.Dispose()

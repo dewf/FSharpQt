@@ -103,6 +103,6 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         // AbstractListModel ==============
         // (none)
 
-    interface IDisposable with
-        member this.Dispose() =
-            absListModel.Dispose()
+    // interface IDisposable with
+    //     member this.Dispose() =
+    //         absListModel.Dispose()

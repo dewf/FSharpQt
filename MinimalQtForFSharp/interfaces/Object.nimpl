@@ -10,6 +10,7 @@ interface SignalHandler {
     void objectNameChanged(string objectName);
 }
 
+@nodispose
 opaque Handle {
     void setObjectName(string name);
 

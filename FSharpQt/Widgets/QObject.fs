@@ -122,9 +122,9 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.ObjectNameChanged(name: string) =
             signalDispatch (ObjectNameChanged name)
             
-    interface IDisposable with
-        member this.Dispose() =
-            object.Dispose()
+    // interface IDisposable with
+    //     member this.Dispose() =
+    //         object.Dispose()
 
 type QObjectBinding internal(handle: Object.Handle) =
     interface IViewBinding

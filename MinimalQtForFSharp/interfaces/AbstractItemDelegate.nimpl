@@ -29,4 +29,5 @@ interface SignalHandler {
     void sizeHintChanged(ModelIndex.Handle index);
 }
 
+@nodispose
 opaque Handle extends Object.Handle;

@@ -26,6 +26,10 @@ interface SignalHandler {
     // (none)
 }
 
+// hmm, a little confused here,
+// normally these would be @nodispose since it requires a subclass to instantiate?
+// but we don't have another handle (eg 'Subclassed' or 'Custom') that we're using instead
+// so this needs to be disposable
 opaque Handle extends AbstractItemDelegate.Handle {
     // TODO: methods
 

@@ -144,9 +144,9 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.SizeHintChanged(index: ModelIndex.Handle) =
             signalDispatch(SizeHintChanged(new ModelIndexProxy(index)))
             
-    interface IDisposable with
-        member this.Dispose() =
-            abstractItemDelegate.Dispose()
+    // interface IDisposable with
+    //     member this.Dispose() =
+    //         abstractItemDelegate.Dispose()
           
             
             

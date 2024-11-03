@@ -40,8 +40,7 @@ interface SignalHandler {
     // (none)
 }
 
-// confusion reigns re: @nodipose on this, see project notes
-// (as it is, the @nodispose feature needs work for inheritance scenarios)
+@nodispose
 opaque Handle extends AbstractItemModel.Handle {
     void setSignalMask(SignalMask mask);
 }

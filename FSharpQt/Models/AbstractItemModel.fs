@@ -298,9 +298,9 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.RowsRemoved (parent, first, last) =
             signalDispatch (RowsRemoved (new ModelIndexProxy(parent), first, last))
 
-    interface IDisposable with
-        member this.Dispose() =
-            absItemModel.Dispose()
+    // interface IDisposable with
+    //     member this.Dispose() =
+    //         absItemModel.Dispose()
 
 type AbstractItemModelBinding internal(handle: AbstractItemModel.Handle) =
     inherit QObject.QObjectBinding(handle)
