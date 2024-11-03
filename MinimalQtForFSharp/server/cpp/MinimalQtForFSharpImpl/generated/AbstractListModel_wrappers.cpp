@@ -448,11 +448,6 @@ namespace AbstractListModel
         auto mask = SignalMask__pop();
         Handle_setSignalMask(_this, mask);
     }
-
-    void Handle_dispose__wrapper() {
-        auto _this = Handle__pop();
-        Handle_dispose(_this);
-    }
     void Interior__push(InteriorRef value) {
         ni_pushPtr(value);
     }
@@ -689,7 +684,6 @@ namespace AbstractListModel
         auto m = ni_registerModule("AbstractListModel");
         ni_registerModuleMethod(m, "createSubclassed", &createSubclassed__wrapper);
         ni_registerModuleMethod(m, "Handle_setSignalMask", &Handle_setSignalMask__wrapper);
-        ni_registerModuleMethod(m, "Handle_dispose", &Handle_dispose__wrapper);
         ni_registerModuleMethod(m, "Interior_emitDataChanged", &Interior_emitDataChanged__wrapper);
         ni_registerModuleMethod(m, "Interior_emitHeaderDataChanged", &Interior_emitHeaderDataChanged__wrapper);
         ni_registerModuleMethod(m, "Interior_beginInsertRows", &Interior_beginInsertRows__wrapper);

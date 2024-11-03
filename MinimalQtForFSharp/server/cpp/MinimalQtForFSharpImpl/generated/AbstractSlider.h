@@ -83,5 +83,4 @@ namespace AbstractSlider
     void Handle_setTracking(HandleRef _this, bool value);
     void Handle_setValue(HandleRef _this, int32_t value);
     void Handle_setRange(HandleRef _this, int32_t min, int32_t max);
-    void Handle_dispose(HandleRef _this);
 }

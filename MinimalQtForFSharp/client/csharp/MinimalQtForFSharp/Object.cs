@@ -15,7 +15,6 @@ namespace Org.Whatever.MinimalQtForFSharp
         private static ModuleHandle _module;
         internal static ModuleMethodHandle _handle_setObjectName;
         internal static ModuleMethodHandle _handle_dumpObjectTree;
-        internal static ModuleMethodHandle _handle_dispose;
         internal static InterfaceHandle _signalHandler;
         internal static InterfaceMethodHandle _signalHandler_destroyed;
         internal static InterfaceMethodHandle _signalHandler_objectNameChanged;
@@ -141,10 +140,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 ServerDispose();
             }
         }
-        public class Handle : IDisposable, IComparable
+        public class Handle : IComparable
         {
             internal readonly IntPtr NativeHandle;
-            protected bool _disposed;
             internal Handle(IntPtr nativeHandle)
             {
                 NativeHandle = nativeHandle;
@@ -156,15 +154,6 @@ namespace Org.Whatever.MinimalQtForFSharp
                     return NativeHandle.CompareTo(other.NativeHandle);
                 }
                 throw new Exception("CompareTo: wrong type");
-            }
-            public virtual void Dispose()
-            {
-                if (!_disposed)
-                {
-                    Handle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_handle_dispose);
-                    _disposed = true;
-                }
             }
             public void SetObjectName(string name)
             {
@@ -198,7 +187,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             // assign module handles
             _handle_setObjectName = NativeImplClient.GetModuleMethod(_module, "Handle_setObjectName");
             _handle_dumpObjectTree = NativeImplClient.GetModuleMethod(_module, "Handle_dumpObjectTree");
-            _handle_dispose = NativeImplClient.GetModuleMethod(_module, "Handle_dispose");
             _signalHandler = NativeImplClient.GetInterface(_module, "SignalHandler");
             _signalHandler_destroyed = NativeImplClient.GetInterfaceMethod(_signalHandler, "destroyed");
             _signalHandler_objectNameChanged = NativeImplClient.GetInterfaceMethod(_signalHandler, "objectNameChanged");

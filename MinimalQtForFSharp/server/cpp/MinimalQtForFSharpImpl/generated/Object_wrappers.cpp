@@ -116,16 +116,10 @@ namespace Object
         Handle_dumpObjectTree(_this);
     }
 
-    void Handle_dispose__wrapper() {
-        auto _this = Handle__pop();
-        Handle_dispose(_this);
-    }
-
     int __register() {
         auto m = ni_registerModule("Object");
         ni_registerModuleMethod(m, "Handle_setObjectName", &Handle_setObjectName__wrapper);
         ni_registerModuleMethod(m, "Handle_dumpObjectTree", &Handle_dumpObjectTree__wrapper);
-        ni_registerModuleMethod(m, "Handle_dispose", &Handle_dispose__wrapper);
         auto signalHandler = ni_registerInterface(m, "SignalHandler");
         signalHandler_destroyed = ni_registerInterfaceMethod(signalHandler, "destroyed", &SignalHandler_destroyed__wrapper);
         signalHandler_objectNameChanged = ni_registerInterfaceMethod(signalHandler, "objectNameChanged", &SignalHandler_objectNameChanged__wrapper);

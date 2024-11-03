@@ -307,11 +307,6 @@ namespace AbstractSlider
         Handle_setRange(_this, min, max);
     }
 
-    void Handle_dispose__wrapper() {
-        auto _this = Handle__pop();
-        Handle_dispose(_this);
-    }
-
     int __register() {
         auto m = ni_registerModule("AbstractSlider");
         ni_registerModuleMethod(m, "Handle_setInvertedAppearance", &Handle_setInvertedAppearance__wrapper);
@@ -326,7 +321,6 @@ namespace AbstractSlider
         ni_registerModuleMethod(m, "Handle_setTracking", &Handle_setTracking__wrapper);
         ni_registerModuleMethod(m, "Handle_setValue", &Handle_setValue__wrapper);
         ni_registerModuleMethod(m, "Handle_setRange", &Handle_setRange__wrapper);
-        ni_registerModuleMethod(m, "Handle_dispose", &Handle_dispose__wrapper);
         auto signalHandler = ni_registerInterface(m, "SignalHandler");
         signalHandler_destroyed = ni_registerInterfaceMethod(signalHandler, "destroyed", &SignalHandler_destroyed__wrapper);
         signalHandler_objectNameChanged = ni_registerInterfaceMethod(signalHandler, "objectNameChanged", &SignalHandler_objectNameChanged__wrapper);

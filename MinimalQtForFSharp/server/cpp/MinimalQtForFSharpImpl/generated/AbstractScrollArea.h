@@ -62,5 +62,4 @@ namespace AbstractScrollArea
     void Handle_setHorizontalScrollBarPolicy(HandleRef _this, ScrollBarPolicy policy);
     void Handle_setSizeAdjustPolicy(HandleRef _this, SizeAdjustPolicy policy);
     void Handle_setVerticalScrollBarPolicy(HandleRef _this, ScrollBarPolicy policy);
-    void Handle_dispose(HandleRef _this);
 }

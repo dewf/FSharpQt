@@ -82,7 +82,6 @@ namespace AbstractListModel
     };
 
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);
-    void Handle_dispose(HandleRef _this);
 
     void Interior_emitDataChanged(InteriorRef _this, std::shared_ptr<ModelIndex::Deferred::Base> topLeft, std::shared_ptr<ModelIndex::Deferred::Base> bottomRight, std::vector<Enums::ItemDataRole> roles);
     void Interior_emitHeaderDataChanged(InteriorRef _this, Enums::Orientation orientation, int32_t first, int32_t last);

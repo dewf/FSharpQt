@@ -31,5 +31,4 @@ namespace Object
 
     void Handle_setObjectName(HandleRef _this, std::string name);
     void Handle_dumpObjectTree(HandleRef _this);
-    void Handle_dispose(HandleRef _this);
 }

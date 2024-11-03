@@ -55,8 +55,6 @@ namespace AbstractListModel
 
     void Handle_setSignalMask__wrapper();
 
-    void Handle_dispose__wrapper();
-
     void Interior__push(InteriorRef value);
     InteriorRef Interior__pop();
 

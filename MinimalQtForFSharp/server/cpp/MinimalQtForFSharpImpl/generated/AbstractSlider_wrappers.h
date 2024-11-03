@@ -62,7 +62,5 @@ namespace AbstractSlider
 
     void Handle_setRange__wrapper();
 
-    void Handle_dispose__wrapper();
-
     int __register();
 }

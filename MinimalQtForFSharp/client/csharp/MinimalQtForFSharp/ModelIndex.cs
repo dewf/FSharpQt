@@ -23,7 +23,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static ModuleMethodHandle _handle_data_overload1;
         internal static ModuleMethodHandle _handle_dispose;
         internal static ModuleMethodHandle _ownedHandle_dispose;
-        public class Handle : IDisposable, IComparable
+        public class Handle : IComparable, IDisposable
         {
             internal readonly IntPtr NativeHandle;
             protected bool _disposed;

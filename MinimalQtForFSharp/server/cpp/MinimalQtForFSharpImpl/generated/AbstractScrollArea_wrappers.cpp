@@ -187,17 +187,11 @@ namespace AbstractScrollArea
         Handle_setVerticalScrollBarPolicy(_this, policy);
     }
 
-    void Handle_dispose__wrapper() {
-        auto _this = Handle__pop();
-        Handle_dispose(_this);
-    }
-
     int __register() {
         auto m = ni_registerModule("AbstractScrollArea");
         ni_registerModuleMethod(m, "Handle_setHorizontalScrollBarPolicy", &Handle_setHorizontalScrollBarPolicy__wrapper);
         ni_registerModuleMethod(m, "Handle_setSizeAdjustPolicy", &Handle_setSizeAdjustPolicy__wrapper);
         ni_registerModuleMethod(m, "Handle_setVerticalScrollBarPolicy", &Handle_setVerticalScrollBarPolicy__wrapper);
-        ni_registerModuleMethod(m, "Handle_dispose", &Handle_dispose__wrapper);
         auto signalHandler = ni_registerInterface(m, "SignalHandler");
         signalHandler_destroyed = ni_registerInterfaceMethod(signalHandler, "destroyed", &SignalHandler_destroyed__wrapper);
         signalHandler_objectNameChanged = ni_registerInterfaceMethod(signalHandler, "objectNameChanged", &SignalHandler_objectNameChanged__wrapper);

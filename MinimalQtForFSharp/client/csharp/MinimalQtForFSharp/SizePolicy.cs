@@ -43,7 +43,7 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ret = NativeImplClient.PopInt32();
             return (Policy)ret;
         }
-        public class Handle : IDisposable, IComparable
+        public class Handle : IComparable, IDisposable
         {
             internal readonly IntPtr NativeHandle;
             protected bool _disposed;

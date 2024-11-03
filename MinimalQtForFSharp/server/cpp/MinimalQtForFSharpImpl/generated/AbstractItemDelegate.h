@@ -51,5 +51,4 @@ namespace AbstractItemDelegate
         virtual void sizeHintChanged(ModelIndex::HandleRef index) = 0;
     };
 
-    void Handle_dispose(HandleRef _this);
 }

@@ -111,7 +111,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             return ServerValue.Pop();
         }
-        public class Handle : IDisposable, IComparable
+        public class Handle : IComparable, IDisposable
         {
             internal readonly IntPtr NativeHandle;
             protected bool _disposed;

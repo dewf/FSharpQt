@@ -193,12 +193,13 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ret = NativeImplClient.PopInt32();
             return (Direction)ret;
         }
-        public class Handle : Layout.Handle
+        public class Handle : Layout.Handle, IDisposable
         {
+            protected bool _disposed;
             internal Handle(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public override void Dispose()
+            public virtual void Dispose()
             {
                 if (!_disposed)
                 {

@@ -49,5 +49,4 @@ namespace Layout
     void Handle_removeAll(HandleRef _this);
     void Handle_activate(HandleRef _this);
     void Handle_update(HandleRef _this);
-    void Handle_dispose(HandleRef _this);
 }

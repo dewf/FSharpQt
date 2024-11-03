@@ -17,7 +17,6 @@ namespace Org.Whatever.MinimalQtForFSharp
     public static class AbstractItemDelegate
     {
         private static ModuleHandle _module;
-        internal static ModuleMethodHandle _handle_dispose;
         internal static InterfaceHandle _signalHandler;
         internal static InterfaceMethodHandle _signalHandler_destroyed;
         internal static InterfaceMethodHandle _signalHandler_objectNameChanged;
@@ -198,15 +197,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             internal Handle(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public override void Dispose()
-            {
-                if (!_disposed)
-                {
-                    Handle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_handle_dispose);
-                    _disposed = true;
-                }
-            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -226,7 +216,6 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             _module = NativeImplClient.GetModule("AbstractItemDelegate");
             // assign module handles
-            _handle_dispose = NativeImplClient.GetModuleMethod(_module, "Handle_dispose");
             _signalHandler = NativeImplClient.GetInterface(_module, "SignalHandler");
             _signalHandler_destroyed = NativeImplClient.GetInterfaceMethod(_signalHandler, "destroyed");
             _signalHandler_objectNameChanged = NativeImplClient.GetInterfaceMethod(_signalHandler, "objectNameChanged");

@@ -59,7 +59,7 @@ namespace Org.Whatever.MinimalQtForFSharp
             MainThreadFunc__Push(func);
             NativeImplClient.InvokeModuleMethod(_executeOnMainThread);
         }
-        public class Handle : IDisposable, IComparable
+        public class Handle : IComparable, IDisposable
         {
             internal readonly IntPtr NativeHandle;
             protected bool _disposed;

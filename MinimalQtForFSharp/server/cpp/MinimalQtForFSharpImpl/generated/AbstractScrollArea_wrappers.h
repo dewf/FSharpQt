@@ -35,7 +35,5 @@ namespace AbstractScrollArea
 
     void Handle_setVerticalScrollBarPolicy__wrapper();
 
-    void Handle_dispose__wrapper();
-
     int __register();
 }

@@ -14,7 +14,7 @@ namespace Org.Whatever.MinimalQtForFSharp
     {
         private static ModuleHandle _module;
         internal static ModuleMethodHandle _handle_dispose;
-        public class Handle : IDisposable, IComparable
+        public class Handle : IComparable, IDisposable
         {
             internal readonly IntPtr NativeHandle;
             protected bool _disposed;

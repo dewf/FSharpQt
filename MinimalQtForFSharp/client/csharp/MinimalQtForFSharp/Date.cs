@@ -42,7 +42,7 @@ namespace Org.Whatever.MinimalQtForFSharp
             var day = NativeImplClient.PopInt32();
             return new YearMonthDay(year, month, day);
         }
-        public class Handle : IDisposable, IComparable
+        public class Handle : IComparable, IDisposable
         {
             internal readonly IntPtr NativeHandle;
             protected bool _disposed;

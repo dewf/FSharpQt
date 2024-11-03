@@ -160,14 +160,8 @@ namespace AbstractItemDelegate
         return (HandleRef)ni_popPtr();
     }
 
-    void Handle_dispose__wrapper() {
-        auto _this = Handle__pop();
-        Handle_dispose(_this);
-    }
-
     int __register() {
         auto m = ni_registerModule("AbstractItemDelegate");
-        ni_registerModuleMethod(m, "Handle_dispose", &Handle_dispose__wrapper);
         auto signalHandler = ni_registerInterface(m, "SignalHandler");
         signalHandler_destroyed = ni_registerInterfaceMethod(signalHandler, "destroyed", &SignalHandler_destroyed__wrapper);
         signalHandler_objectNameChanged = ni_registerInterfaceMethod(signalHandler, "objectNameChanged", &SignalHandler_objectNameChanged__wrapper);

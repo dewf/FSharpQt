@@ -46,7 +46,6 @@ namespace Org.Whatever.MinimalQtForFSharp
         }
         internal static ModuleMethodHandle _createSubclassed;
         internal static ModuleMethodHandle _handle_setSignalMask;
-        internal static ModuleMethodHandle _handle_dispose;
         internal static ModuleMethodHandle _interior_emitDataChanged;
         internal static ModuleMethodHandle _interior_emitHeaderDataChanged;
         internal static ModuleMethodHandle _interior_beginInsertRows;
@@ -402,15 +401,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             internal Handle(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public override void Dispose()
-            {
-                if (!_disposed)
-                {
-                    Handle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_handle_dispose);
-                    _disposed = true;
-                }
-            }
             public void SetSignalMask(SignalMask mask)
             {
                 SignalMask__Push(mask);
@@ -431,12 +421,13 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ptr = NativeImplClient.PopPtr();
             return ptr != IntPtr.Zero ? new Handle(ptr) : null;
         }
-        public class Interior : Handle
+        public class Interior : Handle, IDisposable
         {
+            protected bool _disposed;
             internal Interior(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public override void Dispose()
+            public virtual void Dispose()
             {
                 if (!_disposed)
                 {
@@ -708,7 +699,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             // assign module handles
             _createSubclassed = NativeImplClient.GetModuleMethod(_module, "createSubclassed");
             _handle_setSignalMask = NativeImplClient.GetModuleMethod(_module, "Handle_setSignalMask");
-            _handle_dispose = NativeImplClient.GetModuleMethod(_module, "Handle_dispose");
             _interior_emitDataChanged = NativeImplClient.GetModuleMethod(_module, "Interior_emitDataChanged");
             _interior_emitHeaderDataChanged = NativeImplClient.GetModuleMethod(_module, "Interior_emitHeaderDataChanged");
             _interior_beginInsertRows = NativeImplClient.GetModuleMethod(_module, "Interior_beginInsertRows");

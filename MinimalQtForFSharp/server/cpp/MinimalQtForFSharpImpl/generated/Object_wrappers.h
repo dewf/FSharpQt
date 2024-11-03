@@ -21,7 +21,5 @@ namespace Object
 
     void Handle_dumpObjectTree__wrapper();
 
-    void Handle_dispose__wrapper();
-
     int __register();
 }

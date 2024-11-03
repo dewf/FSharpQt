@@ -34,7 +34,5 @@ namespace Layout
 
     void Handle_update__wrapper();
 
-    void Handle_dispose__wrapper();
-
     int __register();
 }

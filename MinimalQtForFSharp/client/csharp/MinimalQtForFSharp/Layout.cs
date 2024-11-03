@@ -22,7 +22,6 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static ModuleMethodHandle _handle_removeAll;
         internal static ModuleMethodHandle _handle_activate;
         internal static ModuleMethodHandle _handle_update;
-        internal static ModuleMethodHandle _handle_dispose;
         internal static InterfaceHandle _signalHandler;
         internal static InterfaceMethodHandle _signalHandler_destroyed;
         internal static InterfaceMethodHandle _signalHandler_objectNameChanged;
@@ -176,15 +175,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             internal Handle(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public override void Dispose()
-            {
-                if (!_disposed)
-                {
-                    Handle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_handle_dispose);
-                    _disposed = true;
-                }
-            }
             public void SetEnabled(bool enabled)
             {
                 NativeImplClient.PushBool(enabled);
@@ -253,7 +243,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             _handle_removeAll = NativeImplClient.GetModuleMethod(_module, "Handle_removeAll");
             _handle_activate = NativeImplClient.GetModuleMethod(_module, "Handle_activate");
             _handle_update = NativeImplClient.GetModuleMethod(_module, "Handle_update");
-            _handle_dispose = NativeImplClient.GetModuleMethod(_module, "Handle_dispose");
             _signalHandler = NativeImplClient.GetInterface(_module, "SignalHandler");
             _signalHandler_destroyed = NativeImplClient.GetInterfaceMethod(_signalHandler, "destroyed");
             _signalHandler_objectNameChanged = NativeImplClient.GetInterfaceMethod(_signalHandler, "objectNameChanged");

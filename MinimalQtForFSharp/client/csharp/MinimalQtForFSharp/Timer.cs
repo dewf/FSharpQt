@@ -168,12 +168,13 @@ namespace Org.Whatever.MinimalQtForFSharp
                 ServerDispose();
             }
         }
-        public class Handle : Object.Handle
+        public class Handle : Object.Handle, IDisposable
         {
+            protected bool _disposed;
             internal Handle(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public override void Dispose()
+            public virtual void Dispose()
             {
                 if (!_disposed)
                 {
