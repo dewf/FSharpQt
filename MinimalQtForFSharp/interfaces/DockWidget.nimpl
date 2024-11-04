@@ -2,8 +2,9 @@ module DockWidget;
 
 import Widget;
 
+@nodispose
 opaque Handle extends Widget.Handle {
     void nothingYet();
 }
 
-// no create yet
+// no create yet, we just needed this for MainWindow signals
