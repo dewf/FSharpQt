@@ -97,9 +97,9 @@ namespace Widget
         THIS->setContextMenuPolicy((Qt::ContextMenuPolicy)policy);
     }
 
-    Cursor::OwnedHandleRef Handle_getCursor(HandleRef _this) {
+    OwnedRef Handle_getCursor(HandleRef _this) {
         auto ret = THIS->cursor();
-        return (Cursor::OwnedHandleRef)new QCursor(ret);
+        return (Cursor::OwnedRef)new QCursor(ret);
     }
 
     void Handle_setEnabled(HandleRef _this, bool enabled) {

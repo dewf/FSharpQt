@@ -1,8 +1,9 @@
 module Cursor;
 
-opaque Handle;
+@nodispose
+opaque Unowned;
 
-opaque OwnedHandle extends Handle;
+opaque Owned extends Unowned;
 
 sumtype Deferred {
     Todo

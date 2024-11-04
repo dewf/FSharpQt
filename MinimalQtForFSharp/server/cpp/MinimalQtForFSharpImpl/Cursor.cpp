@@ -7,11 +7,7 @@
 
 namespace Cursor
 {
-    void Handle_dispose(HandleRef _this) {
-        printf("Cursor Handle_dispose: should never be called (not owned)\n");
-    }
-
-    void OwnedHandle_dispose(OwnedHandleRef _this) {
+    void Owned_dispose(OwnedRef _this) {
         delete THIS;
     }
 }

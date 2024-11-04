@@ -40,7 +40,7 @@ opaque Handle extends Object.Handle {
     Rect childrenRect();
     Region.OwnedHandle childrenRegion();
     void setContextMenuPolicy(ContextMenuPolicy policy);
-    Cursor.OwnedHandle getCursor();
+    Cursor.Owned getCursor();
     void setEnabled(bool enabled);
     bool hasFocus();
     void setFocusPolicy(FocusPolicy policy);
