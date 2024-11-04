@@ -20,7 +20,7 @@ namespace ModelIndex
 {
 
     struct __Handle; typedef struct __Handle* HandleRef;
-    struct __OwnedHandle; typedef struct __OwnedHandle* OwnedHandleRef; // extends HandleRef
+    struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
     namespace Deferred {
         class Base;
@@ -32,7 +32,7 @@ namespace ModelIndex
     Variant::OwnedHandleRef Handle_data(HandleRef _this);
     Variant::OwnedHandleRef Handle_data(HandleRef _this, Enums::ItemDataRole role);
 
-    void OwnedHandle_dispose(OwnedHandleRef _this);
+    void Owned_dispose(OwnedRef _this);
 
     namespace Deferred {
         class Empty;
@@ -70,8 +70,8 @@ namespace ModelIndex
 
         class FromOwned : public Base {
         public:
-            const OwnedHandleRef owned;
-            FromOwned(OwnedHandleRef owned) : owned(owned) {}
+            const OwnedRef owned;
+            FromOwned(OwnedRef owned) : owned(owned) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromOwned(this);
             }

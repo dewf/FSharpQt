@@ -17,10 +17,10 @@ namespace ModelIndex
 
     void Handle_data_overload1__wrapper();
 
-    void OwnedHandle__push(OwnedHandleRef value);
-    OwnedHandleRef OwnedHandle__pop();
+    void Owned__push(OwnedRef value);
+    OwnedRef Owned__pop();
 
-    void OwnedHandle_dispose__wrapper();
+    void Owned_dispose__wrapper();
     void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn);
     std::shared_ptr<Deferred::Base> Deferred__pop();
 

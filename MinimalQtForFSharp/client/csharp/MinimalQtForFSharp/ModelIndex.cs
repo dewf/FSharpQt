@@ -21,7 +21,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static ModuleMethodHandle _handle_column;
         internal static ModuleMethodHandle _handle_data;
         internal static ModuleMethodHandle _handle_data_overload1;
-        internal static ModuleMethodHandle _ownedHandle_dispose;
+        internal static ModuleMethodHandle _owned_dispose;
         public class Handle : IComparable
         {
             internal readonly IntPtr NativeHandle;
@@ -55,18 +55,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_column);
                 return NativeImplClient.PopInt32();
             }
-            public Variant.OwnedHandle Data()
+            public OwnedHandle Data()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_data);
-                return Variant.OwnedHandle__Pop();
+                return OwnedHandle__Pop();
             }
-            public Variant.OwnedHandle Data(ItemDataRole role)
+            public OwnedHandle Data(ItemDataRole role)
             {
                 ItemDataRole__Push(role);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_data_overload1);
-                return Variant.OwnedHandle__Pop();
+                return OwnedHandle__Pop();
             }
         }
 
@@ -82,34 +82,34 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ptr = NativeImplClient.PopPtr();
             return ptr != IntPtr.Zero ? new Handle(ptr) : null;
         }
-        public class OwnedHandle : Handle, IDisposable
+        public class Owned : Handle, IDisposable
         {
             protected bool _disposed;
-            internal OwnedHandle(IntPtr nativeHandle) : base(nativeHandle)
+            internal Owned(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
             public virtual void Dispose()
             {
                 if (!_disposed)
                 {
-                    OwnedHandle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_ownedHandle_dispose);
+                    Owned__Push(this);
+                    NativeImplClient.InvokeModuleMethod(_owned_dispose);
                     _disposed = true;
                 }
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void OwnedHandle__Push(OwnedHandle thing)
+        internal static void Owned__Push(Owned thing)
         {
             NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static OwnedHandle OwnedHandle__Pop()
+        internal static Owned Owned__Pop()
         {
             var ptr = NativeImplClient.PopPtr();
-            return ptr != IntPtr.Zero ? new OwnedHandle(ptr) : null;
+            return ptr != IntPtr.Zero ? new Owned(ptr) : null;
         }
         public abstract record Deferred
         {
@@ -151,18 +151,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                     return new FromHandle(handle);
                 }
             }
-            public sealed record FromOwned(OwnedHandle Owned) : Deferred
+            public sealed record FromOwned(Owned Owned) : Deferred
             {
-                public OwnedHandle Owned { get; } = Owned;
+                public Owned Owned { get; } = Owned;
                 internal override void Push(bool isReturn)
                 {
-                    OwnedHandle__Push(Owned);
+                    Owned__Push(Owned);
                     // kind
                     NativeImplClient.PushInt32(2);
                 }
                 internal static FromOwned PopDerived()
                 {
-                    var owned = OwnedHandle__Pop();
+                    var owned = Owned__Pop();
                     return new FromOwned(owned);
                 }
             }
@@ -189,7 +189,7 @@ namespace Org.Whatever.MinimalQtForFSharp
             _handle_column = NativeImplClient.GetModuleMethod(_module, "Handle_column");
             _handle_data = NativeImplClient.GetModuleMethod(_module, "Handle_data");
             _handle_data_overload1 = NativeImplClient.GetModuleMethod(_module, "Handle_data_overload1");
-            _ownedHandle_dispose = NativeImplClient.GetModuleMethod(_module, "OwnedHandle_dispose");
+            _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
 
             // no static init
         }

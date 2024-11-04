@@ -35,25 +35,25 @@ namespace ModelIndex
 
     void Handle_data__wrapper() {
         auto _this = Handle__pop();
-        Variant::OwnedHandle__push(Handle_data(_this));
+        OwnedHandle__push(Handle_data(_this));
     }
 
     void Handle_data_overload1__wrapper() {
         auto _this = Handle__pop();
         auto role = ItemDataRole__pop();
-        Variant::OwnedHandle__push(Handle_data(_this, role));
+        OwnedHandle__push(Handle_data(_this, role));
     }
-    void OwnedHandle__push(OwnedHandleRef value) {
+    void Owned__push(OwnedRef value) {
         ni_pushPtr(value);
     }
 
-    OwnedHandleRef OwnedHandle__pop() {
-        return (OwnedHandleRef)ni_popPtr();
+    OwnedRef Owned__pop() {
+        return (OwnedRef)ni_popPtr();
     }
 
-    void OwnedHandle_dispose__wrapper() {
-        auto _this = OwnedHandle__pop();
-        OwnedHandle_dispose(_this);
+    void Owned_dispose__wrapper() {
+        auto _this = Owned__pop();
+        Owned_dispose(_this);
     }
 
     class Deferred_PushVisitor : public Deferred::Visitor {
@@ -71,7 +71,7 @@ namespace ModelIndex
             ni_pushInt32(1);
         }
         void onFromOwned(const Deferred::FromOwned* fromOwnedValue) override {
-            OwnedHandle__push(fromOwnedValue->owned);
+            Owned__push(fromOwnedValue->owned);
             // kind:
             ni_pushInt32(2);
         }
@@ -95,7 +95,7 @@ namespace ModelIndex
             break;
         }
         case 2: {
-            auto owned = OwnedHandle__pop();
+            auto owned = Owned__pop();
             __ret = new Deferred::FromOwned(owned);
             break;
         }
@@ -112,7 +112,7 @@ namespace ModelIndex
         ni_registerModuleMethod(m, "Handle_column", &Handle_column__wrapper);
         ni_registerModuleMethod(m, "Handle_data", &Handle_data__wrapper);
         ni_registerModuleMethod(m, "Handle_data_overload1", &Handle_data_overload1__wrapper);
-        ni_registerModuleMethod(m, "OwnedHandle_dispose", &OwnedHandle_dispose__wrapper);
+        ni_registerModuleMethod(m, "Owned_dispose", &Owned_dispose__wrapper);
         return 0; // = OK
     }
 }

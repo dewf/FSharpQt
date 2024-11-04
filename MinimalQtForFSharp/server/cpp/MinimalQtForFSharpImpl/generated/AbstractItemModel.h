@@ -83,8 +83,8 @@ namespace AbstractItemModel
         virtual void rowsRemoved(ModelIndex::HandleRef parent, int32_t first, int32_t last) = 0;
     };
 
-    ModelIndex::OwnedHandleRef Handle_index(HandleRef _this, int32_t row, int32_t column);
-    ModelIndex::OwnedHandleRef Handle_index(HandleRef _this, int32_t row, int32_t column, std::shared_ptr<ModelIndex::Deferred::Base> parent);
+    ModelIndex::OwnedRef Handle_index(HandleRef _this, int32_t row, int32_t column);
+    ModelIndex::OwnedRef Handle_index(HandleRef _this, int32_t row, int32_t column, std::shared_ptr<ModelIndex::Deferred::Base> parent);
     bool Handle_setData(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index, std::shared_ptr<Variant::Deferred::Base> value);
     bool Handle_setData(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index, std::shared_ptr<Variant::Deferred::Base> value, Enums::ItemDataRole role);
     Variant::OwnedHandleRef Handle_data(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index);

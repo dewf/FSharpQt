@@ -458,7 +458,7 @@ namespace AbstractProxyModel
     void Handle_mapToSource__wrapper() {
         auto _this = Handle__pop();
         auto proxyIndex = Deferred__pop();
-        OwnedHandle__push(Handle_mapToSource(_this, proxyIndex));
+        Owned__push(Handle_mapToSource(_this, proxyIndex));
     }
 
     int __register() {
