@@ -20,14 +20,14 @@ namespace ModelIndex
         return THIS->column();
     }
 
-    Variant::OwnedHandleRef Handle_data(HandleRef _this) {
+    Variant::OwnedRef Handle_data(HandleRef _this) {
         auto value = THIS->data();
-        return (Variant::OwnedHandleRef) new QVariant(value);
+        return (Variant::OwnedRef) new QVariant(value);
     }
 
-    Variant::OwnedHandleRef Handle_data(HandleRef _this, ItemDataRole role) {
+    Variant::OwnedRef Handle_data(HandleRef _this, ItemDataRole role) {
         auto value = THIS->data((Qt::ItemDataRole)role);
-        return (Variant::OwnedHandleRef) new QVariant(value);
+        return (Variant::OwnedRef) new QVariant(value);
     }
 
     void Owned_dispose(OwnedRef _this) {

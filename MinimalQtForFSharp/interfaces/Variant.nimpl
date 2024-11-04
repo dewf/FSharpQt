@@ -21,7 +21,7 @@ sumtype ServerValue {
     Unknown
 }
 
-// @nodispose // temporarily removed because our codegen sucks and we're inheriting for OwnedHandle
+@nodispose
 opaque Handle {
     bool isValid();
 
@@ -32,15 +32,14 @@ opaque Handle {
 
     // convenience function, special values for toInt()
     CheckState toCheckState();
-    
-    // no toIcon() yet, because ownership is murky (Icon is currently @nodispose) [TODO: need an Icon.OwnedHandle, similar to how we're dealing with ModelIndex]
-    // same for toColor()
+
+    // Icon.Owned toIcon();
+    // Color.Owned toColor();
 
     ServerValue toServerValue();
 }
 
-// see long note in ModelIndex module
-opaque OwnedHandle extends Handle;
+opaque Owned extends Handle;
 
 sumtype Deferred {
     Empty,

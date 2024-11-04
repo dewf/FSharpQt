@@ -55,9 +55,9 @@ enum SizeAdjustPolicy {
 }
 
 opaque Handle extends Widget.Handle {
-    int count();                                        // read-only
-    Variant.OwnedHandle currentData();                  // read-only
-    Variant.OwnedHandle currentData(ItemDataRole role); // read-only
+    int count();                                  // read-only
+    Variant.Owned currentData();                  // read-only
+    Variant.Owned currentData(ItemDataRole role); // read-only
     int currentIndex();
     void setCurrentIndex(int index);
     void setCurrentText(string text);

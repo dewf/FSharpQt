@@ -89,14 +89,14 @@ namespace ComboBox
         return THIS->count();
     }
 
-    Variant::OwnedHandleRef Handle_currentData(HandleRef _this) {
+    Variant::OwnedRef Handle_currentData(HandleRef _this) {
         auto ret = THIS->currentData();
-        return (Variant::OwnedHandleRef) new QVariant(ret);
+        return (Variant::OwnedRef) new QVariant(ret);
     }
 
-    Variant::OwnedHandleRef Handle_currentData(HandleRef _this, ItemDataRole role) {
+    Variant::OwnedRef Handle_currentData(HandleRef _this, ItemDataRole role) {
         auto ret = THIS->currentData((Qt::ItemDataRole)role);
-        return (Variant::OwnedHandleRef) new QVariant(ret);
+        return (Variant::OwnedRef) new QVariant(ret);
     }
 
     int32_t Handle_currentIndex(HandleRef _this) {

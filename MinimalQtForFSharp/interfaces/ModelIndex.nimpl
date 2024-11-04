@@ -9,8 +9,8 @@ opaque Handle {
     int row();
     int column();
 
-    Variant.OwnedHandle data();
-    Variant.OwnedHandle data(ItemDataRole role);
+    Variant.Owned data();
+    Variant.Owned data(ItemDataRole role);
 }
 
 // Owned handle, for rare instances when we need to manually invoke methods returning ModelIndex

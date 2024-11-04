@@ -745,7 +745,7 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
     let mutable disposed = false
     member val internal Handle = qtVariant
 
-    internal new(ownedVariant: Org.Whatever.MinimalQtForFSharp.Variant.OwnedHandle) =
+    internal new(ownedVariant: Org.Whatever.MinimalQtForFSharp.Variant.Owned) =
         new VariantProxy(ownedVariant, true)
     internal new(unowned: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
         new VariantProxy(unowned, false)
@@ -753,7 +753,7 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
     interface IDisposable with
         member this.Dispose() =
             if owned && not disposed then
-                qtVariant.Dispose()
+                (qtVariant :?> Org.Whatever.MinimalQtForFSharp.Variant.Owned).Dispose()
                 disposed <- true
 
     override this.Finalize() =

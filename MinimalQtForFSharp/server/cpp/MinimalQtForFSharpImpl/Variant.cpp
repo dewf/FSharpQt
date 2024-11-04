@@ -66,7 +66,7 @@ namespace Variant
         printf("Variant::Handle_dispose() - should never be called (in fact should be @nodispose, long story)\n");
     }
 
-    void OwnedHandle_dispose(OwnedHandleRef _this) {
+    void Owned_dispose(OwnedRef _this) {
         delete THIS;
     }
 
