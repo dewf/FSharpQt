@@ -14,16 +14,15 @@
 namespace Cursor
 {
 
-    struct __Handle; typedef struct __Handle* HandleRef;
-    struct __OwnedHandle; typedef struct __OwnedHandle* OwnedHandleRef; // extends HandleRef
+    struct __Unowned; typedef struct __Unowned* UnownedRef;
+    struct __Owned; typedef struct __Owned* OwnedRef; // extends UnownedRef
 
     namespace Deferred {
         class Base;
     }
 
-    void Handle_dispose(HandleRef _this);
 
-    void OwnedHandle_dispose(OwnedHandleRef _this);
+    void Owned_dispose(OwnedRef _this);
 
     namespace Deferred {
         class Todo;

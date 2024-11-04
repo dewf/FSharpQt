@@ -70,7 +70,7 @@ namespace Widget
     Common::Rect Handle_childrenRect(HandleRef _this);
     Region::OwnedHandleRef Handle_childrenRegion(HandleRef _this);
     void Handle_setContextMenuPolicy(HandleRef _this, Enums::ContextMenuPolicy policy);
-    Cursor::OwnedHandleRef Handle_getCursor(HandleRef _this);
+    Cursor::OwnedRef Handle_getCursor(HandleRef _this);
     void Handle_setEnabled(HandleRef _this, bool enabled);
     bool Handle_hasFocus(HandleRef _this);
     void Handle_setFocusPolicy(HandleRef _this, Enums::FocusPolicy policy);

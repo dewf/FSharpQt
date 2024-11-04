@@ -389,11 +389,11 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setContextMenuPolicy);
             }
-            public Cursor.OwnedHandle GetCursor()
+            public Owned GetCursor()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_getCursor);
-                return Cursor.OwnedHandle__Pop();
+                return Owned__Pop();
             }
             public void SetEnabled(bool enabled)
             {

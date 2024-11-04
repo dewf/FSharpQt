@@ -231,7 +231,7 @@ namespace Widget
 
     void Handle_getCursor__wrapper() {
         auto _this = Handle__pop();
-        Cursor::OwnedHandle__push(Handle_getCursor(_this));
+        Owned__push(Handle_getCursor(_this));
     }
 
     void Handle_setEnabled__wrapper() {

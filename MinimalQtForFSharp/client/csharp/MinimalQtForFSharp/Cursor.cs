@@ -13,74 +13,64 @@ namespace Org.Whatever.MinimalQtForFSharp
     public static class Cursor
     {
         private static ModuleHandle _module;
-        internal static ModuleMethodHandle _handle_dispose;
-        internal static ModuleMethodHandle _ownedHandle_dispose;
-        public class Handle : IComparable, IDisposable
+        internal static ModuleMethodHandle _owned_dispose;
+        public class Unowned : IComparable
         {
             internal readonly IntPtr NativeHandle;
-            protected bool _disposed;
-            internal Handle(IntPtr nativeHandle)
+            internal Unowned(IntPtr nativeHandle)
             {
                 NativeHandle = nativeHandle;
             }
             public int CompareTo(object obj)
             {
-                if (obj is Handle other)
+                if (obj is Unowned other)
                 {
                     return NativeHandle.CompareTo(other.NativeHandle);
                 }
                 throw new Exception("CompareTo: wrong type");
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void Unowned__Push(Unowned thing)
+        {
+            NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Unowned Unowned__Pop()
+        {
+            var ptr = NativeImplClient.PopPtr();
+            return ptr != IntPtr.Zero ? new Unowned(ptr) : null;
+        }
+        public class Owned : Unowned, IDisposable
+        {
+            protected bool _disposed;
+            internal Owned(IntPtr nativeHandle) : base(nativeHandle)
+            {
+            }
             public virtual void Dispose()
             {
                 if (!_disposed)
                 {
-                    Handle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_handle_dispose);
+                    Owned__Push(this);
+                    NativeImplClient.InvokeModuleMethod(_owned_dispose);
                     _disposed = true;
                 }
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Handle__Push(Handle thing)
+        internal static void Owned__Push(Owned thing)
         {
             NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Handle Handle__Pop()
+        internal static Owned Owned__Pop()
         {
             var ptr = NativeImplClient.PopPtr();
-            return ptr != IntPtr.Zero ? new Handle(ptr) : null;
-        }
-        public class OwnedHandle : Handle
-        {
-            internal OwnedHandle(IntPtr nativeHandle) : base(nativeHandle)
-            {
-            }
-            public override void Dispose()
-            {
-                if (!_disposed)
-                {
-                    OwnedHandle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_ownedHandle_dispose);
-                    _disposed = true;
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void OwnedHandle__Push(OwnedHandle thing)
-        {
-            NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static OwnedHandle OwnedHandle__Pop()
-        {
-            var ptr = NativeImplClient.PopPtr();
-            return ptr != IntPtr.Zero ? new OwnedHandle(ptr) : null;
+            return ptr != IntPtr.Zero ? new Owned(ptr) : null;
         }
         public abstract record Deferred
         {
@@ -123,8 +113,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             _module = NativeImplClient.GetModule("Cursor");
             // assign module handles
-            _handle_dispose = NativeImplClient.GetModuleMethod(_module, "Handle_dispose");
-            _ownedHandle_dispose = NativeImplClient.GetModuleMethod(_module, "OwnedHandle_dispose");
+            _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
 
             // no static init
         }
