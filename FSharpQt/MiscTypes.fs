@@ -815,19 +815,19 @@ type ModelIndexProxy private(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.H
     new(index: ModelIndex.Handle) =
         new ModelIndexProxy(index, false)
     
-    new(index: ModelIndex.OwnedHandle) =
+    new(index: ModelIndex.Owned) =
         new ModelIndexProxy(index, true)
         
     member this.AsDeferred =
         if owned then
-            ModelIndex.Deferred.FromOwned(index :?> ModelIndex.OwnedHandle) :> ModelIndex.Deferred
+            ModelIndex.Deferred.FromOwned(index :?> ModelIndex.Owned) :> ModelIndex.Deferred
         else
             ModelIndex.Deferred.FromHandle(index)
     
     interface IDisposable with
         member this.Dispose() =
             if owned && not disposed then
-                (index :?> ModelIndex.OwnedHandle).Dispose()
+                (index :?> ModelIndex.Owned).Dispose()
                 disposed <- true
 
     override this.Finalize() =

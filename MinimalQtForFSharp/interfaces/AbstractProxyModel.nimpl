@@ -45,7 +45,7 @@ opaque Handle extends AbstractItemModel.Handle {
     void setSourceModel(AbstractItemModel.Handle sourceModel);
 
     // owned, must be released! (heap allocated copy)
-    ModelIndex.OwnedHandle mapToSource(ModelIndex.Deferred proxyIndex);
+    ModelIndex.Owned mapToSource(ModelIndex.Deferred proxyIndex);
 
     // abstract, no signal mask setter
 }

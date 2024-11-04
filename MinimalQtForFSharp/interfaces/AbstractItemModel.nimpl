@@ -63,8 +63,8 @@ interface SignalHandler {
 @nodispose
 opaque Handle extends Object.Handle {
     // overloads of a single method:
-    ModelIndex.OwnedHandle index(int row, int column);
-    ModelIndex.OwnedHandle index(int row, int column, ModelIndex.Deferred parent);
+    ModelIndex.Owned index(int row, int column);
+    ModelIndex.Owned index(int row, int column, ModelIndex.Deferred parent);
 
     bool setData(ModelIndex.Deferred index, Variant.Deferred value);
     bool setData(ModelIndex.Deferred index, Variant.Deferred value, ItemDataRole role);

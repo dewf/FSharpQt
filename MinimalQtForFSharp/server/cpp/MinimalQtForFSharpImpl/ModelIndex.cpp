@@ -30,12 +30,7 @@ namespace ModelIndex
         return (Variant::OwnedHandleRef) new QVariant(value);
     }
 
-    void Handle_dispose(HandleRef _this) {
-        // method only exists due to codegen deficiency
-        printf("QModelIndex Handle_dispose - you should never see this, and it needs to be removed (via @nodispose) Handle isn't owned (vs. OwnedHandle)\n");
-    }
-
-    void OwnedHandle_dispose(OwnedHandleRef _this) {
+    void Owned_dispose(OwnedRef _this) {
         delete THIS;
     }
 

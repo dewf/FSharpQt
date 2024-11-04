@@ -10,14 +10,14 @@
 
 namespace AbstractItemModel
 {
-    ModelIndex::OwnedHandleRef Handle_index(HandleRef _this, int32_t row, int32_t column) {
+    ModelIndex::OwnedRef Handle_index(HandleRef _this, int32_t row, int32_t column) {
         auto value = THIS->index(row, column);
-        return (ModelIndex::OwnedHandleRef) new QModelIndex(value);
+        return (ModelIndex::OwnedRef) new QModelIndex(value);
     }
 
-    ModelIndex::OwnedHandleRef Handle_index(HandleRef _this, int32_t row, int32_t column, std::shared_ptr<ModelIndex::Deferred::Base> parent) {
+    ModelIndex::OwnedRef Handle_index(HandleRef _this, int32_t row, int32_t column, std::shared_ptr<ModelIndex::Deferred::Base> parent) {
         auto value = THIS->index(row, column, ModelIndex::fromDeferred(parent));
-        return (ModelIndex::OwnedHandleRef) new QModelIndex(value);
+        return (ModelIndex::OwnedRef) new QModelIndex(value);
     }
 
     bool Handle_setData(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index, std::shared_ptr<Variant::Deferred::Base> value) {
