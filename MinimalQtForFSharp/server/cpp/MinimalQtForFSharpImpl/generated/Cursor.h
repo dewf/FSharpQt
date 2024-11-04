@@ -14,8 +14,8 @@
 namespace Cursor
 {
 
-    struct __Unowned; typedef struct __Unowned* UnownedRef;
-    struct __Owned; typedef struct __Owned* OwnedRef; // extends UnownedRef
+    struct __Handle; typedef struct __Handle* HandleRef;
+    struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
     namespace Deferred {
         class Base;

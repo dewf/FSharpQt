@@ -4,8 +4,8 @@
 namespace Cursor
 {
 
-    void Unowned__push(UnownedRef value);
-    UnownedRef Unowned__pop();
+    void Handle__push(HandleRef value);
+    HandleRef Handle__pop();
 
     void Owned__push(OwnedRef value);
     OwnedRef Owned__pop();

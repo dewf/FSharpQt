@@ -4,12 +4,12 @@
 
 namespace Cursor
 {
-    void Unowned__push(UnownedRef value) {
+    void Handle__push(HandleRef value) {
         ni_pushPtr(value);
     }
 
-    UnownedRef Unowned__pop() {
-        return (UnownedRef)ni_popPtr();
+    HandleRef Handle__pop() {
+        return (HandleRef)ni_popPtr();
     }
     void Owned__push(OwnedRef value) {
         ni_pushPtr(value);

@@ -14,16 +14,16 @@ namespace Org.Whatever.MinimalQtForFSharp
     {
         private static ModuleHandle _module;
         internal static ModuleMethodHandle _owned_dispose;
-        public class Unowned : IComparable
+        public class Handle : IComparable
         {
             internal readonly IntPtr NativeHandle;
-            internal Unowned(IntPtr nativeHandle)
+            internal Handle(IntPtr nativeHandle)
             {
                 NativeHandle = nativeHandle;
             }
             public int CompareTo(object obj)
             {
-                if (obj is Unowned other)
+                if (obj is Handle other)
                 {
                     return NativeHandle.CompareTo(other.NativeHandle);
                 }
@@ -32,18 +32,18 @@ namespace Org.Whatever.MinimalQtForFSharp
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Unowned__Push(Unowned thing)
+        internal static void Handle__Push(Handle thing)
         {
             NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Unowned Unowned__Pop()
+        internal static Handle Handle__Pop()
         {
             var ptr = NativeImplClient.PopPtr();
-            return ptr != IntPtr.Zero ? new Unowned(ptr) : null;
+            return ptr != IntPtr.Zero ? new Handle(ptr) : null;
         }
-        public class Owned : Unowned, IDisposable
+        public class Owned : Handle, IDisposable
         {
             protected bool _disposed;
             internal Owned(IntPtr nativeHandle) : base(nativeHandle)
