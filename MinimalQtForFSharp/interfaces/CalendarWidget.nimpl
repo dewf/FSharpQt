@@ -57,7 +57,7 @@ opaque Handle extends Widget.Handle {
     void setMaximumDate(Date.Deferred value);
     void setMinimumDate(Date.Deferred value);
     void setNavigationBarVisible(bool visible);
-    Date.OwnedHandle selectedDate();
+    Date.Owned selectedDate();
     void setSelectedDate(Date.Deferred selected);
     void setSelectionMode(SelectionMode mode);
     void setVerticalHeaderFormat(VerticalHeaderFormat format);

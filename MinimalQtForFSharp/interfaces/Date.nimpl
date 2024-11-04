@@ -6,12 +6,13 @@ struct YearMonthDay {
     int day;
 }
 
+@nodispose
 opaque Handle {
     // fake method for ease of conversion to DateOnly
     YearMonthDay toYearMonthDay();
 }
 
-opaque OwnedHandle extends Handle;
+opaque Owned extends Handle;
 
 sumtype Deferred {
     FromYearMonthDay(int year, int month, int day)

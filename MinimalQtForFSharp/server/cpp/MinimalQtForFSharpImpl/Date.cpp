@@ -29,12 +29,7 @@ namespace Date
         return YearMonthDay{ THIS->year(), THIS->month(), THIS->day() };
     }
 
-    void Handle_dispose(HandleRef _this) {
-        // Handles aren't owned
-        printf("Date: Handle_dispose called, why?\n");
-    }
-
-    void OwnedHandle_dispose(OwnedHandleRef _this) {
+    void Owned_dispose(OwnedRef _this) {
         delete THIS;
     }
 }
