@@ -342,18 +342,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_count);
                 return NativeImplClient.PopInt32();
             }
-            public OwnedHandle CurrentData()
+            public Owned CurrentData()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_currentData);
-                return OwnedHandle__Pop();
+                return Owned__Pop();
             }
-            public OwnedHandle CurrentData(ItemDataRole role)
+            public Owned CurrentData(ItemDataRole role)
             {
                 ItemDataRole__Push(role);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_currentData_overload1);
-                return OwnedHandle__Pop();
+                return Owned__Pop();
             }
             public int CurrentIndex()
             {

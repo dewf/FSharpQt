@@ -29,8 +29,8 @@ namespace ModelIndex
     bool Handle_isValid(HandleRef _this);
     int32_t Handle_row(HandleRef _this);
     int32_t Handle_column(HandleRef _this);
-    Variant::OwnedHandleRef Handle_data(HandleRef _this);
-    Variant::OwnedHandleRef Handle_data(HandleRef _this, Enums::ItemDataRole role);
+    Variant::OwnedRef Handle_data(HandleRef _this);
+    Variant::OwnedRef Handle_data(HandleRef _this, Enums::ItemDataRole role);
 
     void Owned_dispose(OwnedRef _this);
 

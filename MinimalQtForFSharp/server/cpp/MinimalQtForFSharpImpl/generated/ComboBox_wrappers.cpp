@@ -270,13 +270,13 @@ namespace ComboBox
 
     void Handle_currentData__wrapper() {
         auto _this = Handle__pop();
-        OwnedHandle__push(Handle_currentData(_this));
+        Owned__push(Handle_currentData(_this));
     }
 
     void Handle_currentData_overload1__wrapper() {
         auto _this = Handle__pop();
         auto role = ItemDataRole__pop();
-        OwnedHandle__push(Handle_currentData(_this, role));
+        Owned__push(Handle_currentData(_this, role));
     }
 
     void Handle_currentIndex__wrapper() {

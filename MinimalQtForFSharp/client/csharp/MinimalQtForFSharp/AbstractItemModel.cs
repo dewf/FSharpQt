@@ -399,22 +399,22 @@ namespace Org.Whatever.MinimalQtForFSharp
             internal Handle(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public Owned Index(int row, int column)
+            public ModelIndex.Owned Index(int row, int column)
             {
                 NativeImplClient.PushInt32(column);
                 NativeImplClient.PushInt32(row);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_index);
-                return Owned__Pop();
+                return ModelIndex.Owned__Pop();
             }
-            public Owned Index(int row, int column, ModelIndex.Deferred parent)
+            public ModelIndex.Owned Index(int row, int column, ModelIndex.Deferred parent)
             {
                 ModelIndex.Deferred__Push(parent, false);
                 NativeImplClient.PushInt32(column);
                 NativeImplClient.PushInt32(row);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_index_overload1);
-                return Owned__Pop();
+                return ModelIndex.Owned__Pop();
             }
             public bool SetData(ModelIndex.Deferred index, Variant.Deferred value)
             {
@@ -433,20 +433,20 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_setData_overload1);
                 return NativeImplClient.PopBool();
             }
-            public OwnedHandle Data(ModelIndex.Deferred index)
+            public Variant.Owned Data(ModelIndex.Deferred index)
             {
                 ModelIndex.Deferred__Push(index, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_data);
-                return OwnedHandle__Pop();
+                return Variant.Owned__Pop();
             }
-            public OwnedHandle Data(ModelIndex.Deferred index, ItemDataRole role)
+            public Variant.Owned Data(ModelIndex.Deferred index, ItemDataRole role)
             {
                 ItemDataRole__Push(role);
                 ModelIndex.Deferred__Push(index, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_data_overload1);
-                return OwnedHandle__Pop();
+                return Variant.Owned__Pop();
             }
             public void Sort(int column)
             {

@@ -24,7 +24,7 @@ namespace Variant
 {
 
     struct __Handle; typedef struct __Handle* HandleRef;
-    struct __OwnedHandle; typedef struct __OwnedHandle* OwnedHandleRef; // extends HandleRef
+    struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
     namespace ServerValue {
         class Base;
@@ -95,9 +95,8 @@ namespace Variant
     Common::Size Handle_toSize(HandleRef _this);
     Enums::CheckState Handle_toCheckState(HandleRef _this);
     std::shared_ptr<ServerValue::Base> Handle_toServerValue(HandleRef _this);
-    void Handle_dispose(HandleRef _this);
 
-    void OwnedHandle_dispose(OwnedHandleRef _this);
+    void Owned_dispose(OwnedRef _this);
 
     namespace Deferred {
         class Empty;

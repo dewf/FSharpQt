@@ -55,18 +55,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_column);
                 return NativeImplClient.PopInt32();
             }
-            public OwnedHandle Data()
+            public Variant.Owned Data()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_data);
-                return OwnedHandle__Pop();
+                return Variant.Owned__Pop();
             }
-            public OwnedHandle Data(ItemDataRole role)
+            public Variant.Owned Data(ItemDataRole role)
             {
                 ItemDataRole__Push(role);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_data_overload1);
-                return OwnedHandle__Pop();
+                return Variant.Owned__Pop();
             }
         }
 

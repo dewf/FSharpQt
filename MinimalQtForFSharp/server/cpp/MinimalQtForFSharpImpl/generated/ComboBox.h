@@ -83,8 +83,8 @@ namespace ComboBox
     };
 
     int32_t Handle_count(HandleRef _this);
-    Variant::OwnedHandleRef Handle_currentData(HandleRef _this);
-    Variant::OwnedHandleRef Handle_currentData(HandleRef _this, Enums::ItemDataRole role);
+    Variant::OwnedRef Handle_currentData(HandleRef _this);
+    Variant::OwnedRef Handle_currentData(HandleRef _this, Enums::ItemDataRole role);
     int32_t Handle_currentIndex(HandleRef _this);
     void Handle_setCurrentIndex(HandleRef _this, int32_t index);
     void Handle_setCurrentText(HandleRef _this, std::string text);

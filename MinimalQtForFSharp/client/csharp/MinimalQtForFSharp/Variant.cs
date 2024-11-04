@@ -25,8 +25,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static ModuleMethodHandle _handle_toSize;
         internal static ModuleMethodHandle _handle_toCheckState;
         internal static ModuleMethodHandle _handle_toServerValue;
-        internal static ModuleMethodHandle _handle_dispose;
-        internal static ModuleMethodHandle _ownedHandle_dispose;
+        internal static ModuleMethodHandle _owned_dispose;
         public abstract record ServerValue
         {
             internal abstract void Push(bool isReturn);
@@ -111,10 +110,9 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             return ServerValue.Pop();
         }
-        public class Handle : IComparable, IDisposable
+        public class Handle : IComparable
         {
             internal readonly IntPtr NativeHandle;
-            protected bool _disposed;
             internal Handle(IntPtr nativeHandle)
             {
                 NativeHandle = nativeHandle;
@@ -126,15 +124,6 @@ namespace Org.Whatever.MinimalQtForFSharp
                     return NativeHandle.CompareTo(other.NativeHandle);
                 }
                 throw new Exception("CompareTo: wrong type");
-            }
-            public virtual void Dispose()
-            {
-                if (!_disposed)
-                {
-                    Handle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_handle_dispose);
-                    _disposed = true;
-                }
             }
             public bool IsValid()
             {
@@ -192,33 +181,34 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ptr = NativeImplClient.PopPtr();
             return ptr != IntPtr.Zero ? new Handle(ptr) : null;
         }
-        public class OwnedHandle : Handle
+        public class Owned : Handle, IDisposable
         {
-            internal OwnedHandle(IntPtr nativeHandle) : base(nativeHandle)
+            protected bool _disposed;
+            internal Owned(IntPtr nativeHandle) : base(nativeHandle)
             {
             }
-            public override void Dispose()
+            public virtual void Dispose()
             {
                 if (!_disposed)
                 {
-                    OwnedHandle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_ownedHandle_dispose);
+                    Owned__Push(this);
+                    NativeImplClient.InvokeModuleMethod(_owned_dispose);
                     _disposed = true;
                 }
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void OwnedHandle__Push(OwnedHandle thing)
+        internal static void Owned__Push(Owned thing)
         {
             NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static OwnedHandle OwnedHandle__Pop()
+        internal static Owned Owned__Pop()
         {
             var ptr = NativeImplClient.PopPtr();
-            return ptr != IntPtr.Zero ? new OwnedHandle(ptr) : null;
+            return ptr != IntPtr.Zero ? new Owned(ptr) : null;
         }
         public abstract record Deferred
         {
@@ -396,8 +386,7 @@ namespace Org.Whatever.MinimalQtForFSharp
             _handle_toSize = NativeImplClient.GetModuleMethod(_module, "Handle_toSize");
             _handle_toCheckState = NativeImplClient.GetModuleMethod(_module, "Handle_toCheckState");
             _handle_toServerValue = NativeImplClient.GetModuleMethod(_module, "Handle_toServerValue");
-            _handle_dispose = NativeImplClient.GetModuleMethod(_module, "Handle_dispose");
-            _ownedHandle_dispose = NativeImplClient.GetModuleMethod(_module, "OwnedHandle_dispose");
+            _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
 
             // no static init
         }

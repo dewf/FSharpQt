@@ -446,7 +446,7 @@ namespace AbstractItemModel
         auto _this = Handle__pop();
         auto row = ni_popInt32();
         auto column = ni_popInt32();
-        Owned__push(Handle_index(_this, row, column));
+        ModelIndex::Owned__push(Handle_index(_this, row, column));
     }
 
     void Handle_index_overload1__wrapper() {
@@ -454,7 +454,7 @@ namespace AbstractItemModel
         auto row = ni_popInt32();
         auto column = ni_popInt32();
         auto parent = ModelIndex::Deferred__pop();
-        Owned__push(Handle_index(_this, row, column, parent));
+        ModelIndex::Owned__push(Handle_index(_this, row, column, parent));
     }
 
     void Handle_setData__wrapper() {
@@ -475,14 +475,14 @@ namespace AbstractItemModel
     void Handle_data__wrapper() {
         auto _this = Handle__pop();
         auto index = ModelIndex::Deferred__pop();
-        OwnedHandle__push(Handle_data(_this, index));
+        Variant::Owned__push(Handle_data(_this, index));
     }
 
     void Handle_data_overload1__wrapper() {
         auto _this = Handle__pop();
         auto index = ModelIndex::Deferred__pop();
         auto role = ItemDataRole__pop();
-        OwnedHandle__push(Handle_data(_this, index, role));
+        Variant::Owned__push(Handle_data(_this, index, role));
     }
 
     void Handle_sort__wrapper() {

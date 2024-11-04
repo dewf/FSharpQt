@@ -87,8 +87,8 @@ namespace AbstractItemModel
     ModelIndex::OwnedRef Handle_index(HandleRef _this, int32_t row, int32_t column, std::shared_ptr<ModelIndex::Deferred::Base> parent);
     bool Handle_setData(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index, std::shared_ptr<Variant::Deferred::Base> value);
     bool Handle_setData(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index, std::shared_ptr<Variant::Deferred::Base> value, Enums::ItemDataRole role);
-    Variant::OwnedHandleRef Handle_data(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index);
-    Variant::OwnedHandleRef Handle_data(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index, Enums::ItemDataRole role);
+    Variant::OwnedRef Handle_data(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index);
+    Variant::OwnedRef Handle_data(HandleRef _this, std::shared_ptr<ModelIndex::Deferred::Base> index, Enums::ItemDataRole role);
     void Handle_sort(HandleRef _this, int32_t column);
     void Handle_sort(HandleRef _this, int32_t column, Enums::SortOrder order);
 }

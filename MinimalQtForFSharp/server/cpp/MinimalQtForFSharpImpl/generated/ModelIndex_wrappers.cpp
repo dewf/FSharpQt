@@ -35,13 +35,13 @@ namespace ModelIndex
 
     void Handle_data__wrapper() {
         auto _this = Handle__pop();
-        OwnedHandle__push(Handle_data(_this));
+        Variant::Owned__push(Handle_data(_this));
     }
 
     void Handle_data_overload1__wrapper() {
         auto _this = Handle__pop();
         auto role = ItemDataRole__pop();
-        OwnedHandle__push(Handle_data(_this, role));
+        Variant::Owned__push(Handle_data(_this, role));
     }
     void Owned__push(OwnedRef value) {
         ni_pushPtr(value);
