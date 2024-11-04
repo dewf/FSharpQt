@@ -350,11 +350,11 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setNavigationBarVisible);
             }
-            public OwnedHandle SelectedDate()
+            public Owned SelectedDate()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_selectedDate);
-                return OwnedHandle__Pop();
+                return Owned__Pop();
             }
             public void SetSelectedDate(Date.Deferred selected)
             {

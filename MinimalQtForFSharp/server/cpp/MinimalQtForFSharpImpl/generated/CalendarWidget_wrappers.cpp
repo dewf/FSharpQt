@@ -281,7 +281,7 @@ namespace CalendarWidget
 
     void Handle_selectedDate__wrapper() {
         auto _this = Handle__pop();
-        OwnedHandle__push(Handle_selectedDate(_this));
+        Owned__push(Handle_selectedDate(_this));
     }
 
     void Handle_setSelectedDate__wrapper() {

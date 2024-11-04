@@ -83,7 +83,7 @@ namespace CalendarWidget
     void Handle_setMaximumDate(HandleRef _this, std::shared_ptr<Date::Deferred::Base> value);
     void Handle_setMinimumDate(HandleRef _this, std::shared_ptr<Date::Deferred::Base> value);
     void Handle_setNavigationBarVisible(HandleRef _this, bool visible);
-    Date::OwnedHandleRef Handle_selectedDate(HandleRef _this);
+    Date::OwnedRef Handle_selectedDate(HandleRef _this);
     void Handle_setSelectedDate(HandleRef _this, std::shared_ptr<Date::Deferred::Base> selected);
     void Handle_setSelectionMode(HandleRef _this, SelectionMode mode);
     void Handle_setVerticalHeaderFormat(HandleRef _this, VerticalHeaderFormat format);
