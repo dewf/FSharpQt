@@ -7,12 +7,10 @@ namespace Region
     void Handle__push(HandleRef value);
     HandleRef Handle__pop();
 
-    void Handle_dispose__wrapper();
+    void Owned__push(OwnedRef value);
+    OwnedRef Owned__pop();
 
-    void OwnedHandle__push(OwnedHandleRef value);
-    OwnedHandleRef OwnedHandle__pop();
-
-    void OwnedHandle_dispose__wrapper();
+    void Owned_dispose__wrapper();
     void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn);
     std::shared_ptr<Deferred::Base> Deferred__pop();
 

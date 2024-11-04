@@ -15,15 +15,14 @@ namespace Region
 {
 
     struct __Handle; typedef struct __Handle* HandleRef;
-    struct __OwnedHandle; typedef struct __OwnedHandle* OwnedHandleRef; // extends HandleRef
+    struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
     namespace Deferred {
         class Base;
     }
 
-    void Handle_dispose(HandleRef _this);
 
-    void OwnedHandle_dispose(OwnedHandleRef _this);
+    void Owned_dispose(OwnedRef _this);
 
     namespace Deferred {
         class Todo;

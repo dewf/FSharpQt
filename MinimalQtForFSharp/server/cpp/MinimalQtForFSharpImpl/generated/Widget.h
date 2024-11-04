@@ -68,7 +68,7 @@ namespace Widget
     void Handle_setAutoFillBackground(HandleRef _this, bool state);
     void Handle_setBaseSize(HandleRef _this, Common::Size size);
     Common::Rect Handle_childrenRect(HandleRef _this);
-    Region::OwnedHandleRef Handle_childrenRegion(HandleRef _this);
+    Region::OwnedRef Handle_childrenRegion(HandleRef _this);
     void Handle_setContextMenuPolicy(HandleRef _this, Enums::ContextMenuPolicy policy);
     Cursor::OwnedRef Handle_getCursor(HandleRef _this);
     void Handle_setEnabled(HandleRef _this, bool enabled);

@@ -220,7 +220,7 @@ namespace Widget
 
     void Handle_childrenRegion__wrapper() {
         auto _this = Handle__pop();
-        Region::OwnedHandle__push(Handle_childrenRegion(_this));
+        Region::Owned__push(Handle_childrenRegion(_this));
     }
 
     void Handle_setContextMenuPolicy__wrapper() {
@@ -231,7 +231,7 @@ namespace Widget
 
     void Handle_getCursor__wrapper() {
         auto _this = Handle__pop();
-        Owned__push(Handle_getCursor(_this));
+        Cursor::Owned__push(Handle_getCursor(_this));
     }
 
     void Handle_setEnabled__wrapper() {

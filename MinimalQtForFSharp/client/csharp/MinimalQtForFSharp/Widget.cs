@@ -377,11 +377,11 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_childrenRect);
                 return Rect__Pop();
             }
-            public Region.OwnedHandle ChildrenRegion()
+            public Region.Owned ChildrenRegion()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_childrenRegion);
-                return Region.OwnedHandle__Pop();
+                return Region.Owned__Pop();
             }
             public void SetContextMenuPolicy(ContextMenuPolicy policy)
             {
@@ -389,11 +389,11 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setContextMenuPolicy);
             }
-            public Owned GetCursor()
+            public Cursor.Owned GetCursor()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_getCursor);
-                return Owned__Pop();
+                return Cursor.Owned__Pop();
             }
             public void SetEnabled(bool enabled)
             {
