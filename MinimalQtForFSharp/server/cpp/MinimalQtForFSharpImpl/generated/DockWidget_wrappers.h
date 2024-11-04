@@ -9,7 +9,5 @@ namespace DockWidget
 
     void Handle_nothingYet__wrapper();
 
-    void Handle_dispose__wrapper();
-
     int __register();
 }

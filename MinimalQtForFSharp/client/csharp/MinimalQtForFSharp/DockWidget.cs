@@ -16,20 +16,10 @@ namespace Org.Whatever.MinimalQtForFSharp
     {
         private static ModuleHandle _module;
         internal static ModuleMethodHandle _handle_nothingYet;
-        internal static ModuleMethodHandle _handle_dispose;
         public class Handle : Widget.Handle
         {
             internal Handle(IntPtr nativeHandle) : base(nativeHandle)
             {
-            }
-            public override void Dispose()
-            {
-                if (!_disposed)
-                {
-                    Handle__Push(this);
-                    NativeImplClient.InvokeModuleMethod(_handle_dispose);
-                    _disposed = true;
-                }
             }
             public void NothingYet()
             {
@@ -56,7 +46,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             _module = NativeImplClient.GetModule("DockWidget");
             // assign module handles
             _handle_nothingYet = NativeImplClient.GetModuleMethod(_module, "Handle_nothingYet");
-            _handle_dispose = NativeImplClient.GetModuleMethod(_module, "Handle_dispose");
 
             // no static init
         }

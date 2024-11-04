@@ -20,15 +20,9 @@ namespace DockWidget
         Handle_nothingYet(_this);
     }
 
-    void Handle_dispose__wrapper() {
-        auto _this = Handle__pop();
-        Handle_dispose(_this);
-    }
-
     int __register() {
         auto m = ni_registerModule("DockWidget");
         ni_registerModuleMethod(m, "Handle_nothingYet", &Handle_nothingYet__wrapper);
-        ni_registerModuleMethod(m, "Handle_dispose", &Handle_dispose__wrapper);
         return 0; // = OK
     }
 }

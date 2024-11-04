@@ -20,5 +20,4 @@ namespace DockWidget
     struct __Handle; typedef struct __Handle* HandleRef; // extends Widget::HandleRef
 
     void Handle_nothingYet(HandleRef _this);
-    void Handle_dispose(HandleRef _this);
 }
