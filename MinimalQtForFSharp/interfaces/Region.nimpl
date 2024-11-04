@@ -1,8 +1,9 @@
 module Region;
 
+@nodispose
 opaque Handle;
 
-opaque OwnedHandle extends Handle;
+opaque Owned extends Handle;
 
 sumtype Deferred {
     Todo

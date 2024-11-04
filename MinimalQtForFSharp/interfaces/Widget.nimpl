@@ -38,7 +38,7 @@ opaque Handle extends Object.Handle {
     void setAutoFillBackground(bool state);
     void setBaseSize(Size size);
     Rect childrenRect();
-    Region.OwnedHandle childrenRegion();
+    Region.Owned childrenRegion();
     void setContextMenuPolicy(ContextMenuPolicy policy);
     Cursor.Owned getCursor();
     void setEnabled(bool enabled);

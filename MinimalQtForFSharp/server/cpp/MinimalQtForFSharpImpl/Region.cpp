@@ -6,11 +6,7 @@
 
 namespace Region
 {
-    void Handle_dispose(HandleRef _this) {
-        printf("Region Handle_dispose: should never see this (unowned handle)\n");
-    }
-
-    void OwnedHandle_dispose(OwnedHandleRef _this) {
+    void Owned_dispose(OwnedRef _this) {
         delete THIS;
     }
 }

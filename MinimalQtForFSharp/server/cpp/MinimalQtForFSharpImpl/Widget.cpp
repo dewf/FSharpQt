@@ -88,16 +88,16 @@ namespace Widget
         return toRect(THIS->childrenRect());
     }
 
-    Region::OwnedHandleRef Handle_childrenRegion(HandleRef _this) {
+    Region::OwnedRef Handle_childrenRegion(HandleRef _this) {
         auto ret = THIS->childrenRegion();
-        return (Region::OwnedHandleRef)new QRegion(ret);
+        return (Region::OwnedRef)new QRegion(ret);
     }
 
     void Handle_setContextMenuPolicy(HandleRef _this, ContextMenuPolicy policy) {
         THIS->setContextMenuPolicy((Qt::ContextMenuPolicy)policy);
     }
 
-    OwnedRef Handle_getCursor(HandleRef _this) {
+    Cursor::OwnedRef Handle_getCursor(HandleRef _this) {
         auto ret = THIS->cursor();
         return (Cursor::OwnedRef)new QCursor(ret);
     }
