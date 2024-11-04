@@ -18,9 +18,10 @@ flags Policy {
     Ignored = ShrinkFlag | GrowFlag | IgnoreFlag
 }
 
+@nodispose
 opaque Handle;
 
-opaque OwnedHandle extends Handle;
+opaque Owned extends Handle;
 
 sumtype Deferred {
     Todo
