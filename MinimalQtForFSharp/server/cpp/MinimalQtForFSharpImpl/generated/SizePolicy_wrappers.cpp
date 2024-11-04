@@ -18,22 +18,17 @@ namespace SizePolicy
     HandleRef Handle__pop() {
         return (HandleRef)ni_popPtr();
     }
-
-    void Handle_dispose__wrapper() {
-        auto _this = Handle__pop();
-        Handle_dispose(_this);
-    }
-    void OwnedHandle__push(OwnedHandleRef value) {
+    void Owned__push(OwnedRef value) {
         ni_pushPtr(value);
     }
 
-    OwnedHandleRef OwnedHandle__pop() {
-        return (OwnedHandleRef)ni_popPtr();
+    OwnedRef Owned__pop() {
+        return (OwnedRef)ni_popPtr();
     }
 
-    void OwnedHandle_dispose__wrapper() {
-        auto _this = OwnedHandle__pop();
-        OwnedHandle_dispose(_this);
+    void Owned_dispose__wrapper() {
+        auto _this = Owned__pop();
+        Owned_dispose(_this);
     }
 
     class Deferred_PushVisitor : public Deferred::Visitor {
@@ -67,8 +62,7 @@ namespace SizePolicy
 
     int __register() {
         auto m = ni_registerModule("SizePolicy");
-        ni_registerModuleMethod(m, "Handle_dispose", &Handle_dispose__wrapper);
-        ni_registerModuleMethod(m, "OwnedHandle_dispose", &OwnedHandle_dispose__wrapper);
+        ni_registerModuleMethod(m, "Owned_dispose", &Owned_dispose__wrapper);
         return 0; // = OK
     }
 }
