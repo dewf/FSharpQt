@@ -16,6 +16,7 @@ public static class Library
         Common.__Init();
         Object.__Init();
         Layout.__Init();
+        Color.__Init();
         PaintResources.__Init();
         Enums.__Init();
         Painter.__Init();
@@ -135,6 +136,7 @@ public static class Library
         Painter.__Shutdown();
         Enums.__Shutdown();
         PaintResources.__Shutdown();
+        Color.__Shutdown();
         Layout.__Shutdown();
         Object.__Shutdown();
         Common.__Shutdown();

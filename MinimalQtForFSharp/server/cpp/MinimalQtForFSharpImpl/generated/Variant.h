@@ -17,8 +17,8 @@ using namespace ::Icon;
 using namespace ::Common;
 #include "Enums.h"
 using namespace ::Enums;
-#include "PaintResources.h"
-using namespace ::PaintResources;
+#include "Color.h"
+using namespace ::Color;
 
 namespace Variant
 {
@@ -88,12 +88,18 @@ namespace Variant
         };
     }
 
+    class VariantConversionFailure {
+    public:
+        VariantConversionFailure() {}
+    };
+
     bool Handle_isValid(HandleRef _this);
     bool Handle_toBool(HandleRef _this);
     std::string Handle_toString2(HandleRef _this);
     int32_t Handle_toInt(HandleRef _this);
     Common::Size Handle_toSize(HandleRef _this);
     Enums::CheckState Handle_toCheckState(HandleRef _this);
+    Color::OwnedRef Handle_toColor(HandleRef _this);
     std::shared_ptr<ServerValue::Base> Handle_toServerValue(HandleRef _this);
 
     void Owned_dispose(OwnedRef _this);
@@ -191,8 +197,8 @@ namespace Variant
 
         class FromColor : public Base {
         public:
-            const std::shared_ptr<PaintResources::Color::Deferred::Base> value;
-            FromColor(std::shared_ptr<PaintResources::Color::Deferred::Base> value) : value(value) {}
+            const std::shared_ptr<Color::Deferred::Base> value;
+            FromColor(std::shared_ptr<Color::Deferred::Base> value) : value(value) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromColor(this);
             }

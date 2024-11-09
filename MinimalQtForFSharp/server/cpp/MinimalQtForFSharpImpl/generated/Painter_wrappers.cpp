@@ -11,6 +11,9 @@ using namespace ::PaintResources;
 #include "Enums_wrappers.h"
 using namespace ::Enums;
 
+#include "Color_wrappers.h"
+using namespace ::Color;
+
 namespace Painter
 {
     // built-in array type: std::vector<int32_t>
@@ -148,7 +151,7 @@ namespace Painter
     void Handle_fillRect_overload1__wrapper() {
         auto _this = Handle__pop();
         auto rect = Rect__pop();
-        auto color = Color__pop();
+        auto color = Deferred__pop();
         Handle_fillRect(_this, rect, color);
     }
 

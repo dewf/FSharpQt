@@ -6,6 +6,9 @@ namespace Variant
     void ServerValue__push(std::shared_ptr<ServerValue::Base> value, bool isReturn);
     std::shared_ptr<ServerValue::Base> ServerValue__pop();
 
+    void VariantConversionFailure__push(VariantConversionFailure e);
+    void VariantConversionFailure__buildAndThrow();
+
     void Handle__push(HandleRef value);
     HandleRef Handle__pop();
 
@@ -20,6 +23,8 @@ namespace Variant
     void Handle_toSize__wrapper();
 
     void Handle_toCheckState__wrapper();
+
+    void Handle_toColor__wrapper();
 
     void Handle_toServerValue__wrapper();
 

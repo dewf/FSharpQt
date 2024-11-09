@@ -11,11 +11,12 @@ using namespace ::Common;
 #include "Enums_wrappers.h"
 using namespace ::Enums;
 
-#include "PaintResources_wrappers.h"
-using namespace ::PaintResources;
+#include "Color_wrappers.h"
+using namespace ::Color;
 
 namespace Variant
 {
+    ni_ExceptionRef variantConversionFailure;
 
     class ServerValue_PushVisitor : public ServerValue::Visitor {
     private:
@@ -75,6 +76,13 @@ namespace Variant
         }
         return std::shared_ptr<ServerValue::Base>(__ret);
     }
+
+    void VariantConversionFailure__push(VariantConversionFailure e) {
+    }
+
+    void VariantConversionFailure__buildAndThrow() {
+        throw VariantConversionFailure();
+    }
     void Handle__push(HandleRef value) {
         ni_pushPtr(value);
     }
@@ -111,6 +119,11 @@ namespace Variant
     void Handle_toCheckState__wrapper() {
         auto _this = Handle__pop();
         CheckState__push(Handle_toCheckState(_this));
+    }
+
+    void Handle_toColor__wrapper() {
+        auto _this = Handle__pop();
+        Color::Owned__push(Handle_toColor(_this));
     }
 
     void Handle_toServerValue__wrapper() {
@@ -247,8 +260,10 @@ namespace Variant
         ni_registerModuleMethod(m, "Handle_toInt", &Handle_toInt__wrapper);
         ni_registerModuleMethod(m, "Handle_toSize", &Handle_toSize__wrapper);
         ni_registerModuleMethod(m, "Handle_toCheckState", &Handle_toCheckState__wrapper);
+        ni_registerModuleMethod(m, "Handle_toColor", &Handle_toColor__wrapper);
         ni_registerModuleMethod(m, "Handle_toServerValue", &Handle_toServerValue__wrapper);
         ni_registerModuleMethod(m, "Owned_dispose", &Owned_dispose__wrapper);
+        variantConversionFailure = ni_registerException(m, "VariantConversionFailure", &VariantConversionFailure__buildAndThrow);
         return 0; // = OK
     }
 }

@@ -9,6 +9,7 @@ using Org.Whatever.MinimalQtForFSharp.Support;
 using ModuleHandle = Org.Whatever.MinimalQtForFSharp.Support.ModuleHandle;
 
 using static Org.Whatever.MinimalQtForFSharp.Common;
+using static Org.Whatever.MinimalQtForFSharp.Color;
 
 namespace Org.Whatever.MinimalQtForFSharp
 {
@@ -62,202 +63,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             NativeImplClient.InvokeModuleMethod(_create);
             return Handle__Pop();
         }
-        public class Color : IComparable
-        {
-            internal readonly IntPtr NativeHandle;
-            internal Color(IntPtr nativeHandle)
-            {
-                NativeHandle = nativeHandle;
-            }
-            public int CompareTo(object obj)
-            {
-                if (obj is Color other)
-                {
-                    return NativeHandle.CompareTo(other.NativeHandle);
-                }
-                throw new Exception("CompareTo: wrong type");
-            }
-            public enum Constant
-            {
-                Black,
-                White,
-                DarkGray,
-                Gray,
-                LightGray,
-                Red,
-                Green,
-                Blue,
-                Cyan,
-                Magenta,
-                Yellow,
-                DarkRed,
-                DarkGreen,
-                DarkBlue,
-                DarkCyan,
-                DarkMagenta,
-                DarkYellow,
-                Transparent
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static void Constant__Push(Constant value)
-            {
-                NativeImplClient.PushInt32((int)value);
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static Constant Constant__Pop()
-            {
-                var ret = NativeImplClient.PopInt32();
-                return (Constant)ret;
-            }
-            public abstract record Deferred
-            {
-                internal abstract void Push(bool isReturn);
-                internal static Deferred Pop()
-                {
-                    return NativeImplClient.PopInt32() switch
-                    {
-                        0 => FromConstant.PopDerived(),
-                        1 => FromRGB.PopDerived(),
-                        2 => FromRGBA.PopDerived(),
-                        3 => FromRGBF.PopDerived(),
-                        4 => FromRGBAF.PopDerived(),
-                        _ => throw new Exception("Deferred.Pop() - unknown tag!")
-                    };
-                }
-                public sealed record FromConstant(Constant Name) : Deferred
-                {
-                    public Constant Name { get; } = Name;
-                    internal override void Push(bool isReturn)
-                    {
-                        Constant__Push(Name);
-                        // kind
-                        NativeImplClient.PushInt32(0);
-                    }
-                    internal static FromConstant PopDerived()
-                    {
-                        var name = Constant__Pop();
-                        return new FromConstant(name);
-                    }
-                }
-                public sealed record FromRGB(int R, int G, int B) : Deferred
-                {
-                    public int R { get; } = R;
-                    public int G { get; } = G;
-                    public int B { get; } = B;
-                    internal override void Push(bool isReturn)
-                    {
-                        NativeImplClient.PushInt32(B);
-                        NativeImplClient.PushInt32(G);
-                        NativeImplClient.PushInt32(R);
-                        // kind
-                        NativeImplClient.PushInt32(1);
-                    }
-                    internal static FromRGB PopDerived()
-                    {
-                        var r = NativeImplClient.PopInt32();
-                        var g = NativeImplClient.PopInt32();
-                        var b = NativeImplClient.PopInt32();
-                        return new FromRGB(r, g, b);
-                    }
-                }
-                public sealed record FromRGBA(int R, int G, int B, int A) : Deferred
-                {
-                    public int R { get; } = R;
-                    public int G { get; } = G;
-                    public int B { get; } = B;
-                    public int A { get; } = A;
-                    internal override void Push(bool isReturn)
-                    {
-                        NativeImplClient.PushInt32(A);
-                        NativeImplClient.PushInt32(B);
-                        NativeImplClient.PushInt32(G);
-                        NativeImplClient.PushInt32(R);
-                        // kind
-                        NativeImplClient.PushInt32(2);
-                    }
-                    internal static FromRGBA PopDerived()
-                    {
-                        var r = NativeImplClient.PopInt32();
-                        var g = NativeImplClient.PopInt32();
-                        var b = NativeImplClient.PopInt32();
-                        var a = NativeImplClient.PopInt32();
-                        return new FromRGBA(r, g, b, a);
-                    }
-                }
-                public sealed record FromRGBF(float R, float G, float B) : Deferred
-                {
-                    public float R { get; } = R;
-                    public float G { get; } = G;
-                    public float B { get; } = B;
-                    internal override void Push(bool isReturn)
-                    {
-                        NativeImplClient.PushFloat(B);
-                        NativeImplClient.PushFloat(G);
-                        NativeImplClient.PushFloat(R);
-                        // kind
-                        NativeImplClient.PushInt32(3);
-                    }
-                    internal static FromRGBF PopDerived()
-                    {
-                        var r = NativeImplClient.PopFloat();
-                        var g = NativeImplClient.PopFloat();
-                        var b = NativeImplClient.PopFloat();
-                        return new FromRGBF(r, g, b);
-                    }
-                }
-                public sealed record FromRGBAF(float R, float G, float B, float A) : Deferred
-                {
-                    public float R { get; } = R;
-                    public float G { get; } = G;
-                    public float B { get; } = B;
-                    public float A { get; } = A;
-                    internal override void Push(bool isReturn)
-                    {
-                        NativeImplClient.PushFloat(A);
-                        NativeImplClient.PushFloat(B);
-                        NativeImplClient.PushFloat(G);
-                        NativeImplClient.PushFloat(R);
-                        // kind
-                        NativeImplClient.PushInt32(4);
-                    }
-                    internal static FromRGBAF PopDerived()
-                    {
-                        var r = NativeImplClient.PopFloat();
-                        var g = NativeImplClient.PopFloat();
-                        var b = NativeImplClient.PopFloat();
-                        var a = NativeImplClient.PopFloat();
-                        return new FromRGBAF(r, g, b, a);
-                    }
-                }
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static void Deferred__Push(Deferred thing, bool isReturn)
-            {
-                thing.Push(isReturn);
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static Deferred Deferred__Pop()
-            {
-                return Deferred.Pop();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Color__Push(Color thing)
-        {
-            NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Color Color__Pop()
-        {
-            var ptr = NativeImplClient.PopPtr();
-            return ptr != IntPtr.Zero ? new Color(ptr) : null;
-        }
         public class Gradient : IComparable
         {
             internal readonly IntPtr NativeHandle;
@@ -273,9 +78,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 }
                 throw new Exception("CompareTo: wrong type");
             }
-            public void SetColorAt(double location, Color color)
+            public void SetColorAt(double location, Deferred color)
             {
-                Color__Push(color);
+                Deferred__Push(color, false);
                 NativeImplClient.PushDouble(location);
                 Gradient__Push(this);
                 NativeImplClient.InvokeModuleMethod(_gradient_setColorAt);
@@ -724,23 +529,23 @@ namespace Org.Whatever.MinimalQtForFSharp
                     _disposed = true;
                 }
             }
-            public Color CreateColor(Color.Constant name)
+            public Color.Handle CreateColor(Constant name)
             {
-                Color.Constant__Push(name);
+                Constant__Push(name);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createColor);
-                return Color__Pop();
+                return Color.Handle__Pop();
             }
-            public Color CreateColor(int r, int g, int b)
+            public Color.Handle CreateColor(int r, int g, int b)
             {
                 NativeImplClient.PushInt32(b);
                 NativeImplClient.PushInt32(g);
                 NativeImplClient.PushInt32(r);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createColor_overload1);
-                return Color__Pop();
+                return Color.Handle__Pop();
             }
-            public Color CreateColor(int r, int g, int b, int a)
+            public Color.Handle CreateColor(int r, int g, int b, int a)
             {
                 NativeImplClient.PushInt32(a);
                 NativeImplClient.PushInt32(b);
@@ -748,18 +553,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.PushInt32(r);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createColor_overload2);
-                return Color__Pop();
+                return Color.Handle__Pop();
             }
-            public Color CreateColor(float r, float g, float b)
+            public Color.Handle CreateColor(float r, float g, float b)
             {
                 NativeImplClient.PushFloat(b);
                 NativeImplClient.PushFloat(g);
                 NativeImplClient.PushFloat(r);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createColor_overload3);
-                return Color__Pop();
+                return Color.Handle__Pop();
             }
-            public Color CreateColor(float r, float g, float b, float a)
+            public Color.Handle CreateColor(float r, float g, float b, float a)
             {
                 NativeImplClient.PushFloat(a);
                 NativeImplClient.PushFloat(b);
@@ -767,7 +572,7 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.PushFloat(r);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createColor_overload4);
-                return Color__Pop();
+                return Color.Handle__Pop();
             }
             public RadialGradient CreateRadialGradient(PointF center, double radius)
             {
@@ -802,9 +607,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_createBrush);
                 return Brush__Pop();
             }
-            public Brush CreateBrush(Color color)
+            public Brush CreateBrush(Deferred color)
             {
-                Color__Push(color);
+                Deferred__Push(color, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createBrush_overload1);
                 return Brush__Pop();
@@ -829,9 +634,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_createPen_overload1);
                 return Pen__Pop();
             }
-            public Pen CreatePen(Color color)
+            public Pen CreatePen(Deferred color)
             {
-                Color__Push(color);
+                Deferred__Push(color, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createPen_overload2);
                 return Pen__Pop();

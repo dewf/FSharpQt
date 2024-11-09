@@ -11,6 +11,7 @@ using ModuleHandle = Org.Whatever.MinimalQtForFSharp.Support.ModuleHandle;
 using static Org.Whatever.MinimalQtForFSharp.Common;
 using static Org.Whatever.MinimalQtForFSharp.PaintResources;
 using static Org.Whatever.MinimalQtForFSharp.Enums;
+using static Org.Whatever.MinimalQtForFSharp.Color;
 
 namespace Org.Whatever.MinimalQtForFSharp
 {
@@ -220,9 +221,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_fillRect);
             }
-            public void FillRect(Rect rect, Color color)
+            public void FillRect(Rect rect, Deferred color)
             {
-                Color__Push(color);
+                Deferred__Push(color, false);
                 Rect__Push(rect, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_fillRect_overload1);

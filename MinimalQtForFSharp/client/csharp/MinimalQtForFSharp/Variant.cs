@@ -11,7 +11,7 @@ using ModuleHandle = Org.Whatever.MinimalQtForFSharp.Support.ModuleHandle;
 using static Org.Whatever.MinimalQtForFSharp.Icon;
 using static Org.Whatever.MinimalQtForFSharp.Common;
 using static Org.Whatever.MinimalQtForFSharp.Enums;
-using static Org.Whatever.MinimalQtForFSharp.PaintResources;
+using static Org.Whatever.MinimalQtForFSharp.Color;
 
 namespace Org.Whatever.MinimalQtForFSharp
 {
@@ -24,8 +24,10 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static ModuleMethodHandle _handle_toInt;
         internal static ModuleMethodHandle _handle_toSize;
         internal static ModuleMethodHandle _handle_toCheckState;
+        internal static ModuleMethodHandle _handle_toColor;
         internal static ModuleMethodHandle _handle_toServerValue;
         internal static ModuleMethodHandle _owned_dispose;
+        internal static ExceptionHandle _variantConversionFailure;
         public abstract record ServerValue
         {
             internal abstract void Push(bool isReturn);
@@ -110,6 +112,20 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             return ServerValue.Pop();
         }
+        public class VariantConversionFailure : Exception
+        {
+            public VariantConversionFailure() : base("VariantConversionFailure")
+            {
+            }
+            internal void PushAndSet()
+            {
+                NativeImplClient.SetException(_variantConversionFailure);
+            }
+            internal static void BuildAndThrow()
+            {
+                throw new VariantConversionFailure();
+            }
+        }
         public class Handle : IComparable
         {
             internal readonly IntPtr NativeHandle;
@@ -160,6 +176,12 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_toCheckState);
                 return CheckState__Pop();
+            }
+            public Color.Owned ToColor()
+            {
+                Handle__Push(this);
+                NativeImplClient.InvokeModuleMethod(_handle_toColor);
+                return Color.Owned__Pop();
             }
             public ServerValue ToServerValue()
             {
@@ -385,8 +407,11 @@ namespace Org.Whatever.MinimalQtForFSharp
             _handle_toInt = NativeImplClient.GetModuleMethod(_module, "Handle_toInt");
             _handle_toSize = NativeImplClient.GetModuleMethod(_module, "Handle_toSize");
             _handle_toCheckState = NativeImplClient.GetModuleMethod(_module, "Handle_toCheckState");
+            _handle_toColor = NativeImplClient.GetModuleMethod(_module, "Handle_toColor");
             _handle_toServerValue = NativeImplClient.GetModuleMethod(_module, "Handle_toServerValue");
             _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
+            _variantConversionFailure = NativeImplClient.GetException(_module, "VariantConversionFailure");
+            NativeImplClient.SetExceptionBuilder(_variantConversionFailure, VariantConversionFailure.BuildAndThrow);
 
             // no static init
         }

@@ -2,6 +2,7 @@
 #include "Common_wrappers.h"
 #include "Object_wrappers.h"
 #include "Layout_wrappers.h"
+#include "Color_wrappers.h"
 #include "PaintResources_wrappers.h"
 #include "Enums_wrappers.h"
 #include "Painter_wrappers.h"
@@ -65,6 +66,7 @@ extern "C" int nativeLibraryInit() {
     ::Common::__register();
     ::Object::__register();
     ::Layout::__register();
+    ::Color::__register();
     ::PaintResources::__register();
     ::Enums::__register();
     ::Painter::__register();
