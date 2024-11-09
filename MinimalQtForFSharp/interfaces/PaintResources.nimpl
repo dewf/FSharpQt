@@ -1,43 +1,11 @@
 module PaintResources;
 
 import Common;
-
-@nodispose
-opaque Color {
-    static {
-        enum Constant {
-            Black,
-            White,
-            DarkGray,
-            Gray,
-            LightGray,
-            Red,
-            Green,
-            Blue,
-            Cyan,
-            Magenta,
-            Yellow,
-            DarkRed,
-            DarkGreen,
-            DarkBlue,
-            DarkCyan,
-            DarkMagenta,
-            DarkYellow,
-            Transparent
-        }
-        sumtype Deferred {
-            FromConstant(Color.Constant name),
-            FromRGB(int r, int g, int b),
-            FromRGBA(int r, int g, int b, int a),
-            FromRGBF(float r, float g, float b),
-            FromRGBAF(float r, float g, float b, float a)
-        }
-    }
-}
+import Color;
 
 @nodispose
 opaque Gradient {
-    void setColorAt(double location, Color color);
+    void setColorAt(double location, Color.Deferred color);
 }
 
 @nodispose
@@ -143,23 +111,23 @@ opaque PainterPathStroker {
 }
 
 opaque Handle {
-    Color createColor(Color.Constant name);
-    Color createColor(int r, int g, int b);
-    Color createColor(int r, int g, int b, int a);
-    Color createColor(float r, float g, float b);
-    Color createColor(float r, float g, float b, float a);
+    Color.Handle createColor(Color.Constant name);
+    Color.Handle createColor(int r, int g, int b);
+    Color.Handle createColor(int r, int g, int b, int a);
+    Color.Handle createColor(float r, float g, float b);
+    Color.Handle createColor(float r, float g, float b, float a);
 
     RadialGradient createRadialGradient(Common.PointF center, double radius);
     LinearGradient createLinearGradient(Common.PointF start, Common.PointF stop);
     LinearGradient createLinearGradient(double x1, double y1, double x2, double y2);
 
     Brush createBrush(Brush.Style style);
-    Brush createBrush(Color color); // + BrushStyle in the future
+    Brush createBrush(Color.Deferred color); // + BrushStyle in the future
     Brush createBrush(Gradient gradient);
 
     Pen createPen();
     Pen createPen(Pen.Style style);
-    Pen createPen(Color color);
+    Pen createPen(Color.Deferred color);
     Pen createPen(Brush brush, double width, Pen.Style style, Pen.CapStyle cap, Pen.JoinStyle join);
 
     Font createFont(string family, int pointSize);

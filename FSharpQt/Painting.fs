@@ -1,16 +1,16 @@
 ﻿module FSharpQt.Painting
 
 open System
-open FSharpQt.MiscTypes
 open Org.Whatever.MinimalQtForFSharp
+open FSharpQt.MiscTypes
 
-type Color internal(qtColor: PaintResources.Color) =
-    member val internal qtColor = qtColor
+// type Color internal(qtColor: PaintResources.Color) =
+//     member val internal qtColor = qtColor
 
 type Gradient internal(qtGradient: PaintResources.Gradient) =
     member val qtGradient = qtGradient
     member this.SetColorAt(location: double, color: Color) =
-        qtGradient.SetColorAt(location, color.qtColor)
+        qtGradient.SetColorAt(location, color.QtValue)
     
 type RadialGradient internal(qtRadial: PaintResources.RadialGradient) =
     inherit Gradient(qtRadial)
@@ -130,6 +130,7 @@ type PaintStack() =
         member this.Dispose() =
             this.qtResources.Dispose()
             
+    // none of these Color|s below are deferred, because we want them on the paint stack!
     member this.Color(constant: ColorConstant) =
         this.qtResources.CreateColor(constant.QtValue)
         |> Color
@@ -167,7 +168,7 @@ type PaintStack() =
         |> Brush
         
     member this.Brush(color: Color) =
-        this.qtResources.CreateBrush(color.qtColor)
+        this.qtResources.CreateBrush(color.QtValue)
         |> Brush
         
     member this.Brush(grad: Gradient) =
@@ -183,7 +184,7 @@ type PaintStack() =
         |> Pen
         
     member this.Pen(color: Color) =
-        this.qtResources.CreatePen(color.qtColor)
+        this.qtResources.CreatePen(color.QtValue)
         |> Pen
         
     member this.Pen(brush: Brush, width: double, ?style: PenStyle, ?cap: CapStyle, ?join: JoinStyle) =
@@ -279,7 +280,7 @@ type Painter internal(qtPainter: Org.Whatever.MinimalQtForFSharp.Painter.Handle)
         qtPainter.FillRect(rect.QtValue, brush.qtBrush)
         
     member this.FillRect(rect: Rect, color: Color) =
-        qtPainter.FillRect(rect.QtValue, color.qtColor)
+        qtPainter.FillRect(rect.QtValue, color.QtValue)
 
     member this.DrawRect(rect: Rect) =
         qtPainter.DrawRect(rect.QtValue)

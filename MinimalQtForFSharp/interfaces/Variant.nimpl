@@ -3,9 +3,10 @@ module Variant;
 import Icon;
 import Common;
 import Enums;
+import Color;
 
 // todo, replace with individual modules? (color, brush, font, etc)
-import PaintResources; // for color, brush, etc (deferred)
+// import PaintResources; // for color, brush, etc (deferred)
 
 sumtype ServerValue {
     Bool(bool value),
@@ -21,6 +22,8 @@ sumtype ServerValue {
     Unknown
 }
 
+exception VariantConversionFailure; // no message for now, we need to figure out how to integrate with std::exception and C# Exception cleanly
+
 @nodispose
 opaque Handle {
     bool isValid();
@@ -34,7 +37,7 @@ opaque Handle {
     CheckState toCheckState();
 
     // Icon.Owned toIcon();
-    // Color.Owned toColor();
+    Color.Owned toColor();
 
     ServerValue toServerValue();
 }

@@ -4,8 +4,11 @@
 #include "PaintResourcesInternal.h"
 
 #include <QVariant>
-#define THIS ((QVariant*)_this)
+
+#include "ColorInternal.h"
 #include "util/convert.h"
+
+#define THIS ((QVariant*)_this)
 
 namespace Variant
 {
@@ -43,6 +46,15 @@ namespace Variant
         return CheckState::Unchecked;
     }
 
+    Color::OwnedRef Handle_toColor(HandleRef _this) {
+        if (THIS->isValid() && THIS->canConvert<QColor>()) {
+            auto value = THIS->value<QColor>();
+            return new Color::__Owned { value };
+        } else {
+            throw VariantConversionFailure();
+        }
+    }
+
     std::shared_ptr<ServerValue::Base> Handle_toServerValue(HandleRef _this) {
         ServerValue::Base *value;
         switch((QMetaType::Type)THIS->typeId()) {
@@ -60,10 +72,6 @@ namespace Variant
                 break;
         }
         return std::shared_ptr<ServerValue::Base>(value);
-    }
-
-    void Handle_dispose(HandleRef _this) {
-        printf("Variant::Handle_dispose() - should never be called (in fact should be @nodispose, long story)\n");
     }
 
     void Owned_dispose(OwnedRef _this) {

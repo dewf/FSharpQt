@@ -65,6 +65,11 @@ add_library(MinimalQtForFSharpImpl STATIC
     ../generated/CalendarWidget_wrappers.cpp
     ../CalendarWidget.cpp
 
+    ../generated/Color.h
+    ../generated/Color_wrappers.cpp
+    ../Color.cpp
+    ../ColorInternal.h
+
     ../generated/ComboBox.h
     ../generated/ComboBox_wrappers.cpp
     ../ComboBox.cpp
@@ -72,6 +77,7 @@ add_library(MinimalQtForFSharpImpl STATIC
     ../generated/Common.h
     ../generated/Common_wrappers.cpp
     ../Common.cpp
+    ../CommonInternal.h
 
     ../generated/Cursor.h
     ../generated/Cursor_wrappers.cpp

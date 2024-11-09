@@ -11,19 +11,16 @@
 #include <QPainterPathStroker>
 #include <utility>
 
+#include "generated/PaintResources.h"
+
+#include "CommonInternal.h" // for PaintStackItem
+using namespace Common;
+
 namespace PaintResources
 {
-    namespace Color {
-        QColor fromDeferred(const std::shared_ptr<Deferred::Base>& deferred);
-    }
+    // PaintStackItem moved to CommonInternal, since other modules (eg Color, Pixmap) will need to inherit from it
 
-    struct PaintStackItem {
-    };
-
-    struct __Color : public PaintStackItem {
-        QColor qColor;
-        explicit __Color(QColor qColor) : qColor(qColor) {}
-    };
+    // __Color now Color::__Handle
 
     struct __Gradient : public PaintStackItem {
         QGradient qGradPtr; // I guess this holds all types? so we don't have to worry about object slicing on the stack? seems weird
@@ -63,7 +60,7 @@ namespace PaintResources
 
     struct __PainterPathStroker : public PaintStackItem {
         QPainterPathStroker qStroker;
-        PaintResources::HandleRef resources; // need to know this for .createStroke calls (to add them to the 'items')
-        explicit __PainterPathStroker(PaintResources::HandleRef resources) : resources(resources) {}
+        HandleRef resources; // need to know this for .createStroke calls (to add them to the 'items')
+        explicit __PainterPathStroker(HandleRef resources) : resources(resources) {}
     };
 }

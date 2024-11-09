@@ -3,6 +3,8 @@
 #include <QPainter>
 
 #include "util/convert.h"
+
+#include "ColorInternal.h"
 #include "PaintResourcesInternal.h" // for struct definitions
 
 #define THIS ((QPainter*)_this)
@@ -46,8 +48,8 @@ namespace Painter
         THIS->fillRect(toQRect(rect), brush->qBrush);
     }
 
-    void Handle_fillRect(HandleRef _this, Rect rect, ColorRef color) {
-        THIS->fillRect(toQRect(rect), color->qColor);
+    void Handle_fillRect(HandleRef _this, Rect rect, std::shared_ptr<Deferred::Base> color) {
+        THIS->fillRect(toQRect(rect), Color::fromDeferred(color));
     }
 
     void Handle_drawRect(HandleRef _this, Rect rect) {

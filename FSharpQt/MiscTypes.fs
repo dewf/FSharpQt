@@ -740,11 +740,90 @@ type ComboBoxProxy internal(model: ComboBox.Handle) =
             model.CurrentIndex()
         and set value =
             model.SetCurrentIndex(value)
+
+type ColorConstant =
+    | Black
+    | White
+    | DarkGray
+    | Gray
+    | LightGray
+    | Red
+    | Green
+    | Blue
+    | Cyan
+    | Magenta
+    | Yellow
+    | DarkRed
+    | DarkGreen
+    | DarkBlue
+    | DarkCyan
+    | DarkMagenta
+    | DarkYellow
+    | Transparent
+with
+    member internal this.QtValue =
+        match this with
+        | Black -> Color.Constant.Black
+        | White -> Color.Constant.White
+        | DarkGray -> Color.Constant.DarkGray
+        | Gray -> Color.Constant.Gray
+        | LightGray -> Color.Constant.LightGray
+        | Red -> Color.Constant.Red
+        | Green -> Color.Constant.Green
+        | Blue -> Color.Constant.Blue
+        | Cyan -> Color.Constant.Cyan
+        | Magenta -> Color.Constant.Magenta
+        | Yellow -> Color.Constant.Yellow
+        | DarkRed -> Color.Constant.DarkRed
+        | DarkGreen -> Color.Constant.DarkGreen
+        | DarkBlue -> Color.Constant.DarkBlue
+        | DarkCyan -> Color.Constant.DarkCyan
+        | DarkMagenta -> Color.Constant.Magenta
+        | DarkYellow -> Color.Constant.Yellow
+        | Transparent -> Color.Constant.Transparent
+        
+type Color private(deferred: Org.Whatever.MinimalQtForFSharp.Color.Deferred) =
+    member val internal QtValue = deferred
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) = // unowned only!!!!
+        match handle with
+        | :? Org.Whatever.MinimalQtForFSharp.Color.Owned ->
+            failwith "Color new() - created with .Owned handle, this is not allowed"
+            // use ColorProxy for that kind of thing
+            // *Proxy types are for when we need to call methods on Qt objects
+            // everything else is 1-way (F# -> C++) only
+            // but what if we want to store/copy a proxy value, though?
+            // and does the API make clear when a proxy needs to be disposed? or does it even matter, with .Finalize()?
+        | _ ->
+            ()
+        Color(Color.Deferred.FromHandle(handle))
+    new(constant: ColorConstant) =
+        Color(Color.Deferred.FromConstant(constant.QtValue))
+    new(r: int, g: int, b: int) =
+        Color(Color.Deferred.FromRGB(r, g, b))
+    new(r: int, g: int, b: int, a: int) =
+        Color(Color.Deferred.FromRGBA(r, g, b, a))
+    new(r: float, g: float, b: float) =
+        Color(Color.Deferred.FromRGBF(float32 r, float32 g, float32 b))
+    new(r: float, g: float, b: float, a: float) =
+        Color(Color.Deferred.FromRGBAF(float32 r, float32 g, float32 b, float32 a))
+        
+type ColorProxy private(qtColor: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
+    let mutable disposed = false
+    member val internal Handle = qtColor
+    internal new(ownedColor: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
+        new ColorProxy(ownedColor, true)
+    internal new(unowned: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
+        new ColorProxy(unowned, false)
+        
+    interface IDisposable with
+        member this.Dispose() =
+            if owned && not disposed then
+                (qtColor :?> Org.Whatever.MinimalQtForFSharp.Color.Owned).Dispose()
+                disposed <- true
     
 type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle, owned: bool) =
     let mutable disposed = false
     member val internal Handle = qtVariant
-
     internal new(ownedVariant: Org.Whatever.MinimalQtForFSharp.Variant.Owned) =
         new VariantProxy(ownedVariant, true)
     internal new(unowned: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
@@ -758,7 +837,6 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
 
     override this.Finalize() =
         (this :> IDisposable).Dispose()
-        
     member this.ToBool() = qtVariant.ToBool()
     member this.ToInt() = qtVariant.ToInt()
     member this.ToSize() = qtVariant.ToSize()
@@ -769,7 +847,9 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
         | Enums.CheckState.PartiallyChecked -> PartiallyChecked
         | Enums.CheckState.Checked -> Checked
         | _ -> failwith "VariantProxy.ToCheckState() - unknown incoming check state"
-    
+    member this.ToColor() =
+        new ColorProxy(qtVariant.ToColor())
+        
 [<RequireQualifiedAccess>]
 type Variant =
     | Empty
@@ -779,7 +859,7 @@ type Variant =
     | Size of size: Size
     | CheckState of state: CheckState
     // | Icon of icon: Icon
-    // | Color of color: Color
+    | Color of color: Color
     | Alignment of align: Alignment
     | Unknown
 with
@@ -792,16 +872,15 @@ with
         | Size size -> Variant.Deferred.FromSize(size.QtValue)
         | CheckState state -> Variant.Deferred.FromCheckState(state.QtValue)
         // | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
-        // | Color color -> Variant.Deferred.FromColor(color.QtValue)
+        | Color color -> Variant.Deferred.FromColor(color.QtValue)
         | Alignment align -> Variant.Deferred.FromAligment(align.QtValue)
         | Unknown -> failwith "Variant.QtValue: 'Unknown' variants cannot be sent to server side"
-    static member FromQtValue (value: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
-        match value.ToServerValue() with
-        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Bool as b -> Variant.Bool b.Value
-        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.String as s -> Variant.String s.Value
-        | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Int as i -> Variant.Int i.Value
-        | _ -> Variant.Unknown
-        
+    // static member FromQtValue (value: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
+    //     match value.ToServerValue() with
+    //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Bool as b -> Variant.Bool b.Value
+    //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.String as s -> Variant.String s.Value
+    //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Int as i -> Variant.Int i.Value
+    //     | _ -> Variant.Unknown
     
 // might merge these ModelIndex types in the future, going to see how it plays out
 // kind of don't like putting IDisposable on the proxy/deferred versions since they aren't owned, and then get IDE warnings about using 'new' etc
@@ -932,60 +1011,6 @@ type Icon private(deferred: Org.Whatever.MinimalQtForFSharp.Icon.Deferred) =
             Icon.Deferred.FromThemeIcon(toQtThemeIcon themeIcon)
         Icon(deferred)
         
-type ColorConstant =
-    | Black
-    | White
-    | DarkGray
-    | Gray
-    | LightGray
-    | Red
-    | Green
-    | Blue
-    | Cyan
-    | Magenta
-    | Yellow
-    | DarkRed
-    | DarkGreen
-    | DarkBlue
-    | DarkCyan
-    | DarkMagenta
-    | DarkYellow
-    | Transparent
-with
-    member internal this.QtValue =
-        match this with
-        | Black -> PaintResources.Color.Constant.Black
-        | White -> PaintResources.Color.Constant.White
-        | DarkGray -> PaintResources.Color.Constant.DarkGray
-        | Gray -> PaintResources.Color.Constant.Gray
-        | LightGray -> PaintResources.Color.Constant.LightGray
-        | Red -> PaintResources.Color.Constant.Red
-        | Green -> PaintResources.Color.Constant.Green
-        | Blue -> PaintResources.Color.Constant.Blue
-        | Cyan -> PaintResources.Color.Constant.Cyan
-        | Magenta -> PaintResources.Color.Constant.Magenta
-        | Yellow -> PaintResources.Color.Constant.Yellow
-        | DarkRed -> PaintResources.Color.Constant.DarkRed
-        | DarkGreen -> PaintResources.Color.Constant.DarkGreen
-        | DarkBlue -> PaintResources.Color.Constant.DarkBlue
-        | DarkCyan -> PaintResources.Color.Constant.DarkCyan
-        | DarkMagenta -> PaintResources.Color.Constant.Magenta
-        | DarkYellow -> PaintResources.Color.Constant.Yellow
-        | Transparent -> PaintResources.Color.Constant.Transparent
-        
-type Color private(deferred: PaintResources.Color.Deferred) =
-    member val internal QtValue = deferred
-    new(constant: ColorConstant) =
-        Color(PaintResources.Color.Deferred.FromConstant(constant.QtValue))
-    new(r: int, g: int, b: int) =
-        Color(PaintResources.Color.Deferred.FromRGB(r, g, b))
-    new(r: int, g: int, b: int, a: int) =
-        Color(PaintResources.Color.Deferred.FromRGBA(r, g, b, a))
-    new(r: float, g: float, b: float) =
-        Color(PaintResources.Color.Deferred.FromRGBF(float32 r, float32 g, float32 b))
-    new(r: float, g: float, b: float, a: float) =
-        Color(PaintResources.Color.Deferred.FromRGBAF(float32 r, float32 g, float32 b, float32 a))
-
 type KeySequence private(deferred: Org.Whatever.MinimalQtForFSharp.KeySequence.Deferred) =
     member val internal QtValue = deferred
     new(str: string) =

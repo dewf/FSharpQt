@@ -3,6 +3,7 @@ module Painter;
 import Common;
 import PaintResources;
 import Enums;
+import Color;
 
 enum RenderHint {
     Antialiasing = 0x01,
@@ -36,7 +37,7 @@ opaque Handle {
     void strokePath(PainterPath path, Pen pen);
 
     void fillRect(Rect rect, Brush brush);
-    void fillRect(Rect rect, Color color);
+    void fillRect(Rect rect, Color.Deferred color);
 
     void drawRect(Rect rect);
     void drawRect(RectF rect);

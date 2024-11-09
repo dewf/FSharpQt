@@ -1,90 +1,15 @@
 #include "generated/PaintResources.h"
 
 #include "PaintResourcesInternal.h"
+#include "ColorInternal.h"
 
 #include "util/convert.h"
 
 namespace PaintResources
 {
-    // color ========================
-    namespace Color {
-        QColor fromConstant(Constant name) {
-            switch (name) {
-                case Constant::Black:
-                    return QColorConstants::Black;
-                case Constant::White:
-                    return QColorConstants::White;
-                case Constant::DarkGray:
-                    return QColorConstants::DarkGray;
-                case Constant::Gray:
-                    return QColorConstants::Gray;
-                case Constant::LightGray:
-                    return QColorConstants::LightGray;
-                case Constant::Red:
-                    return QColorConstants::Red;
-                case Constant::Green:
-                    return QColorConstants::Green;
-                case Constant::Blue:
-                    return QColorConstants::Blue;
-                case Constant::Cyan:
-                    return QColorConstants::Cyan;
-                case Constant::Magenta:
-                    return QColorConstants::Magenta;
-                case Constant::Yellow:
-                    return QColorConstants::Yellow;
-                case Constant::DarkRed:
-                    return QColorConstants::DarkRed;
-                case Constant::DarkGreen:
-                    return QColorConstants::DarkGreen;
-                case Constant::DarkBlue:
-                    return QColorConstants::DarkBlue;
-                case Constant::DarkCyan:
-                    return QColorConstants::DarkCyan;
-                case Constant::DarkMagenta:
-                    return QColorConstants::DarkMagenta;
-                case Constant::DarkYellow:
-                    return QColorConstants::DarkYellow;
-                case Constant::Transparent:
-                    return QColorConstants::Transparent;
-                default:
-                    printf("Painter.cpp Color::fromConstant - unhandled value\n");
-            }
-            return QColorConstants::Black;
-        }
-
-        class FromDeferred : public Deferred::Visitor {
-        private:
-            QColor &color;
-        public:
-            explicit FromDeferred(QColor &color) : color(color) {}
-            void onFromConstant(const Deferred::FromConstant *fromConstant) override {
-                color = Color::fromConstant(fromConstant->name);
-            }
-            void onFromRGB(const Deferred::FromRGB *fromRGB) override {
-                color = QColor::fromRgb(fromRGB->r, fromRGB->g, fromRGB->b);
-            }
-            void onFromRGBA(const Deferred::FromRGBA *fromRGBA) override {
-                color = QColor::fromRgb(fromRGBA->r, fromRGBA->g, fromRGBA->b, fromRGBA->a);
-            }
-            void onFromRGBF(const Deferred::FromRGBF *fromRGBF) override {
-                color = QColor::fromRgbF(fromRGBF->r, fromRGBF->g, fromRGBF->b);
-            }
-            void onFromRGBAF(const Deferred::FromRGBAF *fromRGBAF) override {
-                color = QColor::fromRgbF(fromRGBAF->r, fromRGBAF->g, fromRGBAF->b, fromRGBAF->a);
-            }
-        };
-
-        QColor fromDeferred(const std::shared_ptr<Deferred::Base>& deferred) {
-            QColor ret;
-            FromDeferred visitor(ret);
-            deferred->accept(&visitor);
-            return ret;
-        }
-    }
-
     // gradient ====================
-    void Gradient_setColorAt(GradientRef _this, double location, ColorRef color) {
-        _this->qGradPtr.setColorAt(location, color->qColor);
+    void Gradient_setColorAt(GradientRef _this, double location, std::shared_ptr<Deferred::Base> color) {
+        _this->qGradPtr.setColorAt(location, Color::fromDeferred(color));
     }
 
     // radial gradient =============
@@ -193,32 +118,32 @@ namespace PaintResources
         }
     };
 
-    ColorRef Handle_createColor(HandleRef _this, Color::Constant name) {
-        auto ret = new __Color { Color::fromConstant(name) };
+    Color::HandleRef Handle_createColor(HandleRef _this, Color::Constant name) {
+        auto ret = new Color::__Handle { Color::fromConstant(name) };
         _this->items.push_back(ret);
         return ret;
     }
 
-    ColorRef Handle_createColor(HandleRef _this, int32_t r, int32_t g, int32_t b) {
-        auto ret = new __Color { QColor::fromRgb(r, g, b) };
+    Color::HandleRef Handle_createColor(HandleRef _this, int32_t r, int32_t g, int32_t b) {
+        auto ret = new Color::__Handle { QColor::fromRgb(r, g, b) };
         _this->items.push_back(ret);
         return ret;
     }
 
-    ColorRef Handle_createColor(HandleRef _this, int32_t r, int32_t g, int32_t b, int32_t a) {
-        auto ret = new __Color { QColor::fromRgb(r, g, b, a) };
+    Color::HandleRef Handle_createColor(HandleRef _this, int32_t r, int32_t g, int32_t b, int32_t a) {
+        auto ret = new Color::__Handle { QColor::fromRgb(r, g, b, a) };
         _this->items.push_back(ret);
         return ret;
     }
 
-    ColorRef Handle_createColor(HandleRef _this, float r, float g, float b) {
-        auto ret = new __Color { QColor::fromRgbF(r, g, b) };
+    Color::HandleRef Handle_createColor(HandleRef _this, float r, float g, float b) {
+        auto ret = new Color::__Handle { QColor::fromRgbF(r, g, b) };
         _this->items.push_back(ret);
         return ret;
     }
 
-    ColorRef Handle_createColor(HandleRef _this, float r, float g, float b, float a) {
-        auto ret = new __Color { QColor::fromRgbF(r, g, b, a) };
+    Color::HandleRef Handle_createColor(HandleRef _this, float r, float g, float b, float a) {
+        auto ret = new Color::__Handle { QColor::fromRgbF(r, g, b, a) };
         _this->items.push_back(ret);
         return ret;
     }
@@ -247,8 +172,8 @@ namespace PaintResources
         return ret;
     }
 
-    BrushRef Handle_createBrush(HandleRef _this, ColorRef color) {
-        auto ret = new __Brush { QBrush(color->qColor) };
+    BrushRef Handle_createBrush(HandleRef _this, std::shared_ptr<Deferred::Base> color) {
+        auto ret = new __Brush { Color::fromDeferred(color) };
         _this->items.push_back(ret);
         return ret;
     }
@@ -271,8 +196,8 @@ namespace PaintResources
         return ret;
     }
 
-    PenRef Handle_createPen(HandleRef _this, ColorRef color) {
-        auto ret = new __Pen { QPen(color->qColor) };
+    PenRef Handle_createPen(HandleRef _this, std::shared_ptr<Deferred::Base> color) {
+        auto ret = new __Pen { Color::fromDeferred(color) };
         _this->items.push_back(ret);
         return ret;
     }
