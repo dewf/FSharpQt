@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <Compile Include="Extensions.fs" />
+        <Compile Include="Util.fs" />
         <Compile Include="InputEnums.fs" />
         <Compile Include="MiscTypes.fs" />
         <Compile Include="BuilderNode.fs" />

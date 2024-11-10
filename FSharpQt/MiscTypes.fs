@@ -796,6 +796,16 @@ type Color private(deferred: Org.Whatever.MinimalQtForFSharp.Color.Deferred) =
         | _ ->
             ()
         Color(Color.Deferred.FromHandle(handle))
+    new(hex: string) =
+        match Util.tryParseHexStringUInt32 hex (Some "#") with
+        | Some value ->
+            let red = (value >>> 16) &&& 0xFFu
+            let green = (value >>> 8) &&& 0xFFu
+            let blue = value &&& 0xFFu
+            Color(Color.Deferred.FromRGB(int red, int green, int blue))
+        | None ->
+            printfn "MiscTypes.Color ctor: failed to parse hex string [%s]" hex
+            Color(Color.Deferred.FromConstant(Color.Constant.Black))
     new(constant: ColorConstant) =
         Color(Color.Deferred.FromConstant(constant.QtValue))
     new(r: int, g: int, b: int) =

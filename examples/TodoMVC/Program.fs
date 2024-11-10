@@ -167,6 +167,12 @@ type RowDelegate(state: State) =
         | Column.Done, SizeHintRole -> Variant.Size (Size.From (40, 24)) // give the checkbox a bit more space, and also make the rows taller (uniform heights are enabled)
         | Column.Done, CheckStateRole -> Variant.CheckState (if rowData.Done then Checked else Unchecked)
         | Column.Task, DisplayRole -> Variant.String rowData.Text
+        | Column.Priority, DecorationRole ->
+            match rowData.Priority with
+            | Low -> Color("#090979")
+            | Normal -> Color("#00d4ff")
+            | High -> Color("#c8ffff")
+            |> Variant.Color
         | Column.Priority, DisplayRole -> rowData.Priority.ToString() |> Variant.String
         | Column.Priority, EditRole -> rowData.Priority.ToInt() |> Variant.Int
         | _ -> Variant.Empty
