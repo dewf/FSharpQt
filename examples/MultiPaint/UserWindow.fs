@@ -2,7 +2,6 @@
 
 open System
 open FSharpQt
-open FSharpQt.Attrs
 open FSharpQt.BuilderNode
 open FSharpQt.EventDelegate
 open FSharpQt.InputEnums
@@ -14,8 +13,10 @@ open FSharpQt.Reactor
 open FSharpQt.Widgets
 open BoxLayout
 open CustomWidget
+open FSharpQt.Widgets.ComboBox
 open FSharpQt.Widgets.Label
 open FSharpQt.Widgets.PushButton
+open FSharpQt.Widgets.StyledItemDelegate
 open LineEdit
 open MainWindow
 open TreeView
@@ -39,29 +40,31 @@ type State = {
     OurName: string option
     OtherUsers: TrackedRows<OtherUser>
     // keep color preferences separately, so we can keep the other-users update/merge logic simple
-    ColorMap: Map<int, ColorConstant>
+    ColorMap: Map<int, int> // from userID to color index
     Drawing: Stroke list
     MouseDown: bool
 }
 
 let possibleColors =
-    [ 0, Red
-      1, Green
-      2, Blue
-      3, Cyan
-      4, Magenta
-      5, Yellow
-      6, DarkRed
-      7, DarkGreen
-      8, DarkBlue
-      9, DarkCyan
-      10, DarkMagenta
-      11, DarkYellow ]
-    |> Map.ofList
+    [| Red
+       Green
+       Blue
+       Cyan
+       Magenta
+       Yellow
+       DarkRed
+       DarkGreen
+       DarkBlue
+       DarkCyan
+       DarkMagenta
+       DarkYellow |]
     
-let randomColor () =
+let randomColorIndex () =
     let r = Random()
-    possibleColors[r.Next() % 12]
+    r.Next() % possibleColors.Length
+    
+let colorAtIndex i =
+    possibleColors[i]
 
 type Msg =
     | UsernameSubmitted             // for return/tab, requires cmd to get text value
@@ -71,6 +74,7 @@ type Msg =
     | ContinueStroke of p: Point
     | EndStroke
     | EraseDrawing
+    | UserColorChanged of id: int * index: int
     
 type OtherUsersAttr(value: OtherUser list) =
     inherit ComponentAttrBase<OtherUser list, State>(value)
@@ -85,7 +89,7 @@ type OtherUsersAttr(value: OtherUser list) =
             ||> List.fold (fun acc user ->
                 if not (acc.ContainsKey user.Id) then
                     // new color for new as-yet-unseen users only
-                    acc.Add(user.Id, randomColor())
+                    acc.Add(user.Id, randomColorIndex())
                 else
                     acc)
         // in a serious program we would also remove unused mappings, not worth bothering with here
@@ -138,6 +142,22 @@ let update (state: State) (msg: Msg) =
             Drawing = nextDrawing }, Cmd.None
     | EraseDrawing ->
         { state with Drawing = [] }, Cmd.Signal (DrawingChanged [])
+    | UserColorChanged(id, index) ->
+        let nextOthers =
+            state.OtherUsers
+                .BeginChanges()
+                .ReplaceWhere(fun user ->
+                    if user.Id = id then
+                        // not actually changing anything, we just want to trigger a redraw
+                        // so that the color decoration will immediately update
+                        Some user
+                    else
+                        None)
+        let nextMap =
+            state.ColorMap.Add(id, index)
+        let nextState =
+            { state with OtherUsers = nextOthers; ColorMap = nextMap }
+        nextState, Cmd.None
     
 type CanvasDelegate(state: State) =
     inherit EventDelegateBase<Msg, State>(state)
@@ -156,6 +176,7 @@ type CanvasDelegate(state: State) =
         for user in state.OtherUsers.Rows do
             let color =
                 state.ColorMap[user.Id]
+                |> colorAtIndex 
             painter.Pen <- stack.Pen(stack.Color(color), Width = 3)
             for stroke in user.Drawing do
                 painter.DrawPolyline(stroke |> List.map PointF.From |> Array.ofList)
@@ -187,19 +208,91 @@ type CanvasDelegate(state: State) =
         
 type Column =
     | UserName = 0
-    | UserColor = 1
+    | UserColor = 1     // editable
     | NUM_COLUMNS = 2
     
 type RowDelegate(state: State) =
     inherit AbstractSimpleListModelDelegate<Msg, OtherUser>()
     override this.Data rowData col role =
         match enum<Column> col, role with
-        | Column.UserName, DisplayRole -> Variant.String rowData.Name
-        | Column.UserColor, DisplayRole ->
-            let color =
+        | Column.UserName, DisplayRole ->
+            Variant.String rowData.Name
+        | Column.UserColor, role ->
+            let colorIndex =
                 state.ColorMap[rowData.Id]
-            Variant.String (color.ToString())
-        | _ -> Variant.Empty
+            let colorConstant =
+                colorAtIndex colorIndex
+            match role with
+            | DecorationRole ->
+                colorConstant
+                |> Color
+                |> Variant.Color
+            | DisplayRole ->
+                colorConstant.ToString()
+                |> Variant.String
+            | EditRole ->
+                Variant.Int colorIndex
+            | _ ->
+                // usercolor, any other role
+                Variant.Empty
+        | _ ->
+            // any other column
+            Variant.Empty
+    override this.GetFlags rowData col baseFlags =
+        match enum<Column> col with
+        | Column.UserColor -> baseFlags.Add(ItemIsEditable)
+        | _ -> baseFlags
+    override this.SetData rowIndex rowData col value role =
+        match enum<Column> col, role with
+        | Column.UserColor, EditRole ->
+            UserColorChanged(rowData.Id, value.ToInt())
+            |> Some
+        | _ ->
+            None
+            
+type ColorEditorRow = {
+    Index: int
+    Color: ColorConstant
+}
+
+type EditorColumn =
+    | Color = 0
+    | NUM_COLUMNS = 1
+
+type EditorRowDelegate(state: State) =
+    inherit AbstractSimpleListModelDelegate<Msg, ColorEditorRow>()
+    override this.Data rowData col role =
+        match enum<EditorColumn> col, role with
+        | EditorColumn.Color, DisplayRole ->
+            rowData.Color.ToString()
+            |> Variant.String
+        | EditorColumn.Color, DecorationRole ->
+            rowData.Color
+            |> Color
+            |> Variant.Color
+        | _ ->
+            Variant.Empty
+        
+type ColorColumnItemDelegate(state: State) =
+    inherit ComboBoxItemDelegateBase<Msg>()
+    override this.CreateEditor option index =
+        let rows =
+            [0 .. possibleColors.Length - 1]
+            |> List.map (fun i ->
+                { Index = i; Color = colorAtIndex i })
+            |> TrackedRows.Init
+        let model =
+            ListModelNode(EditorRowDelegate(state), int EditorColumn.NUM_COLUMNS, Rows = rows)
+        ComboBox(Model = model)
+    override this.SetEditorData combo index =
+        // edit role data (from UserColor column of OtherUsers table) is an int index into color table
+        use value = index.Data(EditRole)
+        combo.CurrentIndex <- value.ToInt()
+    override this.SetModelData combo model index =
+        // pretty simple, just grab the current combo index and set it on the model
+        // again, this applies to the UserColor(index) of an OtherUser
+        model.SetData(index, Variant.Int combo.CurrentIndex)
+        |> ignore
 
 let view (state: State) =
     let vbox =
@@ -221,11 +314,14 @@ let view (state: State) =
                 ListModelNode(RowDelegate(state), int Column.NUM_COLUMNS,
                               Headers = [ "User"; "Color" ],
                               Rows = state.OtherUsers)
-            // treeview for column headers
+            let itemDelegate =
+                StyledItemDelegate(ColorColumnItemDelegate(state))
+            // treeview (vs. listview) needed for column headers
             TreeView(SelectionMode = AbstractItemView.SingleSelection,
                      FocusPolicy = Widget.NoFocus,
                      FixedHeight = 80,
                      TreeModel = model)
+                            .SetItemDelegateForColumn(int Column.UserColor, itemDelegate)
         let canvas =
             let events = [
                 PaintEvent
@@ -234,8 +330,7 @@ let view (state: State) =
                 MouseMoveEvent
                 MouseReleaseEvent
             ]
-            CustomWidget(CanvasDelegate(state), events,
-                         Name = "canvas")
+            CustomWidget(CanvasDelegate(state), events, Name = "canvas")
         let bottomHBox =
             let erase =
                 PushButton(Text = "Erase", FixedWidth = 80, OnClicked = EraseDrawing)

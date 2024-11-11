@@ -64,11 +64,14 @@ let update (state: State) (msg: Msg) =
         nextState, Cmd.None
     | UserLoggedIn(id, name, drawing) ->
         let nextUsers =
-            let replaceFunc user =
-                { user with Info = Some { Name = name; Drawing = drawing } }
             state.Users
                 .BeginChanges()
-                .ReplaceSingleWhere((fun user -> user.Id = id), replaceFunc)
+                .ReplaceWhere(fun user ->
+                    if user.Id = id then
+                        { user with Info = Some { Name = name; Drawing = drawing } }
+                        |> Some
+                    else
+                        None)
         { state with Users = nextUsers }, Cmd.None
     | UserLoggedOut id ->
         let nextUsers =
@@ -78,18 +81,20 @@ let update (state: State) (msg: Msg) =
         { state with Users = nextUsers }, Cmd.None
     | UserDrawingChanged (id, drawing) ->
         let nextUsers =
-            let updateFunc user =
-                match user.Info with
-                | Some info ->
-                    { user with Info = Some { info with Drawing = drawing } }
-                | None ->
-                    // not logged in, ignore
-                    user
             state.Users
                 .BeginChanges()
-                .ReplaceSingleWhere((fun user -> user.Id = id), updateFunc)
+                .ReplaceWhere(fun user ->
+                    if user.Id = id then
+                        match user.Info with
+                        | Some info ->
+                            { user with Info = Some { info with Drawing = drawing } }
+                            |> Some
+                        | None ->
+                            // not logged in, ignore
+                            None
+                    else
+                        None)
         { state with Users = nextUsers }, Cmd.None
-        
         
 type Column =
     | User = 0

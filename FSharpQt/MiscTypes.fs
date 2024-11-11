@@ -790,7 +790,7 @@ type Color private(deferred: Org.Whatever.MinimalQtForFSharp.Color.Deferred) =
             failwith "Color new() - created with .Owned handle, this is not allowed"
             // use ColorProxy for that kind of thing
             // *Proxy types are for when we need to call methods on Qt objects
-            // everything else is 1-way (F# -> C++) only
+            // everything else is 1-way (F# -> C++) only [with the exception of paintstack stuff, where I guess we're going to be wrapping incoming unowned handles with 'deferred' on the way back out]
             // but what if we want to store/copy a proxy value, though?
             // and does the API make clear when a proxy needs to be disposed? or does it even matter, with .Finalize()?
         | _ ->
