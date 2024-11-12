@@ -1,0 +1,7 @@
+module PaintDevice;
+
+@nodispose
+opaque Handle;
+// mostly a bunch of read-only methods, we'll add them as-needed in the future
+
+// no Owned or creation methods, this is just inherited by Pixmap

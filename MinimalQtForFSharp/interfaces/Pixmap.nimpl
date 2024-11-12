@@ -1,8 +1,23 @@
 module Pixmap;
+import PaintDevice;
+import Common;
+import Enums;
 
-// import PaintDevice;
-// opaque Handle extends PaintDevice.Handle;
+@nodispose
+opaque Handle extends PaintDevice.Handle;
+
+opaque Owned extends Handle;
 
 sumtype Deferred {
     Empty
 }
+
+//Owned create(int width, int height);
+//Owned create(Size size);
+
+// in lieu of default argument values ...
+//options Create3Options {
+//    string format;
+//    ImageConversionFlags icFlags; // defaults to Qt::AutoColor
+//}
+//Owned create(string filename, Create3Options opts);

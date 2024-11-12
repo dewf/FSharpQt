@@ -42,7 +42,8 @@ namedbits MethodMask {
     // just supporting a few for now
     CreateEditor,
     SetEditorData,
-    SetModelData
+    SetModelData,
+    DestroyEditor
     // others: TODO
 }
 
@@ -50,6 +51,7 @@ interface MethodDelegate {
     Widget.Handle createEditor(Widget.Handle parent, StyleOptionViewItem.Handle option, ModelIndex.Handle index);
     void setEditorData(Widget.Handle editor, ModelIndex.Handle index);
     void setModelData(Widget.Handle editor, AbstractItemModel.Handle model, ModelIndex.Handle index);
+    void destroyEditor(Widget.Handle editor, ModelIndex.Handle index);
 }
 
 Handle createdSubclassed(MethodDelegate methodDelegate, MethodMask methodMask, SignalHandler handler);

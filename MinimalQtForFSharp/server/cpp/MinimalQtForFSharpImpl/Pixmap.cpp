@@ -21,4 +21,8 @@ namespace Pixmap
         deferred->accept(&visitor);
         return ret;
     }
+
+    void Owned_dispose(OwnedRef _this) {
+        // nothing yet, structure TBD
+    }
 }

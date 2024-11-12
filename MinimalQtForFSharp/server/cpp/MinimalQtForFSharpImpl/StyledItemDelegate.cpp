@@ -74,7 +74,6 @@ namespace StyledItemDelegate
                   methodMask(methodMask),
                   StyledItemDelegateWithHandler(handler) {}
     protected:
-    public:
         QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override {
             if (methodMask & MethodMaskFlags::CreateEditor) {
                 return (QWidget*)methodDelegate->createEditor((Widget::HandleRef)parent, (StyleOptionViewItem::HandleRef)&option, (ModelIndex::HandleRef)&index);
@@ -96,6 +95,14 @@ namespace StyledItemDelegate
                 methodDelegate->setModelData((Widget::HandleRef)editor, (AbstractItemModel::HandleRef)model, (ModelIndex::HandleRef)&index);
             } else {
                 QStyledItemDelegate::setModelData(editor, model, index);
+            }
+        }
+
+        void destroyEditor(QWidget *editor, const QModelIndex &index) const override {
+            if (methodMask & MethodMaskFlags::DestroyEditor) {
+                methodDelegate->destroyEditor((Widget::HandleRef)editor, (ModelIndex::HandleRef)&index);
+            } else {
+                QStyledItemDelegate::destroyEditor(editor, index);
             }
         }
     };

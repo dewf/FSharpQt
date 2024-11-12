@@ -146,10 +146,12 @@ type ComboBoxItemDelegateBase<'msg>() =
 
 type private Model<'msg>(dispatch: 'msg -> unit, eventDelegate: IEventDelegate<'msg>) as this =
     inherit ModelCore<'msg>(dispatch)
+    let mutable EditorRoot: IBuilderNode<'msg> option = None
     let methodMask =
         StyledItemDelegate.MethodMask.CreateEditor |||
         StyledItemDelegate.MethodMask.SetEditorData |||
-        StyledItemDelegate.MethodMask.SetModelData
+        StyledItemDelegate.MethodMask.SetModelData |||
+        StyledItemDelegate.MethodMask.DestroyEditor
     let styledItemDelegate = StyledItemDelegate.CreatedSubclassed(this, methodMask, this)
     let mutable eventDelegate = eventDelegate
     do
@@ -163,11 +165,16 @@ type private Model<'msg>(dispatch: 'msg -> unit, eventDelegate: IEventDelegate<'
             let root = eventDelegate.CreateEditor (StyleOptionViewItemProxy(option)) (new ModelIndexProxy(index))
             build dispatch (root :> IBuilderNode<'msg>) { ContainingWindow = None }
             root.Widget.SetParent(parent)
+            EditorRoot <- Some root
             root.Widget
         member this.SetEditorData(editor, index) =
             eventDelegate.SetEditorDataRaw editor index
         member this.SetModelData(editor, model, index) =
             eventDelegate.SetModelDataRaw editor model index
+        member this.DestroyEditor(editor, index) =
+            // need to destroy the tree built in .CreateEditor()
+            diff dispatch EditorRoot None { ContainingWindow = None }
+            EditorRoot <- None
 
 let private create (attrs: IAttr list) (signalMaps: ISignalMapFunc list) (dispatch: 'msg -> unit) (signalMask: StyledItemDelegate.SignalMask) (eventDelegate: IEventDelegate<'msg>) =
     let model = new Model<'msg>(dispatch, eventDelegate)
