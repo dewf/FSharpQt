@@ -276,15 +276,10 @@ type EditorRowDelegate(state: State) =
 type ColorColumnItemDelegate(state: State) =
     inherit ComboBoxItemDelegateBase<Msg>()
     override this.CreateEditor option index =
-        // so we need a way of being notified that the widget has been destroyed,
-        // so whatever whatever buildernode tree we've created here can be disposed of as well
-        // I think the StyledItemDelegate throws a signal, so we could attach to that in the innards, right?
         let rows =
             [0 .. possibleColors.Length - 1]
-            |> List.map (fun i ->
-                { Index = i; Color = colorAtIndex i })
+            |> List.map (fun i -> { Index = i; Color = colorAtIndex i })
             |> TrackedRows.Init
-        // TODO: this model is being leaked!
         let model =
             ListModelNode(EditorRowDelegate(state), int EditorColumn.NUM_COLUMNS, Rows = rows)
         ComboBox(Model = model)
@@ -294,7 +289,7 @@ type ColorColumnItemDelegate(state: State) =
         combo.CurrentIndex <- value.ToInt()
     override this.SetModelData combo model index =
         // pretty simple, just grab the current combo index and set it on the model
-        // again, this applies to the UserColor(index) of an OtherUser
+        // again, this applies to the UserColor (index) of an OtherUser
         model.SetData(index, Variant.Int combo.CurrentIndex)
         |> ignore
 
