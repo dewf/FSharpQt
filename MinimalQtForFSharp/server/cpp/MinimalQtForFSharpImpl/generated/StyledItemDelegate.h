@@ -60,7 +60,8 @@ namespace StyledItemDelegate
         // MethodMask:
         CreateEditor = 1 << 0,
         SetEditorData = 1 << 1,
-        SetModelData = 1 << 2
+        SetModelData = 1 << 2,
+        DestroyEditor = 1 << 3
     };
 
     class MethodDelegate {
@@ -68,6 +69,7 @@ namespace StyledItemDelegate
         virtual Widget::HandleRef createEditor(Widget::HandleRef parent, StyleOptionViewItem::HandleRef option, ModelIndex::HandleRef index) = 0;
         virtual void setEditorData(Widget::HandleRef editor, ModelIndex::HandleRef index) = 0;
         virtual void setModelData(Widget::HandleRef editor, AbstractItemModel::HandleRef model, ModelIndex::HandleRef index) = 0;
+        virtual void destroyEditor(Widget::HandleRef editor, ModelIndex::HandleRef index) = 0;
     };
     HandleRef createdSubclassed(std::shared_ptr<MethodDelegate> methodDelegate, MethodMask methodMask, std::shared_ptr<SignalHandler> handler);
 }

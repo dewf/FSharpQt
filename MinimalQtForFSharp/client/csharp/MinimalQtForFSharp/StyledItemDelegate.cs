@@ -34,6 +34,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static InterfaceMethodHandle _methodDelegate_createEditor;
         internal static InterfaceMethodHandle _methodDelegate_setEditorData;
         internal static InterfaceMethodHandle _methodDelegate_setModelData;
+        internal static InterfaceMethodHandle _methodDelegate_destroyEditor;
 
         public static Handle CreatedSubclassed(MethodDelegate methodDelegate, MethodMask methodMask, SignalHandler handler)
         {
@@ -233,7 +234,8 @@ namespace Org.Whatever.MinimalQtForFSharp
             // MethodMask:
             CreateEditor = 1 << 0,
             SetEditorData = 1 << 1,
-            SetModelData = 1 << 2
+            SetModelData = 1 << 2,
+            DestroyEditor = 1 << 3
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -258,6 +260,7 @@ namespace Org.Whatever.MinimalQtForFSharp
             Widget.Handle CreateEditor(Widget.Handle parent, StyleOptionViewItem.Handle option, ModelIndex.Handle index);
             void SetEditorData(Widget.Handle editor, ModelIndex.Handle index);
             void SetModelData(Widget.Handle editor, AbstractItemModel.Handle model, ModelIndex.Handle index);
+            void DestroyEditor(Widget.Handle editor, ModelIndex.Handle index);
         }
 
         private static Dictionary<MethodDelegate, IPushable> __MethodDelegateToPushable = new();
@@ -351,6 +354,13 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeInterfaceMethod(_methodDelegate_setModelData, Id);
             }
 
+            public void DestroyEditor(Widget.Handle editor, ModelIndex.Handle index)
+            {
+                ModelIndex.Handle__Push(index);
+                Widget.Handle__Push(editor);
+                NativeImplClient.InvokeInterfaceMethod(_methodDelegate_destroyEditor, Id);
+            }
+
             protected override void ReleaseExtra()
             {
                 // remove from lookup table
@@ -412,6 +422,7 @@ namespace Org.Whatever.MinimalQtForFSharp
             _methodDelegate_createEditor = NativeImplClient.GetInterfaceMethod(_methodDelegate, "createEditor");
             _methodDelegate_setEditorData = NativeImplClient.GetInterfaceMethod(_methodDelegate, "setEditorData");
             _methodDelegate_setModelData = NativeImplClient.GetInterfaceMethod(_methodDelegate, "setModelData");
+            _methodDelegate_destroyEditor = NativeImplClient.GetInterfaceMethod(_methodDelegate, "destroyEditor");
             NativeImplClient.SetClientMethodWrapper(_methodDelegate_createEditor, delegate(ClientObject __obj)
             {
                 var inst = ((__MethodDelegateWrapper)__obj).RawInterface;
@@ -434,6 +445,13 @@ namespace Org.Whatever.MinimalQtForFSharp
                 var model = AbstractItemModel.Handle__Pop();
                 var index = ModelIndex.Handle__Pop();
                 inst.SetModelData(editor, model, index);
+            });
+            NativeImplClient.SetClientMethodWrapper(_methodDelegate_destroyEditor, delegate(ClientObject __obj)
+            {
+                var inst = ((__MethodDelegateWrapper)__obj).RawInterface;
+                var editor = Widget.Handle__Pop();
+                var index = ModelIndex.Handle__Pop();
+                inst.DestroyEditor(editor, index);
             });
 
             // no static init

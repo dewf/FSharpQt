@@ -8,11 +8,64 @@ using CSharpFunctionalExtensions;
 using Org.Whatever.MinimalQtForFSharp.Support;
 using ModuleHandle = Org.Whatever.MinimalQtForFSharp.Support.ModuleHandle;
 
+using static Org.Whatever.MinimalQtForFSharp.PaintDevice;
+using static Org.Whatever.MinimalQtForFSharp.Common;
+using static Org.Whatever.MinimalQtForFSharp.Enums;
+
 namespace Org.Whatever.MinimalQtForFSharp
 {
     public static class Pixmap
     {
         private static ModuleHandle _module;
+        internal static ModuleMethodHandle _owned_dispose;
+        public class Handle : PaintDevice.Handle
+        {
+            internal Handle(IntPtr nativeHandle) : base(nativeHandle)
+            {
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void Handle__Push(Handle thing)
+        {
+            NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Handle Handle__Pop()
+        {
+            var ptr = NativeImplClient.PopPtr();
+            return ptr != IntPtr.Zero ? new Handle(ptr) : null;
+        }
+        public class Owned : Handle, IDisposable
+        {
+            protected bool _disposed;
+            internal Owned(IntPtr nativeHandle) : base(nativeHandle)
+            {
+            }
+            public virtual void Dispose()
+            {
+                if (!_disposed)
+                {
+                    Owned__Push(this);
+                    NativeImplClient.InvokeModuleMethod(_owned_dispose);
+                    _disposed = true;
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void Owned__Push(Owned thing)
+        {
+            NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Owned Owned__Pop()
+        {
+            var ptr = NativeImplClient.PopPtr();
+            return ptr != IntPtr.Zero ? new Owned(ptr) : null;
+        }
         public abstract record Deferred
         {
             internal abstract void Push(bool isReturn);
@@ -54,6 +107,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             _module = NativeImplClient.GetModule("Pixmap");
             // assign module handles
+            _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
 
             // no static init
         }

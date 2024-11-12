@@ -82,6 +82,9 @@ namespace Enums
     void Modifiers__push(Modifiers value);
     Modifiers Modifiers__pop();
 
+    void ImageConversionFlags__push(ImageConversionFlags value);
+    ImageConversionFlags ImageConversionFlags__pop();
+
     void Key__push(Key value);
     Key Key__pop();
 

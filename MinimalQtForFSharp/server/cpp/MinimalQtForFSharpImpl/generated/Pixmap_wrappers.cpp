@@ -2,8 +2,36 @@
 #include "Pixmap_wrappers.h"
 #include "Pixmap.h"
 
+#include "PaintDevice_wrappers.h"
+using namespace ::PaintDevice;
+
+#include "Common_wrappers.h"
+using namespace ::Common;
+
+#include "Enums_wrappers.h"
+using namespace ::Enums;
+
 namespace Pixmap
 {
+    void Handle__push(HandleRef value) {
+        ni_pushPtr(value);
+    }
+
+    HandleRef Handle__pop() {
+        return (HandleRef)ni_popPtr();
+    }
+    void Owned__push(OwnedRef value) {
+        ni_pushPtr(value);
+    }
+
+    OwnedRef Owned__pop() {
+        return (OwnedRef)ni_popPtr();
+    }
+
+    void Owned_dispose__wrapper() {
+        auto _this = Owned__pop();
+        Owned_dispose(_this);
+    }
 
     class Deferred_PushVisitor : public Deferred::Visitor {
     private:
@@ -36,6 +64,7 @@ namespace Pixmap
 
     int __register() {
         auto m = ni_registerModule("Pixmap");
+        ni_registerModuleMethod(m, "Owned_dispose", &Owned_dispose__wrapper);
         return 0; // = OK
     }
 }

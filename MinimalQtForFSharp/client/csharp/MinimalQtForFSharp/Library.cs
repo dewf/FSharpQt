@@ -40,6 +40,7 @@ public static class Library
         GridLayout.__Init();
         GroupBox.__Init();
         Frame.__Init();
+        PaintDevice.__Init();
         Pixmap.__Init();
         Label.__Init();
         LineEdit.__Init();
@@ -113,6 +114,7 @@ public static class Library
         LineEdit.__Shutdown();
         Label.__Shutdown();
         Pixmap.__Shutdown();
+        PaintDevice.__Shutdown();
         Frame.__Shutdown();
         GroupBox.__Shutdown();
         GridLayout.__Shutdown();

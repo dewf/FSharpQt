@@ -33,6 +33,7 @@ namespace StyledItemDelegate
     ni_InterfaceMethodRef methodDelegate_createEditor;
     ni_InterfaceMethodRef methodDelegate_setEditorData;
     ni_InterfaceMethodRef methodDelegate_setModelData;
+    ni_InterfaceMethodRef methodDelegate_destroyEditor;
     void SignalMask__push(SignalMask value) {
         ni_pushInt32(value);
     }
@@ -227,6 +228,11 @@ namespace StyledItemDelegate
             Widget::Handle__push(editor);
             invokeMethod(methodDelegate_setModelData);
         }
+        void destroyEditor(Widget::HandleRef editor, ModelIndex::HandleRef index) override {
+            ModelIndex::Handle__push(index);
+            Widget::Handle__push(editor);
+            invokeMethod(methodDelegate_destroyEditor);
+        }
     };
 
     void MethodDelegate__push(std::shared_ptr<MethodDelegate> inst, bool isReturn) {
@@ -291,6 +297,14 @@ namespace StyledItemDelegate
         inst->setModelData(editor, model, index);
     }
 
+    void MethodDelegate_destroyEditor__wrapper(int serverID) {
+        auto wrapper = std::static_pointer_cast<ServerMethodDelegateWrapper>(ServerObject::getByID(serverID));
+        auto inst = wrapper->rawInterface;
+        auto editor = Widget::Handle__pop();
+        auto index = ModelIndex::Handle__pop();
+        inst->destroyEditor(editor, index);
+    }
+
     void createdSubclassed__wrapper() {
         auto methodDelegate = MethodDelegate__pop();
         auto methodMask = MethodMask__pop();
@@ -313,6 +327,7 @@ namespace StyledItemDelegate
         methodDelegate_createEditor = ni_registerInterfaceMethod(methodDelegate, "createEditor", &MethodDelegate_createEditor__wrapper);
         methodDelegate_setEditorData = ni_registerInterfaceMethod(methodDelegate, "setEditorData", &MethodDelegate_setEditorData__wrapper);
         methodDelegate_setModelData = ni_registerInterfaceMethod(methodDelegate, "setModelData", &MethodDelegate_setModelData__wrapper);
+        methodDelegate_destroyEditor = ni_registerInterfaceMethod(methodDelegate, "destroyEditor", &MethodDelegate_destroyEditor__wrapper);
         return 0; // = OK
     }
 }

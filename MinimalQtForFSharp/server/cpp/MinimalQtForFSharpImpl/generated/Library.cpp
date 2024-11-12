@@ -26,6 +26,7 @@
 #include "GridLayout_wrappers.h"
 #include "GroupBox_wrappers.h"
 #include "Frame_wrappers.h"
+#include "PaintDevice_wrappers.h"
 #include "Pixmap_wrappers.h"
 #include "Label_wrappers.h"
 #include "LineEdit_wrappers.h"
@@ -90,6 +91,7 @@ extern "C" int nativeLibraryInit() {
     ::GridLayout::__register();
     ::GroupBox::__register();
     ::Frame::__register();
+    ::PaintDevice::__register();
     ::Pixmap::__register();
     ::Label::__register();
     ::LineEdit::__register();

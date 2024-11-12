@@ -11,12 +11,25 @@
 #include <optional>
 #include "../support/result.h"
 
+#include "PaintDevice.h"
+using namespace ::PaintDevice;
+#include "Common.h"
+using namespace ::Common;
+#include "Enums.h"
+using namespace ::Enums;
+
 namespace Pixmap
 {
+
+    struct __Handle; typedef struct __Handle* HandleRef; // extends PaintDevice::HandleRef
+    struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
     namespace Deferred {
         class Base;
     }
+
+
+    void Owned_dispose(OwnedRef _this);
 
     namespace Deferred {
         class Empty;

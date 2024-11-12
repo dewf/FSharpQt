@@ -203,6 +203,13 @@ namespace Enums
     Modifiers Modifiers__pop() {
         return ni_popUInt32();
     }
+    void ImageConversionFlags__push(ImageConversionFlags value) {
+        ni_pushInt32(value);
+    }
+
+    ImageConversionFlags ImageConversionFlags__pop() {
+        return ni_popInt32();
+    }
     void Key__push(Key value) {
         ni_pushInt32((int32_t)value);
     }

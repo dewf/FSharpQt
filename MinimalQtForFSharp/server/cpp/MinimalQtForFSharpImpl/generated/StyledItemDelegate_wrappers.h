@@ -39,6 +39,8 @@ namespace StyledItemDelegate
 
     void MethodDelegate_setModelData__wrapper(int serverID);
 
+    void MethodDelegate_destroyEditor__wrapper(int serverID);
+
     void createdSubclassed__wrapper();
 
     int __register();
