@@ -778,8 +778,8 @@ with
         | DarkGreen -> Color.Constant.DarkGreen
         | DarkBlue -> Color.Constant.DarkBlue
         | DarkCyan -> Color.Constant.DarkCyan
-        | DarkMagenta -> Color.Constant.Magenta
-        | DarkYellow -> Color.Constant.Yellow
+        | DarkMagenta -> Color.Constant.DarkMagenta
+        | DarkYellow -> Color.Constant.DarkYellow
         | Transparent -> Color.Constant.Transparent
         
 type Color private(deferred: Org.Whatever.MinimalQtForFSharp.Color.Deferred) =
