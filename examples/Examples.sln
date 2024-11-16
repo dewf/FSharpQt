@@ -26,6 +26,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Component", "Component\Comp
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MultiPaint", "MultiPaint\MultiPaint.fsproj", "{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalQtForFSharp", "..\MinimalQtForFSharp\client\csharp\MinimalQtForFSharp\MinimalQtForFSharp.csproj", "{2B2AF675-F3E0-41C9-95F6-F1BEFE91D906}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,5 +86,9 @@ Global
 		{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1ED3AB23-49FB-4BC2-8EF3-B39444EE8493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B2AF675-F3E0-41C9-95F6-F1BEFE91D906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B2AF675-F3E0-41C9-95F6-F1BEFE91D906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B2AF675-F3E0-41C9-95F6-F1BEFE91D906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B2AF675-F3E0-41C9-95F6-F1BEFE91D906}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
