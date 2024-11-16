@@ -16,3 +16,17 @@ let tryParseHexStringUInt32 (text: string) (maybePrefix: string option) =
             None
     | None ->
         parseRaw text
+
+
+// needed for situations with generics that cause compiler grief
+// (eg 'state in Reactor)
+let tryDispose (value: obj) =
+    match value with
+    | :? IDisposable as disposable ->
+        disposable.Dispose()
+    | _ ->
+        ()
+
+// save some annoying dynamic casting if we're sure about it        
+let dispose (value: #IDisposable) =
+    value.Dispose()

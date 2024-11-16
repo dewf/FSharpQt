@@ -29,40 +29,11 @@ type ActiveFilter =
     | ShowAll
     | Active
     | Completed
-with
-    member this.ToIndex() =
-        match this with
-        | ShowAll -> 0
-        | Active -> 1
-        | Completed -> 2
-    static member FromIndex index =
-        match index with
-        | 0 -> ShowAll
-        | 1 -> Active
-        | 2 -> Completed
-        | _ -> failwith "x"
 
 type Priority =
     | Low
     | Normal
     | High
-with
-    override this.ToString() =
-        match this with
-        | Low -> "Low"
-        | Normal -> "Normal"
-        | High -> "High"
-    member this.ToInt() =
-        match this with
-        | Low -> 0
-        | Normal -> 1
-        | High -> 2
-    static member FromInt (i: int) =
-        match i with
-        | 0 -> Low
-        | 1 -> Normal
-        | 2 -> High
-        | _ -> failwith "x"
 
 type TodoItem = {
     Text: string
@@ -71,10 +42,22 @@ type TodoItem = {
 }
 
 type Resources = {
-    LowColor: Color
-    NormalColor: Color
-    HighColor: Color
-}
+    LowColor: Color.Owned
+    NormalColor: Color.Owned
+    HighColor: Color.Owned
+} with
+    // see note on State's IDisposable implementation below
+    static member Create() = {
+        LowColor = Color("#b30000").Realize()           // either syntax is fine
+        NormalColor = Color("#ff8000") |> Color.realize
+        HighColor = Color("#ffff00") |> Color.realize
+    }
+    member this.Dispose() =
+        // utility func just lets us skip casting them via :> IDisposable
+        // and .tryDispose does :?> instead
+        FSharpQt.Util.dispose this.LowColor
+        FSharpQt.Util.dispose this.NormalColor
+        FSharpQt.Util.dispose this.HighColor
 
 type State = {
     Resources: Resources
@@ -83,12 +66,18 @@ type State = {
     AddPriority: Priority
     ActiveFilter: ActiveFilter
     ColumnSortingEnabled: bool
-}
-
+} with
+    // for this example this is silly and unnecessary, but we're just illustrating that
+    // you can optionally implement IDisposable on any app or component 'state,
+    // in order to release owned resources of whatever kind
+    interface IDisposable with
+        member this.Dispose() =
+            this.Resources.Dispose()
+            
 type Msg =
     | Quit
     | TextEdited of text: string
-    | SetAddPriority of maybeIndex: int option
+    | SetAddPriority of priority: Priority
     | AddItem
     | RowEdited of index: int * row: TodoItem
     | ClearCompleted
@@ -97,11 +86,7 @@ type Msg =
 
 let init _ =
     let state = {
-        Resources = {
-            LowColor = Color("#b30000").Realize()
-            NormalColor = Color("#ff8000").Realize()
-            HighColor = Color("#ffff00").Realize()
-        }
+        Resources = Resources.Create()
         Items = TrackedRows.Init [
             { Text = "Take out the trash"; Priority = High; Done = false }
             { Text = "Walk the dog"; Priority = Normal; Done = false }
@@ -120,14 +105,8 @@ let update (state: State) (msg: Msg): State * Cmd<Msg,AppSignal> =
         state, Cmd.Signal QuitApplication
     | TextEdited text ->
         { state with LineText = text }, Cmd.None
-    | SetAddPriority maybeIndex ->
-        let nextState =
-            match maybeIndex with
-            | Some index ->
-                { state with AddPriority = Priority.FromInt index }
-            | None ->
-                failwith "wat"
-        nextState, Cmd.None
+    | SetAddPriority priority ->
+        { state with AddPriority = priority }, Cmd.None
     | AddItem ->
         if state.LineText <> "" then
             let nextItems =
@@ -166,6 +145,33 @@ let update (state: State) (msg: Msg): State * Cmd<Msg,AppSignal> =
                 cmdSort "proxymodel" -1
         { state with ColumnSortingEnabled = newValue }, cmd
         
+// View-related stuff begins ============================================================================================
+module ActiveFilter =
+    let toIndex = function
+        | ShowAll -> 0
+        | Active -> 1
+        | Completed -> 2
+    let fromIndex = function
+        | 0 -> ShowAll
+        | 1 -> Active
+        | 2 -> Completed
+        | _ -> failwith "x"
+
+module Priority =
+    let toString = function
+        | Low -> "Low"
+        | Normal -> "Normal"
+        | High -> "High"
+    let toInt = function
+        | Low -> 0
+        | Normal -> 1
+        | High -> 2
+    let fromInt = function
+        | 0 -> Low
+        | 1 -> Normal
+        | 2 -> High
+        | _ -> failwith "x"
+        
 type Column =
     | Done = 0
     | Task = 1
@@ -181,12 +187,12 @@ type RowDelegate(state: State) =
         | Column.Task, DisplayRole -> Variant.String rowData.Text
         | Column.Priority, DecorationRole ->
             match rowData.Priority with
-            | Low -> state.Resources.LowColor
+            | Low -> state.Resources.LowColor :> Color // sigh
             | Normal -> state.Resources.NormalColor
             | High -> state.Resources.HighColor
             |> Variant.Color
-        | Column.Priority, DisplayRole -> rowData.Priority.ToString() |> Variant.String
-        | Column.Priority, EditRole -> rowData.Priority.ToInt() |> Variant.Int
+        | Column.Priority, DisplayRole -> rowData.Priority |> Priority.toString |> Variant.String
+        | Column.Priority, EditRole -> rowData.Priority |> Priority.toInt |> Variant.Int
         | _ -> Variant.Empty
     override this.GetFlags rowData col baseFlags =
         match enum<Column> col with
@@ -207,7 +213,7 @@ type RowDelegate(state: State) =
         | Column.Priority, EditRole ->
             let nextRow =
                 let priority =
-                    value.ToInt() |> Priority.FromInt
+                    value.ToInt() |> Priority.fromInt
                 { rowData with Priority = priority }
             RowEdited (rowIndex, nextRow)
             |> Some
@@ -216,7 +222,7 @@ type RowDelegate(state: State) =
             
 let comboStrings =
     [ Low; Normal; High ]
-    |> List.map (_.ToString())
+    |> List.map Priority.toString
             
 type PriorityColumnDelegate(state: State) =
     inherit ComboBoxItemDelegateBase<Msg>()
@@ -272,8 +278,8 @@ let view (state: State) =
                 TabItem("Completed")
             ],
             Expanding = false,
-            OnCurrentChanged = (ActiveFilter.FromIndex >> FilterChanged),
-            CurrentIndex = state.ActiveFilter.ToIndex())
+            OnCurrentChanged = (ActiveFilter.fromIndex >> FilterChanged),
+            CurrentIndex = (state.ActiveFilter |> ActiveFilter.toIndex))
         let clear =
             let enabled =
                 state.Items.Rows
@@ -304,9 +310,16 @@ let view (state: State) =
                      OnReturnPressed = AddItem)
         let priority =
             let selected =
-                state.AddPriority.ToInt()
+                state.AddPriority
+                |> Priority.toInt
                 |> Some
-            ComboBox(StringItems = comboStrings, CurrentIndex = selected, OnCurrentIndexChanged = SetAddPriority)
+            let onIndexChanged = function
+                | Some i ->
+                    Priority.fromInt i
+                    |> SetAddPriority
+                | None ->
+                    failwith "nope"
+            ComboBox(StringItems = comboStrings, CurrentIndex = selected, OnCurrentIndexChanged = onIndexChanged)
         let addButton =
             PushButton(
                 Text = "Add",

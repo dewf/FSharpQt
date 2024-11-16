@@ -213,6 +213,8 @@ type Reactor<'state, 'msg, 'signal, 'root when 'root :> IBuilderNode<'msg>>(
             disposed <- true
             // outside code has no concept of our inner tree, so we're responsible for disposing all of it
             disposeTree root
+            // dispose the state, if it's capable
+            Util.tryDispose state
 
 [<AbstractClass>]    
 type ReactorNodeBase<'outerMsg,'state,'msg,'signal,'root when 'root :> IBuilderNode<'msg>>(
