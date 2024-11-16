@@ -17,5 +17,7 @@ namespace Color
     void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn);
     std::shared_ptr<Deferred::Base> Deferred__pop();
 
+    void realize__wrapper();
+
     int __register();
 }

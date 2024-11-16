@@ -13,7 +13,15 @@ namespace Org.Whatever.MinimalQtForFSharp
     public static class Color
     {
         private static ModuleHandle _module;
+        internal static ModuleMethodHandle _realize;
         internal static ModuleMethodHandle _owned_dispose;
+
+        public static Owned Realize(Deferred deferred)
+        {
+            Deferred__Push(deferred, false);
+            NativeImplClient.InvokeModuleMethod(_realize);
+            return Owned__Pop();
+        }
         public enum Constant
         {
             Black,
@@ -113,29 +121,14 @@ namespace Org.Whatever.MinimalQtForFSharp
             {
                 return NativeImplClient.PopInt32() switch
                 {
-                    0 => FromConstant.PopDerived(),
-                    1 => FromHandle.PopDerived(),
+                    0 => FromHandle.PopDerived(),
+                    1 => FromConstant.PopDerived(),
                     2 => FromRGB.PopDerived(),
                     3 => FromRGBA.PopDerived(),
                     4 => FromRGBF.PopDerived(),
                     5 => FromRGBAF.PopDerived(),
                     _ => throw new Exception("Deferred.Pop() - unknown tag!")
                 };
-            }
-            public sealed record FromConstant(Constant Name) : Deferred
-            {
-                public Constant Name { get; } = Name;
-                internal override void Push(bool isReturn)
-                {
-                    Constant__Push(Name);
-                    // kind
-                    NativeImplClient.PushInt32(0);
-                }
-                internal static FromConstant PopDerived()
-                {
-                    var name = Constant__Pop();
-                    return new FromConstant(name);
-                }
             }
             public sealed record FromHandle(Handle Color) : Deferred
             {
@@ -144,12 +137,27 @@ namespace Org.Whatever.MinimalQtForFSharp
                 {
                     Handle__Push(Color);
                     // kind
-                    NativeImplClient.PushInt32(1);
+                    NativeImplClient.PushInt32(0);
                 }
                 internal static FromHandle PopDerived()
                 {
                     var color = Handle__Pop();
                     return new FromHandle(color);
+                }
+            }
+            public sealed record FromConstant(Constant Name) : Deferred
+            {
+                public Constant Name { get; } = Name;
+                internal override void Push(bool isReturn)
+                {
+                    Constant__Push(Name);
+                    // kind
+                    NativeImplClient.PushInt32(1);
+                }
+                internal static FromConstant PopDerived()
+                {
+                    var name = Constant__Pop();
+                    return new FromConstant(name);
                 }
             }
             public sealed record FromRGB(int R, int G, int B) : Deferred
@@ -260,6 +268,7 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             _module = NativeImplClient.GetModule("Color");
             // assign module handles
+            _realize = NativeImplClient.GetModuleMethod(_module, "realize");
             _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
 
             // no static init

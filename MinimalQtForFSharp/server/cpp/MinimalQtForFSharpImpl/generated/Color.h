@@ -46,8 +46,8 @@ namespace Color
     void Owned_dispose(OwnedRef _this);
 
     namespace Deferred {
-        class FromConstant;
         class FromHandle;
+        class FromConstant;
         class FromRGB;
         class FromRGBA;
         class FromRGBF;
@@ -55,8 +55,8 @@ namespace Color
 
         class Visitor {
         public:
-            virtual void onFromConstant(const FromConstant* value) = 0;
             virtual void onFromHandle(const FromHandle* value) = 0;
+            virtual void onFromConstant(const FromConstant* value) = 0;
             virtual void onFromRGB(const FromRGB* value) = 0;
             virtual void onFromRGBA(const FromRGBA* value) = 0;
             virtual void onFromRGBF(const FromRGBF* value) = 0;
@@ -68,21 +68,21 @@ namespace Color
             virtual void accept(Visitor* visitor) = 0;
         };
 
-        class FromConstant : public Base {
-        public:
-            const Constant name;
-            FromConstant(Constant name) : name(name) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromConstant(this);
-            }
-        };
-
         class FromHandle : public Base {
         public:
             const HandleRef color;
             FromHandle(HandleRef color) : color(color) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromHandle(this);
+            }
+        };
+
+        class FromConstant : public Base {
+        public:
+            const Constant name;
+            FromConstant(Constant name) : name(name) {}
+            void accept(Visitor* visitor) override {
+                visitor->onFromConstant(this);
             }
         };
 
@@ -132,4 +132,5 @@ namespace Color
             }
         };
     }
+    OwnedRef realize(std::shared_ptr<Deferred::Base> deferred);
 }

@@ -37,13 +37,13 @@ namespace Color
         bool isReturn;
     public:
         Deferred_PushVisitor(bool isReturn) : isReturn(isReturn) {}
-        void onFromConstant(const Deferred::FromConstant* fromConstantValue) override {
-            Constant__push(fromConstantValue->name);
+        void onFromHandle(const Deferred::FromHandle* fromHandleValue) override {
+            Handle__push(fromHandleValue->color);
             // kind:
             ni_pushInt32(0);
         }
-        void onFromHandle(const Deferred::FromHandle* fromHandleValue) override {
-            Handle__push(fromHandleValue->color);
+        void onFromConstant(const Deferred::FromConstant* fromConstantValue) override {
+            Constant__push(fromConstantValue->name);
             // kind:
             ni_pushInt32(1);
         }
@@ -88,13 +88,13 @@ namespace Color
         Deferred::Base* __ret = nullptr;
         switch (ni_popInt32()) {
         case 0: {
-            auto name = Constant__pop();
-            __ret = new Deferred::FromConstant(name);
+            auto color = Handle__pop();
+            __ret = new Deferred::FromHandle(color);
             break;
         }
         case 1: {
-            auto color = Handle__pop();
-            __ret = new Deferred::FromHandle(color);
+            auto name = Constant__pop();
+            __ret = new Deferred::FromConstant(name);
             break;
         }
         case 2: {
@@ -133,8 +133,14 @@ namespace Color
         return std::shared_ptr<Deferred::Base>(__ret);
     }
 
+    void realize__wrapper() {
+        auto deferred = Deferred__pop();
+        Owned__push(realize(deferred));
+    }
+
     int __register() {
         auto m = ni_registerModule("Color");
+        ni_registerModuleMethod(m, "realize", &realize__wrapper);
         ni_registerModuleMethod(m, "Owned_dispose", &Owned_dispose__wrapper);
         return 0; // = OK
     }
