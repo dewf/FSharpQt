@@ -783,9 +783,6 @@ with
         | Transparent -> Color.Constant.Transparent
 
 type Color private(deferred: Org.Whatever.MinimalQtForFSharp.Color.Deferred) =
-    static do
-        // this is so library users can declare top-level Colors without having to personally ensure Library.Init() has been called beforehand
-        NativeInitModule.ensureNativeLibraryLoaded()
     member val internal QtValue = deferred
     internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
         Color(Color.Deferred.FromHandle(handle))

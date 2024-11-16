@@ -309,11 +309,13 @@ type AppStyle =
     | Fusion
     
 type AppReactor<'msg,'state>(init: unit -> 'state * Cmd<'msg,AppSignal>, update: 'state -> 'msg -> 'state * Cmd<'msg,AppSignal>, view: 'state -> IBuilderNode<'msg>) =
-    static do
-        // ensure Library.Init() has been called beforehand
-        NativeInitModule.ensureNativeLibraryLoaded()
     let mutable appStyle: AppStyle option = None
     let mutable quitOnLastWindowClosed: bool option = None
+    static let mutable libraryInitialized = false
+    do
+        if not libraryInitialized then
+            Library.Init()
+            libraryInitialized <- true
     member this.SetQuitOnLastWindowClosed (state: bool) =
         quitOnLastWindowClosed <- Some state
         

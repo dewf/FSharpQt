@@ -133,8 +133,8 @@ let view (state: State) =
     let mainWindow = 
         MainWindow(
             WindowTitle = "Multi-User Paint Demo",
-            FixedWidth = 320,
-            // Size = Size.From (320, 400),
+            // FixedWidth = 320,
+            Size = Size.From (320, 300),
             CentralLayout = vbox,
             OnWindowClosed = MainWindowClosed)
         :> IWindowNode<Msg>

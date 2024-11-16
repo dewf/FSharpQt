@@ -70,7 +70,14 @@ type TodoItem = {
     Done: bool
 }
 
+type Resources = {
+    LowColor: Color
+    NormalColor: Color
+    HighColor: Color
+}
+
 type State = {
+    Resources: Resources
     Items: TrackedRows<TodoItem>
     LineText: string
     AddPriority: Priority
@@ -90,6 +97,11 @@ type Msg =
 
 let init _ =
     let state = {
+        Resources = {
+            LowColor = Color("#b30000").Realize()
+            NormalColor = Color("#ff8000").Realize()
+            HighColor = Color("#ffff00").Realize()
+        }
         Items = TrackedRows.Init [
             { Text = "Take out the trash"; Priority = High; Done = false }
             { Text = "Walk the dog"; Priority = Normal; Done = false }
@@ -160,13 +172,6 @@ type Column =
     | Priority = 2
     | NUM_COLUMNS = 3
 
-let lowColor =
-    Color("#b30000").Realize()
-let normalColor =
-    Color("#ff8000").Realize()
-let highColor =
-    Color("#ffff00").Realize()
-    
 type RowDelegate(state: State) =
     inherit AbstractSimpleListModelDelegate<Msg,TodoItem>()
     override this.Data rowData col role =
@@ -176,9 +181,9 @@ type RowDelegate(state: State) =
         | Column.Task, DisplayRole -> Variant.String rowData.Text
         | Column.Priority, DecorationRole ->
             match rowData.Priority with
-            | Low -> lowColor :> Color
-            | Normal -> normalColor
-            | High -> highColor
+            | Low -> state.Resources.LowColor
+            | Normal -> state.Resources.NormalColor
+            | High -> state.Resources.HighColor
             |> Variant.Color
         | Column.Priority, DisplayRole -> rowData.Priority.ToString() |> Variant.String
         | Column.Priority, EditRole -> rowData.Priority.ToInt() |> Variant.Int
