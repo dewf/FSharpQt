@@ -159,7 +159,14 @@ type Column =
     | Task = 1
     | Priority = 2
     | NUM_COLUMNS = 3
-        
+
+let lowColor =
+    Color("#b30000").Realize()
+let normalColor =
+    Color("#ff8000").Realize()
+let highColor =
+    Color("#ffff00").Realize()
+    
 type RowDelegate(state: State) =
     inherit AbstractSimpleListModelDelegate<Msg,TodoItem>()
     override this.Data rowData col role =
@@ -169,9 +176,9 @@ type RowDelegate(state: State) =
         | Column.Task, DisplayRole -> Variant.String rowData.Text
         | Column.Priority, DecorationRole ->
             match rowData.Priority with
-            | Low -> Color("#090979")
-            | Normal -> Color("#00d4ff")
-            | High -> Color("#c8ffff")
+            | Low -> lowColor :> Color
+            | Normal -> normalColor
+            | High -> highColor
             |> Variant.Color
         | Column.Priority, DisplayRole -> rowData.Priority.ToString() |> Variant.String
         | Column.Priority, EditRole -> rowData.Priority.ToInt() |> Variant.Int

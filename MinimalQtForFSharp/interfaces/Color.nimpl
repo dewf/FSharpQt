@@ -27,10 +27,13 @@ opaque Handle;
 opaque Owned extends Handle;
 
 sumtype Deferred {
-    FromConstant(Constant name),
     FromHandle(Handle color),
+    FromConstant(Constant name),
     FromRGB(int r, int g, int b),
     FromRGBA(int r, int g, int b, int a),
     FromRGBF(float r, float g, float b),
     FromRGBAF(float r, float g, float b, float a)
 }
+
+// stuff coming from F# is deferred by default, unless we realize it, then we're responsible
+Owned realize(Deferred deferred);

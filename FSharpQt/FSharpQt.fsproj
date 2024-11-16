@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="NativeInitModule.fs" />
         <Compile Include="Extensions.fs" />
         <Compile Include="Util.fs" />
         <Compile Include="InputEnums.fs" />

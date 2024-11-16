@@ -51,21 +51,17 @@ namespace Color
         return QColorConstants::Black;
     }
 
-    void Owned_dispose(OwnedRef _this) {
-        delete _this;
-    }
-
     // deferred stuff =====================================
     class FromDeferred : public Deferred::Visitor {
     private:
         QColor &color;
     public:
         explicit FromDeferred(QColor &color) : color(color) {}
-        void onFromConstant(const Deferred::FromConstant *fromConstant) override {
-            color = Color::fromConstant(fromConstant->name);
-        }
         void onFromHandle(const Deferred::FromHandle *value) override {
             color = value->color->qColor;
+        }
+        void onFromConstant(const Deferred::FromConstant *fromConstant) override {
+            color = Color::fromConstant(fromConstant->name);
         }
         void onFromRGB(const Deferred::FromRGB *fromRGB) override {
             color = QColor::fromRgb(fromRGB->r, fromRGB->g, fromRGB->b);
@@ -88,4 +84,16 @@ namespace Color
         return ret;
     }
 
+    // actual module methods =============================================
+
+    void Owned_dispose(OwnedRef _this) {
+        delete _this;
+    }
+
+    OwnedRef realize(std::shared_ptr<Deferred::Base> deferred) {
+        QColor ret;
+        FromDeferred visitor(ret);
+        deferred->accept(&visitor);
+        return new __Owned { ret };
+    }
 }

@@ -781,20 +781,13 @@ with
         | DarkMagenta -> Color.Constant.DarkMagenta
         | DarkYellow -> Color.Constant.DarkYellow
         | Transparent -> Color.Constant.Transparent
-        
+
 type Color private(deferred: Org.Whatever.MinimalQtForFSharp.Color.Deferred) =
+    static do
+        // this is so library users can declare top-level Colors without having to personally ensure Library.Init() has been called beforehand
+        NativeInitModule.ensureNativeLibraryLoaded()
     member val internal QtValue = deferred
-    internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) = // unowned only!!!!
-        match handle with
-        | :? Org.Whatever.MinimalQtForFSharp.Color.Owned ->
-            failwith "Color new() - created with .Owned handle, this is not allowed"
-            // use ColorProxy for that kind of thing
-            // *Proxy types are for when we need to call methods on Qt objects
-            // everything else is 1-way (F# -> C++) only [with the exception of paintstack stuff, where I guess we're going to be wrapping incoming unowned handles with 'deferred' on the way back out]
-            // but what if we want to store/copy a proxy value, though?
-            // and does the API make clear when a proxy needs to be disposed? or does it even matter, with .Finalize()?
-        | _ ->
-            ()
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
         Color(Color.Deferred.FromHandle(handle))
     new(hex: string) =
         match Util.tryParseHexStringUInt32 hex (Some "#") with
@@ -816,6 +809,58 @@ type Color private(deferred: Org.Whatever.MinimalQtForFSharp.Color.Deferred) =
         Color(Color.Deferred.FromRGBF(float32 r, float32 g, float32 b))
     new(r: float, g: float, b: float, a: float) =
         Color(Color.Deferred.FromRGBAF(float32 r, float32 g, float32 b, float32 a))
+        
+    member this.Realize() =
+        match deferred with
+        | :? Org.Whatever.MinimalQtForFSharp.Color.Deferred.FromHandle ->
+            printfn "warning: Color.Realize() - attempted to realize a handle-based Color. are you sure this is wanted? (mainly designed to actually create deferred values)"
+        | _ ->
+            ()
+        let owned = Org.Whatever.MinimalQtForFSharp.Color.Realize(deferred)
+        new OwnedColor(owned)
+and
+    OwnedColor internal(owned: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
+        inherit Color(owned)
+        let mutable disposed = false
+        interface IDisposable with
+            member this.Dispose() =
+                if not disposed then
+                    owned.Dispose()
+                    disposed <- true
+        override this.Finalize() =
+            (this :> IDisposable).Dispose()
+            
+// module Color =
+//     type Owned(owned: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
+//         inherit Color(owned)
+//
+//         static do
+//             // this is so library users can declare top-level Colors without having to personally ensure Library.Init() has been called beforehand
+//             NativeInitModule.EnsureNativeLibraryLoaded()
+//             |> ignore
+//         
+//         let mutable disposed = false
+//         interface IDisposable with
+//             member this.Dispose() =
+//                 if not disposed then
+//                     owned.Dispose()
+//                     disposed <- true
+//         override this.Finalize() =
+//             (this :> IDisposable).Dispose()
+//         new(hex: string) =
+//             let deferred = 
+//                 match Util.tryParseHexStringUInt32 hex (Some "#") with
+//                 | Some value ->
+//                     let red = (value >>> 16) &&& 0xFFu
+//                     let green = (value >>> 8) &&& 0xFFu
+//                     let blue = value &&& 0xFFu
+//                     Color.Deferred.FromRGB(int red, int green, int blue) :> Org.Whatever.MinimalQtForFSharp.Color.Deferred
+//                 | None ->
+//                     printfn "MiscTypes.Color ctor: failed to parse hex string [%s]" hex
+//                     Color.Deferred.FromConstant(Color.Constant.Black)
+//             let realized =
+//                 Org.Whatever.MinimalQtForFSharp.Color.Realize(deferred)
+//             new Owned(realized)
         
 type ColorProxy private(qtColor: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
     let mutable disposed = false

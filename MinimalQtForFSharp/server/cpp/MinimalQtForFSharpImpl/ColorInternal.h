@@ -7,12 +7,12 @@
 using namespace Common;
 
 namespace Color {
-    struct __Handle : public PaintStackItem {
+    struct __Handle : PaintStackItem {
         QColor qColor;
-        explicit __Handle(QColor qColor) : qColor(qColor) {}
+        explicit __Handle(const QColor qColor) : qColor(qColor) {}
     };
-    struct __Owned : public __Handle {
-        explicit __Owned(QColor qColor) : __Handle(qColor) {}
+    struct __Owned : __Handle {
+        explicit __Owned(const QColor qColor) : __Handle(qColor) {}
     };
 
     QColor fromConstant(Constant name);
