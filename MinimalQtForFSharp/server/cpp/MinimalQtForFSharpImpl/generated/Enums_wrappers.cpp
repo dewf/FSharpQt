@@ -210,6 +210,22 @@ namespace Enums
     ImageConversionFlags ImageConversionFlags__pop() {
         return ni_popInt32();
     }
+    void AspectRatioMode__push(AspectRatioMode value) {
+        ni_pushInt32((int32_t)value);
+    }
+
+    AspectRatioMode AspectRatioMode__pop() {
+        auto tag = ni_popInt32();
+        return (AspectRatioMode)tag;
+    }
+    void TransformationMode__push(TransformationMode value) {
+        ni_pushInt32((int32_t)value);
+    }
+
+    TransformationMode TransformationMode__pop() {
+        auto tag = ni_popInt32();
+        return (TransformationMode)tag;
+    }
     void Key__push(Key value) {
         ni_pushInt32((int32_t)value);
     }

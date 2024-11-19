@@ -17,8 +17,11 @@ public static class Library
         Object.__Init();
         Layout.__Init();
         Color.__Init();
-        PaintResources.__Init();
+        PaintDevice.__Init();
         Enums.__Init();
+        Image.__Init();
+        Pixmap.__Init();
+        PaintResources.__Init();
         Painter.__Init();
         Icon.__Init();
         KeySequence.__Init();
@@ -40,8 +43,6 @@ public static class Library
         GridLayout.__Init();
         GroupBox.__Init();
         Frame.__Init();
-        PaintDevice.__Init();
-        Pixmap.__Init();
         Label.__Init();
         LineEdit.__Init();
         AbstractListModel.__Init();
@@ -113,8 +114,6 @@ public static class Library
         AbstractListModel.__Shutdown();
         LineEdit.__Shutdown();
         Label.__Shutdown();
-        Pixmap.__Shutdown();
-        PaintDevice.__Shutdown();
         Frame.__Shutdown();
         GroupBox.__Shutdown();
         GridLayout.__Shutdown();
@@ -136,8 +135,11 @@ public static class Library
         KeySequence.__Shutdown();
         Icon.__Shutdown();
         Painter.__Shutdown();
-        Enums.__Shutdown();
         PaintResources.__Shutdown();
+        Pixmap.__Shutdown();
+        Image.__Shutdown();
+        Enums.__Shutdown();
+        PaintDevice.__Shutdown();
         Color.__Shutdown();
         Layout.__Shutdown();
         Object.__Shutdown();

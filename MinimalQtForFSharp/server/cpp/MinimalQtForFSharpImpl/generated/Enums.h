@@ -345,6 +345,17 @@ namespace Enums
         NoFormatConversion = 0x00000200
     };
 
+    enum class AspectRatioMode {
+        IgnoreAspectRatio,
+        KeepAspectRatio,
+        KeepAspectRatioByExpanding
+    };
+
+    enum class TransformationMode {
+        FastTransformation,
+        SmoothTransformation
+    };
+
     enum class Key {
         Key_Space = 0x20,
         Key_Any = Key_Space,

@@ -21,6 +21,26 @@ namespace Org.Whatever.MinimalQtForFSharp.Support
             Console.WriteLine("ClientBuffer {0} allocated", _block);
         }
         
+        // // currently this just makes a copy
+        // // but would we ever want to wrap+pin an existing memory array? so that it's always current on the native side?
+        // public unsafe ClientBuffer(T[] sourceArray)
+        // {
+        //     _dims = [sourceArray.Length];
+        //     _elementSize = Marshal.SizeOf<T>();
+        //     _totalCount = sourceArray.Length;
+        //     _totalSize = _totalCount * _elementSize;
+        //     _block = Marshal.AllocHGlobal((IntPtr)_totalSize);
+        //     GC.AddMemoryPressure(_totalSize);
+        //     // copy from sourceArray to block
+        //     fixed (T* p = sourceArray)
+        //     {
+        //         IntPtr sourcePtr = (IntPtr)p;
+        //         Buffer.MemoryCopy(sourcePtr.ToPointer(), _block.ToPointer(), _totalSize, _totalSize);
+        //     }
+        //     // done
+        //     Console.WriteLine("ClientBuffer {0} allocated", _block);
+        // }
+        
         public Span<T> GetSpan(out int length)
         {
             unsafe

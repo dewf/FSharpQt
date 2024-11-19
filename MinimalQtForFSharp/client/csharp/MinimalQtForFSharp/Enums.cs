@@ -695,6 +695,43 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ret = NativeImplClient.PopInt32();
             return (ImageConversionFlags)ret;
         }
+        public enum AspectRatioMode
+        {
+            IgnoreAspectRatio,
+            KeepAspectRatio,
+            KeepAspectRatioByExpanding
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void AspectRatioMode__Push(AspectRatioMode value)
+        {
+            NativeImplClient.PushInt32((int)value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static AspectRatioMode AspectRatioMode__Pop()
+        {
+            var ret = NativeImplClient.PopInt32();
+            return (AspectRatioMode)ret;
+        }
+        public enum TransformationMode
+        {
+            FastTransformation,
+            SmoothTransformation
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void TransformationMode__Push(TransformationMode value)
+        {
+            NativeImplClient.PushInt32((int)value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static TransformationMode TransformationMode__Pop()
+        {
+            var ret = NativeImplClient.PopInt32();
+            return (TransformationMode)ret;
+        }
         public enum Key
         {
             Key_Space = 0x20,

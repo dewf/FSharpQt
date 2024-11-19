@@ -53,5 +53,27 @@ namespace Painter
 
     void Handle_drawPolyline_overload1__wrapper();
 
+    void Handle_drawPixmap__wrapper();
+
+    void Handle_drawPixmap_overload1__wrapper();
+
+    void Handle_drawPixmap_overload2__wrapper();
+
+    void Handle_drawPixmap_overload3__wrapper();
+
+    void Handle_drawPixmap_overload4__wrapper();
+
+    void Handle_drawPixmap_overload5__wrapper();
+
+    void Handle_drawPixmap_overload6__wrapper();
+
+    void Handle_drawPixmap_overload7__wrapper();
+
+    void Handle_drawPixmap_overload8__wrapper();
+
+    void Handle_drawPixmap_overload9__wrapper();
+
+    void Handle_drawPixmap_overload10__wrapper();
+
     int __register();
 }

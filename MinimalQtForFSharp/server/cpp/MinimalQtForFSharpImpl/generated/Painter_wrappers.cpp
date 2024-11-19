@@ -14,6 +14,9 @@ using namespace ::Enums;
 #include "Color_wrappers.h"
 using namespace ::Color;
 
+#include "Pixmap_wrappers.h"
+using namespace ::Pixmap;
+
 namespace Painter
 {
     // built-in array type: std::vector<int32_t>
@@ -151,7 +154,7 @@ namespace Painter
     void Handle_fillRect_overload1__wrapper() {
         auto _this = Handle__pop();
         auto rect = Rect__pop();
-        auto color = Deferred__pop();
+        auto color = Color::Deferred__pop();
         Handle_fillRect(_this, rect, color);
     }
 
@@ -225,6 +228,103 @@ namespace Painter
         Handle_drawPolyline(_this, points);
     }
 
+    void Handle_drawPixmap__wrapper() {
+        auto _this = Handle__pop();
+        auto target = RectF__pop();
+        auto pixmap = Pixmap::Deferred__pop();
+        auto source = RectF__pop();
+        Handle_drawPixmap(_this, target, pixmap, source);
+    }
+
+    void Handle_drawPixmap_overload1__wrapper() {
+        auto _this = Handle__pop();
+        auto point = Point__pop();
+        auto pixmap = Pixmap::Deferred__pop();
+        Handle_drawPixmap(_this, point, pixmap);
+    }
+
+    void Handle_drawPixmap_overload2__wrapper() {
+        auto _this = Handle__pop();
+        auto point = PointF__pop();
+        auto pixmap = Pixmap::Deferred__pop();
+        Handle_drawPixmap(_this, point, pixmap);
+    }
+
+    void Handle_drawPixmap_overload3__wrapper() {
+        auto _this = Handle__pop();
+        auto rect = Rect__pop();
+        auto pixmap = Pixmap::Deferred__pop();
+        Handle_drawPixmap(_this, rect, pixmap);
+    }
+
+    void Handle_drawPixmap_overload4__wrapper() {
+        auto _this = Handle__pop();
+        auto point = Point__pop();
+        auto pixmap = Pixmap::Deferred__pop();
+        auto source = Rect__pop();
+        Handle_drawPixmap(_this, point, pixmap, source);
+    }
+
+    void Handle_drawPixmap_overload5__wrapper() {
+        auto _this = Handle__pop();
+        auto point = PointF__pop();
+        auto pixmap = Pixmap::Deferred__pop();
+        auto source = RectF__pop();
+        Handle_drawPixmap(_this, point, pixmap, source);
+    }
+
+    void Handle_drawPixmap_overload6__wrapper() {
+        auto _this = Handle__pop();
+        auto target = Rect__pop();
+        auto pixmap = Pixmap::Deferred__pop();
+        auto source = Rect__pop();
+        Handle_drawPixmap(_this, target, pixmap, source);
+    }
+
+    void Handle_drawPixmap_overload7__wrapper() {
+        auto _this = Handle__pop();
+        auto x = ni_popInt32();
+        auto y = ni_popInt32();
+        auto pixmap = Pixmap::Deferred__pop();
+        Handle_drawPixmap(_this, x, y, pixmap);
+    }
+
+    void Handle_drawPixmap_overload8__wrapper() {
+        auto _this = Handle__pop();
+        auto x = ni_popInt32();
+        auto y = ni_popInt32();
+        auto width = ni_popInt32();
+        auto height = ni_popInt32();
+        auto pixmap = Pixmap::Deferred__pop();
+        Handle_drawPixmap(_this, x, y, width, height, pixmap);
+    }
+
+    void Handle_drawPixmap_overload9__wrapper() {
+        auto _this = Handle__pop();
+        auto x = ni_popInt32();
+        auto y = ni_popInt32();
+        auto pixmap = Pixmap::Deferred__pop();
+        auto sx = ni_popInt32();
+        auto sy = ni_popInt32();
+        auto sw = ni_popInt32();
+        auto sh = ni_popInt32();
+        Handle_drawPixmap(_this, x, y, pixmap, sx, sy, sw, sh);
+    }
+
+    void Handle_drawPixmap_overload10__wrapper() {
+        auto _this = Handle__pop();
+        auto x = ni_popInt32();
+        auto y = ni_popInt32();
+        auto w = ni_popInt32();
+        auto h = ni_popInt32();
+        auto pixmap = Pixmap::Deferred__pop();
+        auto sx = ni_popInt32();
+        auto sy = ni_popInt32();
+        auto sw = ni_popInt32();
+        auto sh = ni_popInt32();
+        Handle_drawPixmap(_this, x, y, w, h, pixmap, sx, sy, sw, sh);
+    }
+
     int __register() {
         auto m = ni_registerModule("Painter");
         ni_registerModuleMethod(m, "Handle_setRenderHint", &Handle_setRenderHint__wrapper);
@@ -247,6 +347,17 @@ namespace Painter
         ni_registerModuleMethod(m, "Handle_drawEllipse_overload4", &Handle_drawEllipse_overload4__wrapper);
         ni_registerModuleMethod(m, "Handle_drawPolyline", &Handle_drawPolyline__wrapper);
         ni_registerModuleMethod(m, "Handle_drawPolyline_overload1", &Handle_drawPolyline_overload1__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap", &Handle_drawPixmap__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload1", &Handle_drawPixmap_overload1__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload2", &Handle_drawPixmap_overload2__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload3", &Handle_drawPixmap_overload3__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload4", &Handle_drawPixmap_overload4__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload5", &Handle_drawPixmap_overload5__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload6", &Handle_drawPixmap_overload6__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload7", &Handle_drawPixmap_overload7__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload8", &Handle_drawPixmap_overload8__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload9", &Handle_drawPixmap_overload9__wrapper);
+        ni_registerModuleMethod(m, "Handle_drawPixmap_overload10", &Handle_drawPixmap_overload10__wrapper);
         return 0; // = OK
     }
 }

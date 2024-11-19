@@ -85,6 +85,12 @@ namespace Enums
     void ImageConversionFlags__push(ImageConversionFlags value);
     ImageConversionFlags ImageConversionFlags__pop();
 
+    void AspectRatioMode__push(AspectRatioMode value);
+    AspectRatioMode AspectRatioMode__pop();
+
+    void TransformationMode__push(TransformationMode value);
+    TransformationMode TransformationMode__pop();
+
     void Key__push(Key value);
     Key Key__pop();
 

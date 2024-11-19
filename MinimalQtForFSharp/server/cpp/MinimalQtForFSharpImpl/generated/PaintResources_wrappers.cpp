@@ -8,6 +8,9 @@ using namespace ::Common;
 #include "Color_wrappers.h"
 using namespace ::Color;
 
+#include "Pixmap_wrappers.h"
+using namespace ::Pixmap;
+
 namespace PaintResources
 {
     // built-in array type: std::vector<double>
@@ -22,7 +25,7 @@ namespace PaintResources
     void Gradient_setColorAt__wrapper() {
         auto _this = Gradient__pop();
         auto location = ni_popDouble();
-        auto color = Deferred__pop();
+        auto color = Color::Deferred__pop();
         Gradient_setColorAt(_this, location, color);
     }
     void RadialGradient__push(RadialGradientRef value) {
@@ -298,7 +301,7 @@ namespace PaintResources
 
     void Handle_createBrush_overload1__wrapper() {
         auto _this = Handle__pop();
-        auto color = Deferred__pop();
+        auto color = Color::Deferred__pop();
         Brush__push(Handle_createBrush(_this, color));
     }
 
@@ -321,7 +324,7 @@ namespace PaintResources
 
     void Handle_createPen_overload2__wrapper() {
         auto _this = Handle__pop();
-        auto color = Deferred__pop();
+        auto color = Color::Deferred__pop();
         Pen__push(Handle_createPen(_this, color));
     }
 

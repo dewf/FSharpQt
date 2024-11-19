@@ -3,8 +3,11 @@
 #include "Object_wrappers.h"
 #include "Layout_wrappers.h"
 #include "Color_wrappers.h"
-#include "PaintResources_wrappers.h"
+#include "PaintDevice_wrappers.h"
 #include "Enums_wrappers.h"
+#include "Image_wrappers.h"
+#include "Pixmap_wrappers.h"
+#include "PaintResources_wrappers.h"
 #include "Painter_wrappers.h"
 #include "Icon_wrappers.h"
 #include "KeySequence_wrappers.h"
@@ -26,8 +29,6 @@
 #include "GridLayout_wrappers.h"
 #include "GroupBox_wrappers.h"
 #include "Frame_wrappers.h"
-#include "PaintDevice_wrappers.h"
-#include "Pixmap_wrappers.h"
 #include "Label_wrappers.h"
 #include "LineEdit_wrappers.h"
 #include "AbstractListModel_wrappers.h"
@@ -68,8 +69,11 @@ extern "C" int nativeLibraryInit() {
     ::Object::__register();
     ::Layout::__register();
     ::Color::__register();
-    ::PaintResources::__register();
+    ::PaintDevice::__register();
     ::Enums::__register();
+    ::Image::__register();
+    ::Pixmap::__register();
+    ::PaintResources::__register();
     ::Painter::__register();
     ::Icon::__register();
     ::KeySequence::__register();
@@ -91,8 +95,6 @@ extern "C" int nativeLibraryInit() {
     ::GridLayout::__register();
     ::GroupBox::__register();
     ::Frame::__register();
-    ::PaintDevice::__register();
-    ::Pixmap::__register();
     ::Label::__register();
     ::LineEdit::__register();
     ::AbstractListModel::__register();
