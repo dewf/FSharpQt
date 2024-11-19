@@ -1,8 +1,11 @@
 ﻿module FSharpQt.Painting
 
 open System
+open CSharpFunctionalExtensions
+open Microsoft.FSharp.Core
 open Org.Whatever.MinimalQtForFSharp
 open FSharpQt.MiscTypes
+open Org.Whatever.MinimalQtForFSharp.Support
 
 // type Color internal(qtColor: PaintResources.Color) =
 //     member val internal qtColor = qtColor
@@ -122,6 +125,218 @@ type PainterPathStroker internal(qtStroker: PaintResources.PainterPathStroker) =
     member this.DashPattern with set (value: double array) = qtStroker.SetDashPattern(value)
     member this.CreateStroke(path: PainterPath) =
         PainterPath(qtStroker.CreateStroke(path.qtPainterPath))
+        
+type ImageFormat =
+    | Invalid
+    | Mono
+    | MonoLSB
+    | Indexed8
+    | RGB32
+    | ARGB32
+    | ARGB32_Premultiplied
+    | RGB16
+    | ARGB8565_Premultiplied
+    | RGB666
+    | ARGB6666_Premultiplied
+    | RGB555
+    | ARGB8555_Premultiplied
+    | RGB888
+    | RGB444
+    | ARGB4444_Premultiplied
+    | RGBX8888
+    | RGBA8888
+    | RGBA8888_Premultiplied
+    | BGR30
+    | A2BGR30_Premultiplied
+    | RGB30
+    | A2RGB30_Premultiplied
+    | Alpha8
+    | Grayscale8
+    | RGBX64
+    | RGBA64
+    | RGBA64_Premultiplied
+    | Grayscale16
+    | BGR888
+    | RGBX16FPx4
+    | RGBA16FPx4
+    | RGBA16FPx4_Premultiplied
+    | RGBX32FPx4
+    | RGBA32FPx4
+    | RGBA32FPx4_Premultiplied
+    | CMYK8888
+with
+    member this.toQtFormat() =
+        match this with
+        | Invalid -> Image.Format.Invalid
+        | Mono -> Image.Format.Mono
+        | MonoLSB -> Image.Format.MonoLSB
+        | Indexed8 -> Image.Format.Indexed8
+        | RGB32 -> Image.Format.RGB32
+        | ARGB32 -> Image.Format.ARGB32
+        | ARGB32_Premultiplied -> Image.Format.ARGB32_Premultiplied
+        | RGB16 -> Image.Format.RGB16
+        | ARGB8565_Premultiplied -> Image.Format.ARGB8565_Premultiplied
+        | RGB666 -> Image.Format.RGB666
+        | ARGB6666_Premultiplied -> Image.Format.ARGB6666_Premultiplied
+        | RGB555 -> Image.Format.RGB555
+        | ARGB8555_Premultiplied -> Image.Format.ARGB8555_Premultiplied
+        | RGB888 -> Image.Format.RGB888
+        | RGB444 -> Image.Format.RGB444
+        | ARGB4444_Premultiplied -> Image.Format.ARGB4444_Premultiplied
+        | RGBX8888 -> Image.Format.RGBX8888
+        | RGBA8888 -> Image.Format.RGBA8888
+        | RGBA8888_Premultiplied -> Image.Format.RGBA8888_Premultiplied
+        | BGR30 -> Image.Format.BGR30
+        | A2BGR30_Premultiplied -> Image.Format.A2BGR30_Premultiplied
+        | RGB30 -> Image.Format.RGB30
+        | A2RGB30_Premultiplied -> Image.Format.A2RGB30_Premultiplied
+        | Alpha8 -> Image.Format.Alpha8
+        | Grayscale8 -> Image.Format.Grayscale8
+        | RGBX64 -> Image.Format.RGBX64
+        | RGBA64 -> Image.Format.RGBA64
+        | RGBA64_Premultiplied -> Image.Format.RGBA64_Premultiplied
+        | Grayscale16 -> Image.Format.Grayscale16
+        | BGR888 -> Image.Format.BGR888
+        | RGBX16FPx4 -> Image.Format.RGBX16FPx4
+        | RGBA16FPx4 -> Image.Format.RGBA16FPx4
+        | RGBA16FPx4_Premultiplied -> Image.Format.RGBA16FPx4_Premultiplied
+        | RGBX32FPx4 -> Image.Format.RGBX32FPx4
+        | RGBA32FPx4 -> Image.Format.RGBA32FPx4
+        | RGBA32FPx4_Premultiplied -> Image.Format.RGBA32FPx4_Premultiplied
+        | CMYK8888 -> Image.Format.CMYK8888
+        
+type Image internal(deferred: Org.Whatever.MinimalQtForFSharp.Image.Deferred) =
+    member val QtValue = deferred
+    internal new (handle: Org.Whatever.MinimalQtForFSharp.Image.Handle) =
+        Image(Image.Deferred.FromHandle(handle))
+    new(width: int, height: int, format: ImageFormat) =
+        Image(Image.Deferred.FromWidthHeight(width, height, format.toQtFormat()))
+    new(filename: string, maybeFormat: string option) =
+        let maybeString =
+            match maybeFormat with
+            | Some value -> Maybe.From(value)
+            | None -> Maybe<string>.None
+        Image(Image.Deferred.FromFilename(filename, maybeString))
+    new(data: byte array, width: int, height: int, format: ImageFormat, bytesPerLine: int64 option) =
+        let buffer = 
+            let retBuffer = new ClientBuffer<byte>(data.Length)
+            let mutable length = -1
+            let retSpan = retBuffer.GetSpan(&length)
+            Span(data).CopyTo(retSpan)
+            retBuffer
+        let maybeBytesPerLine =
+            match bytesPerLine with
+            | Some value -> Maybe<IntPtr>.From(IntPtr(value))
+            | None -> Maybe<IntPtr>.None
+        Image(Image.Deferred.FromData(buffer, width, height, format.toQtFormat(), maybeBytesPerLine))
+    member private this.Handle =
+        match deferred with
+        | :? Org.Whatever.MinimalQtForFSharp.Image.Deferred.FromHandle as fh ->
+            fh.Handle
+        | _ ->
+            failwith "Image.Handle - was a non-Handle deferred type"
+            
+module Image =
+    type Owned internal(owned: Org.Whatever.MinimalQtForFSharp.Image.Owned) =
+        inherit Image(owned)
+        let mutable disposed = false
+        interface IDisposable with
+            member this.Dispose() =
+                if not disposed then
+                    owned.Dispose()
+                    disposed <- true
+        override this.Finalize() =
+            (this :> IDisposable).Dispose()
+    let realize (image: Image) =
+        match image.QtValue with
+        | :? Org.Whatever.MinimalQtForFSharp.Image.Deferred.FromHandle ->
+            failwith "Image.realize - attempted to realize a Handle-based Image"
+        | _ ->
+            let owned = Org.Whatever.MinimalQtForFSharp.Image.Realize(image.QtValue)
+            new Owned(owned)
+        
+type Image with
+    member this.Realize() = Image.realize this
+    
+    // handle-only methods:
+    member this.Scaled(width: int, height: int, ?aspectMode: AspectRatioMode, ?transformMode: TransformationMode) =
+        let opts =
+            let mutable ret = Image.ScaledOptions()
+            if aspectMode.IsSome then
+                ret.AspectMode <- aspectMode.Value.QtValue
+            if transformMode.IsSome then
+                ret.TransformMode <- transformMode.Value.QtValue
+            ret
+        new Image.Owned(this.Handle.Scaled(width, height, opts))
+
+type Pixmap private(deferred: Org.Whatever.MinimalQtForFSharp.Pixmap.Deferred) =
+    member val internal QtValue = deferred
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle) =
+        Pixmap(Pixmap.Deferred.FromHandle(handle))
+    new(width: int, height: int) =
+        Pixmap(Pixmap.Deferred.FromWidthHeight(width, height))
+    new(filename: string, ?format: string, ?flags: ImageConversionFlags seq) =
+        let opts =
+            let mutable ret = Org.Whatever.MinimalQtForFSharp.Pixmap.FilenameOptions()
+            if format.IsSome then
+                ret.Format <- format.Value
+            if flags.IsSome then
+                ret.ImageConversionFlags <- ImageConversionFlags.QtSetFrom flags.Value
+            ret
+        Pixmap(Pixmap.Deferred.FromFilename(filename, opts))
+    member private this.Handle =
+        match deferred with
+        | :? Org.Whatever.MinimalQtForFSharp.Pixmap.Deferred.FromHandle as fh ->
+            fh.Handle
+        | _ ->
+            failwith "Pixmap.Handle - was a non-Handle deferred type"
+            
+    member this.Width =
+        this.Handle.Width()
+    member this.Height =
+        this.Handle.Height()
+        
+module Pixmap =
+    type Owned internal(owned: Org.Whatever.MinimalQtForFSharp.Pixmap.Owned) =
+        inherit Pixmap(owned)
+        let mutable disposed = false
+        interface IDisposable with
+            member this.Dispose() =
+                if not disposed then
+                    owned.Dispose()
+                    disposed <- true
+        override this.Finalize() =
+            (this :> IDisposable).Dispose()
+    let realize (pixmap: Pixmap) =
+        match pixmap.QtValue with
+        | :? Org.Whatever.MinimalQtForFSharp.Pixmap.Deferred.FromHandle ->
+            failwith "Pixmap.realize - attempted to realize a Handle-based Pixmap"
+        | _ ->
+            let owned = Org.Whatever.MinimalQtForFSharp.Pixmap.Realize(pixmap.QtValue)
+            new Owned(owned)
+        
+    let private fromImageInternal (image: Image) (imageConversionFlags: ImageConversionFlags seq option) =
+        // an optional set is kind of silly, since the flags 0-value on the Qt side is the same as the default value for the fromImage API,
+        // but I don't want to assume that's always the case
+        // I can stop such silliness when NI supports default values :(
+        let maybeFlags =
+            match imageConversionFlags with
+            | Some value ->
+                ImageConversionFlags.QtSetFrom value
+                |> Maybe<Enums.ImageConversionFlags>.From
+            | None ->
+                Maybe<Enums.ImageConversionFlags>.None
+        let owned = Org.Whatever.MinimalQtForFSharp.Pixmap.FromImage(image.QtValue, maybeFlags)
+        new Owned(owned)
+        
+    let fromImage (image: Image) =
+        fromImageInternal image None
+        
+    let fromImageWithFlags (image: Image) (imageConversionFlags: ImageConversionFlags seq) =
+        fromImageInternal image (Some imageConversionFlags)
+        
+type Pixmap with
+    member this.Realize() = Pixmap.realize this
         
 type PaintStack() =
     member val qtResources = PaintResources.Create()
@@ -314,3 +529,36 @@ type Painter internal(qtPainter: Org.Whatever.MinimalQtForFSharp.Painter.Handle)
         
     member this.DrawPolyline(points: PointF array) =
         qtPainter.DrawPolyline(points |> Array.map (_.QtValue))
+        
+    member this.DrawPixmap(target: RectF, pixmap: Pixmap, source: RectF) =
+        qtPainter.DrawPixmap(target.QtValue, pixmap.QtValue, source.QtValue)
+
+    member this.DrawPixmap(point: Point, pixmap: Pixmap) =
+        qtPainter.DrawPixmap(point.QtValue, pixmap.QtValue)
+
+    member this.DrawPixmap(point: PointF, pixmap: Pixmap) =
+        qtPainter.DrawPixmap(point.QtValue, pixmap.QtValue)
+
+    member this.DrawPixmap(rect: Rect, pixmap: Pixmap) =
+        qtPainter.DrawPixmap(rect.QtValue, pixmap.QtValue)
+
+    member this.DrawPixmap(point: Point, pixmap: Pixmap, source: Rect) =
+        qtPainter.DrawPixmap(point.QtValue, pixmap.QtValue, source.QtValue)
+
+    member this.DrawPixmap(point: PointF, pixmap: Pixmap, source: RectF) =
+        qtPainter.DrawPixmap(point.QtValue, pixmap.QtValue, source.QtValue)
+
+    member this.DrawPixmap(target: Rect, pixmap: Pixmap, source: Rect) =
+        qtPainter.DrawPixmap(target.QtValue, pixmap.QtValue, source.QtValue)
+
+    member this.DrawPixmap(x: int, y: int, pixmap: Pixmap) =
+        qtPainter.DrawPixmap(x, y, pixmap.QtValue)
+
+    member this.DrawPixmap(x: int, y: int, width: int, height: int, pixmap: Pixmap) =
+        qtPainter.DrawPixmap(x, y, width, height, pixmap.QtValue)
+
+    member this.DrawPixmap(x: int, y: int, pixmap: Pixmap, sx: int, sy: int, sw: int, sh: int) =
+        qtPainter.DrawPixmap(x, y, pixmap.QtValue, sx, sy, sw, sh)
+
+    member this.DrawPixmap(x: int, y: int, w: int, h: int, pixmap: Pixmap, sx: int, sy: int, sw: int, sh: int) =
+        qtPainter.DrawPixmap(x, y, w, h, pixmap.QtValue, sx, sy, sw, sh)

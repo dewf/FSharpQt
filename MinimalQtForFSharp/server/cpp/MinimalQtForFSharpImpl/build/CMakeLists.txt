@@ -119,8 +119,13 @@ add_library(MinimalQtForFSharpImpl STATIC
 
     ../generated/Icon.h
     ../generated/Icon_wrappers.cpp
-    ../IconInternal.h                           # needed for internal struct definitions (when accessing icons from other modules)
     ../Icon.cpp
+    ../IconInternal.h                           # needed for internal struct definitions (when accessing icons from other modules)
+
+    ../generated/Image.h
+    ../generated/Image_wrappers.cpp
+    ../Image.cpp
+    ../ImageInternal.h                          # for deferred etc
 
     ../generated/KeySequence.h
     ../generated/KeySequence_wrappers.cpp

@@ -1085,3 +1085,86 @@ type Regex private(deferred: RegularExpression.Deferred) =
                 |> RegexOption.QtSetFrom
             RegularExpression.Deferred.Regex(pattern, options')
         Regex(deferred)
+
+type ImageConversionFlags =
+    | AutoColor
+    | ColorOnly
+    | MonoOnly
+    | ThresholdAlphaDither
+    | OrderedAlphaDither
+    | DiffuseAlphaDither
+    | NoAlpha
+    | DiffuseDither
+    | OrderedDither
+    | ThresholdDither
+    | AutoDither
+    | PreferDither
+    | AvoidDither
+    | NoOpaqueDetection
+    | NoFormatConversion
+with
+    static member internal SetFrom (qtFlagSet: Enums.ImageConversionFlags) =
+        let pairs = [
+            Enums.ImageConversionFlags.AutoColor, AutoColor
+            Enums.ImageConversionFlags.ColorOnly, ColorOnly
+            Enums.ImageConversionFlags.MonoOnly, MonoOnly
+            Enums.ImageConversionFlags.ThresholdAlphaDither, ThresholdAlphaDither
+            Enums.ImageConversionFlags.OrderedAlphaDither, OrderedAlphaDither
+            Enums.ImageConversionFlags.DiffuseAlphaDither, DiffuseAlphaDither
+            Enums.ImageConversionFlags.NoAlpha, NoAlpha
+            Enums.ImageConversionFlags.DiffuseDither, DiffuseDither
+            Enums.ImageConversionFlags.OrderedDither, OrderedDither
+            Enums.ImageConversionFlags.ThresholdDither, ThresholdDither
+            Enums.ImageConversionFlags.AutoDither, AutoDither
+            Enums.ImageConversionFlags.PreferDither, PreferDither
+            Enums.ImageConversionFlags.AvoidDither, AvoidDither
+            Enums.ImageConversionFlags.NoOpaqueDetection, NoOpaqueDetection
+            Enums.ImageConversionFlags.NoFormatConversion, NoFormatConversion
+        ]
+        (Set.empty<ImageConversionFlags>, pairs)
+        ||> List.fold (fun acc (flag, icFlag) ->
+            if qtFlagSet.HasFlag flag then
+                acc.Add(icFlag)
+            else
+                acc)
+    static member internal QtSetFrom (icFlags: ImageConversionFlags seq) =
+        (enum<Enums.ImageConversionFlags> 0, icFlags)
+        ||> Seq.fold (fun acc icFlag ->
+            let flag =
+                match icFlag with
+                | AutoColor -> Enums.ImageConversionFlags.AutoColor
+                | ColorOnly -> Enums.ImageConversionFlags.ColorOnly
+                | MonoOnly -> Enums.ImageConversionFlags.MonoOnly
+                | ThresholdAlphaDither -> Enums.ImageConversionFlags.ThresholdAlphaDither
+                | OrderedAlphaDither -> Enums.ImageConversionFlags.OrderedAlphaDither
+                | DiffuseAlphaDither -> Enums.ImageConversionFlags.DiffuseAlphaDither
+                | NoAlpha -> Enums.ImageConversionFlags.NoAlpha
+                | DiffuseDither -> Enums.ImageConversionFlags.DiffuseDither
+                | OrderedDither -> Enums.ImageConversionFlags.OrderedDither
+                | ThresholdDither -> Enums.ImageConversionFlags.ThresholdDither
+                | AutoDither -> Enums.ImageConversionFlags.AutoDither
+                | PreferDither -> Enums.ImageConversionFlags.PreferDither
+                | AvoidDither -> Enums.ImageConversionFlags.AvoidDither
+                | NoOpaqueDetection -> Enums.ImageConversionFlags.NoOpaqueDetection
+                | NoFormatConversion -> Enums.ImageConversionFlags.NoFormatConversion
+            acc ||| flag)
+
+type AspectRatioMode =
+    | IgnoreAspectRatio
+    | KeepAspectRatio
+    | KeepAspectRatioByExpanding
+with
+    member this.QtValue =
+        match this with
+        | IgnoreAspectRatio -> Enums.AspectRatioMode.IgnoreAspectRatio
+        | KeepAspectRatio -> Enums.AspectRatioMode.KeepAspectRatio
+        | KeepAspectRatioByExpanding -> Enums.AspectRatioMode.KeepAspectRatioByExpanding
+        
+type TransformationMode =
+    | FastTransformation
+    | SmoothTransformation
+with
+    member this.QtValue =
+        match this with
+        | FastTransformation -> Enums.TransformationMode.FastTransformation
+        | SmoothTransformation -> Enums.TransformationMode.SmoothTransformation

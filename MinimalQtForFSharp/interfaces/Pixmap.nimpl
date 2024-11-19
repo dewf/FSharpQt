@@ -2,22 +2,30 @@ module Pixmap;
 import PaintDevice;
 import Common;
 import Enums;
+import Image;
 
 @nodispose
-opaque Handle extends PaintDevice.Handle;
+opaque Handle extends PaintDevice.Handle {
+    // temporary, these don't really belong here, but in PaintDevice.Handle instead
+    int width();
+    int height();
+}
 
 opaque Owned extends Handle;
 
-sumtype Deferred {
-    Empty
+options FilenameOptions {
+    string format;
+    ImageConversionFlags imageConversionFlags; // defaults to Qt::AutoColor
 }
 
-//Owned create(int width, int height);
-//Owned create(Size size);
+sumtype Deferred {
+    FromHandle(Handle handle),
+    FromWidthHeight(int width, int height),
+    FromFilename(string filename, FilenameOptions opts)
+}
 
-// in lieu of default argument values ...
-//options Create3Options {
-//    string format;
-//    ImageConversionFlags icFlags; // defaults to Qt::AutoColor
-//}
-//Owned create(string filename, Create3Options opts);
+Owned realize(Deferred deferred);
+
+// static methods:
+// not sure we'd ever want this from Deferred, but ...
+Owned fromImage(Image.Deferred image, Option<ImageConversionFlags> imageConversionFlags);

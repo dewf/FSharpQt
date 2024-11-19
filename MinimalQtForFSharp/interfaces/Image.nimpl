@@ -1,0 +1,66 @@
+module Image;
+import PaintDevice;
+import Common;
+import Enums;
+
+enum Format {
+    Invalid,
+    Mono,
+    MonoLSB,
+    Indexed8,
+    RGB32,
+    ARGB32,
+    ARGB32_Premultiplied,
+    RGB16,
+    ARGB8565_Premultiplied,
+    RGB666,
+    ARGB6666_Premultiplied,
+    RGB555,
+    ARGB8555_Premultiplied,
+    RGB888,
+    RGB444,
+    ARGB4444_Premultiplied,
+    RGBX8888,
+    RGBA8888,
+    RGBA8888_Premultiplied,
+    BGR30,
+    A2BGR30_Premultiplied,
+    RGB30,
+    A2RGB30_Premultiplied,
+    Alpha8,
+    Grayscale8,
+    RGBX64,
+    RGBA64,
+    RGBA64_Premultiplied,
+    Grayscale16,
+    BGR888,
+    RGBX16FPx4,
+    RGBA16FPx4,
+    RGBA16FPx4_Premultiplied,
+    RGBX32FPx4,
+    RGBA32FPx4,
+    RGBA32FPx4_Premultiplied,
+    CMYK8888,
+    NImageFormats
+}
+
+options ScaledOptions {
+    AspectRatioMode aspectMode;         // default: Qt::IgnoreAspectRatio
+    TransformationMode transformMode;   // default: Qt::FastTransformation
+}
+
+@nodispose
+opaque Handle extends PaintDevice.Handle {
+    Owned scaled(int width, int height, ScaledOptions opts);
+}
+
+opaque Owned extends Handle;
+
+sumtype Deferred {
+    FromHandle(Handle handle),
+    FromWidthHeight(int width, int height, Format format),
+    FromFilename(string filename, Option<string> format),
+    FromData(Buffer<byte> data, int width, int height, Format format, Option<size_t> bytesPerLine)
+}
+
+Owned realize(Deferred deferred);

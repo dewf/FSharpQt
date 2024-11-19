@@ -345,6 +345,17 @@ flags ImageConversionFlags {
     NoFormatConversion      = 0x00000200
 }
 
+enum AspectRatioMode {
+    IgnoreAspectRatio,
+    KeepAspectRatio,
+    KeepAspectRatioByExpanding
+}
+
+enum TransformationMode {
+    FastTransformation,
+    SmoothTransformation
+}
+
 enum Key {
     // Unicode Basic Latin block (0x00-0x7f)
     Key_Space = 0x20,

@@ -4,6 +4,7 @@ import Common;
 import PaintResources;
 import Enums;
 import Color;
+import Pixmap;
 
 enum RenderHint {
     Antialiasing = 0x01,
@@ -51,4 +52,16 @@ opaque Handle {
 
     void drawPolyline(Array<PointF> points);
     void drawPolyline(Array<Point> points);
+
+    void drawPixmap(RectF target, Pixmap.Deferred pixmap, RectF source);
+    void drawPixmap(Point point, Pixmap.Deferred pixmap);
+    void drawPixmap(PointF point, Pixmap.Deferred pixmap);
+    void drawPixmap(Rect rect, Pixmap.Deferred pixmap);
+    void drawPixmap(Point point, Pixmap.Deferred pixmap, Rect source);
+    void drawPixmap(PointF point, Pixmap.Deferred pixmap, RectF source);
+    void drawPixmap(Rect target, Pixmap.Deferred pixmap, Rect source);
+    void drawPixmap(int x, int y, Pixmap.Deferred pixmap);
+    void drawPixmap(int x, int y, int width, int height, Pixmap.Deferred pixmap);
+    void drawPixmap(int x, int y, Pixmap.Deferred pixmap, int sx, int sy, int sw, int sh);
+    void drawPixmap(int x, int y, int w, int h, Pixmap.Deferred pixmap, int sx, int sy, int sw, int sh);
 }
