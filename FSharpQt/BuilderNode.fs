@@ -164,8 +164,22 @@ let rec disposeTree(node: IBuilderNode<'msg>) =
     for _, node in (nodeDepsWithAttachments node) do
         disposeTree node
     node.Dispose()
+    
+type DiffEvent<'msg> =
+    | ShowWindow of window: IWindowNode<'msg>
+    
+type DiffEventsList<'msg>() =
+    let mutable events: DiffEvent<'msg> list = []
+    member this.Events = List.rev events
+    member this.AddEvent(ev: DiffEvent<'msg>) =
+        events <- ev :: events
+    member this.ProcessEvents() =
+        for ev in events do
+            match ev with
+            | ShowWindow window ->
+                window.ShowIfVisible()
 
-let rec diff (dispatch: 'msg -> unit) (maybeLeft: IBuilderNode<'msg> option) (maybeRight: IBuilderNode<'msg> option) (context: BuilderContext<'msg>) =
+let rec diff (dispatch: 'msg -> unit) (maybeLeft: IBuilderNode<'msg> option) (maybeRight: IBuilderNode<'msg> option) (context: BuilderContext<'msg>) (events: DiffEventsList<'msg>) =
     let createRight (dispatch: 'msg -> unit) (right: IBuilderNode<'msg>) =
         // initial create
         right.Create dispatch context
@@ -184,7 +198,7 @@ let rec diff (dispatch: 'msg -> unit) (maybeLeft: IBuilderNode<'msg> option) (ma
         let allDeps =
             nodeDepsWithAttachments right
         for _, node in allDeps do
-            diff dispatch None (Some node) nextContext
+            diff dispatch None (Some node) nextContext events
                 
         // attach realized dependencies
         // (the node will know nothing of its attachments, only self-declared .Dependencies)
@@ -196,7 +210,10 @@ let rec diff (dispatch: 'msg -> unit) (maybeLeft: IBuilderNode<'msg> option) (ma
         // (seemingly a series of layout.activate() / widget.adjustSize() for every boundary we cross)
         match right with
         | :? IWindowNode<'msg> as windowNode ->
-            windowNode.ShowIfVisible()
+            // because we're diffing, dispatch will be disabled,
+            // so showing the window here will result in un-dispatched events (eg resize, show)
+            // so use the new deferred DiffEvent system, which will run things after dispatch re-enabled
+            events.AddEvent (ShowWindow windowNode)
         | _ ->
             ()
 
@@ -235,7 +252,7 @@ let rec diff (dispatch: 'msg -> unit) (maybeLeft: IBuilderNode<'msg> option) (ma
                 context
                 
         for _, lch, rch in correlated do
-            diff dispatch lch rch nextContext
+            diff dispatch lch rch nextContext events
             
         let depsChanges =
             // we exclude the attachments from the dependency changes sent to .Migrate
@@ -278,5 +295,5 @@ let rec diff (dispatch: 'msg -> unit) (maybeLeft: IBuilderNode<'msg> option) (ma
         disposeTree left
         createRight dispatch right
 
-let build (dispatch: 'msg -> unit) (root: IBuilderNode<'msg>) (initialContext: BuilderContext<'msg>) =
-    diff dispatch None (Some root) initialContext
+let build (dispatch: 'msg -> unit) (root: IBuilderNode<'msg>) (initialContext: BuilderContext<'msg>) (events: DiffEventsList<'msg>) =
+    diff dispatch None (Some root) initialContext events

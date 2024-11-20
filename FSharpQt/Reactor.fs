@@ -138,12 +138,16 @@ type Reactor<'state, 'msg, 'signal, 'root when 'root :> IBuilderNode<'msg>>(
             root <- view state
             // prevent diff-triggered dispatching with a guard:
             disableDispatch <- true
-            diff dispatch (Some (prevRoot :> IBuilderNode<'msg>)) (Some (root :> IBuilderNode<'msg>)) buildContext
+            let events = DiffEventsList()
+            diff dispatch (Some (prevRoot :> IBuilderNode<'msg>)) (Some (root :> IBuilderNode<'msg>)) buildContext events
             disableDispatch <- false
             //
             updateBindings()
             // process command(s) after tree diff
             processCmd cmd
+            // process diff events after dispatch working again (at the moment, just showing visible top level windows)
+            // not sure if it matters precisely where this is
+            events.ProcessEvents()
     and
         processCmd (cmd: Cmd<'msg,'signal>) =
             match cmd with
@@ -181,11 +185,15 @@ type Reactor<'state, 'msg, 'signal, 'root when 'root :> IBuilderNode<'msg>>(
     do
         // prevent diff-triggered dispatching with a guard (some widgets obnoxiously emit signals when programmatically setting properties)
         disableDispatch <- true
-        build dispatch root buildContext
+        let events = DiffEventsList()
+        build dispatch root buildContext events
         disableDispatch <- false
         //
         updateBindings()
         processCmd initCmd
+        // process diff events after dispatch working again (at the moment, just showing visible top level windows)
+        // not sure if it matters precisely where this is
+        events.ProcessEvents()
         
     member this.Root =
         root
@@ -201,11 +209,16 @@ type Reactor<'state, 'msg, 'signal, 'root when 'root :> IBuilderNode<'msg>>(
         root <- view state
         // prevent dispatching while diffing
         disableDispatch <- true
-        diff dispatch (Some prevRoot) (Some root) buildContext
+        let events = DiffEventsList()
+        diff dispatch (Some prevRoot) (Some root) buildContext events
         disableDispatch <- false
         //
         updateBindings()
         // no commands allowed in attr update (for now)
+        // ...
+        // and what about DiffEvents, should those be processed here or not?
+        if not events.Events.IsEmpty then
+            printfn "!! warning: Reactor.ApplyAttrs - we had some unprocess DiffEvents. not sure how/if to handle these yet"
     
     interface IDisposable with
         member this.Dispose() =

@@ -163,9 +163,13 @@ type private Model<'msg>(dispatch: 'msg -> unit, eventDelegate: IEventDelegate<'
     interface StyledItemDelegate.MethodDelegate with
         member this.CreateEditor(parent, option, index) =
             let root = eventDelegate.CreateEditor (StyleOptionViewItemProxy(option)) (new ModelIndexProxy(index))
-            build dispatch (root :> IBuilderNode<'msg>) { ContainingWindow = None }
+            let events = DiffEventsList()
+            build dispatch (root :> IBuilderNode<'msg>) { ContainingWindow = None } events
             root.Widget.SetParent(parent)
             EditorRoot <- Some root
+            // process diff events (currently only window creation events, which aren't really relevant here ...)
+            events.ProcessEvents()
+            // return
             root.Widget
         member this.SetEditorData(editor, index) =
             eventDelegate.SetEditorDataRaw editor index
@@ -173,8 +177,12 @@ type private Model<'msg>(dispatch: 'msg -> unit, eventDelegate: IEventDelegate<'
             eventDelegate.SetModelDataRaw editor model index
         member this.DestroyEditor(editor, index) =
             // need to destroy the tree built in .CreateEditor()
-            diff dispatch EditorRoot None { ContainingWindow = None }
-            EditorRoot <- None
+            match EditorRoot with
+            | Some root ->
+                disposeTree root
+                EditorRoot <- None
+            | None ->
+                ()
 
 let private create (attrs: IAttr list) (signalMaps: ISignalMapFunc list) (dispatch: 'msg -> unit) (signalMask: StyledItemDelegate.SignalMask) (eventDelegate: IEventDelegate<'msg>) =
     let model = new Model<'msg>(dispatch, eventDelegate)
