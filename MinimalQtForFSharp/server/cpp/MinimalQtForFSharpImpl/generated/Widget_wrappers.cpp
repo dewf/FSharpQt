@@ -40,13 +40,14 @@ namespace Widget
     ni_InterfaceMethodRef signalHandler_customContextMenuRequested;
     ni_InterfaceMethodRef signalHandler_windowIconChanged;
     ni_InterfaceMethodRef signalHandler_windowTitleChanged;
-    ni_InterfaceMethodRef methodDelegate_sizeHint;
+    ni_InterfaceMethodRef methodDelegate_showEvent;
     ni_InterfaceMethodRef methodDelegate_paintEvent;
     ni_InterfaceMethodRef methodDelegate_mousePressEvent;
     ni_InterfaceMethodRef methodDelegate_mouseMoveEvent;
     ni_InterfaceMethodRef methodDelegate_mouseReleaseEvent;
     ni_InterfaceMethodRef methodDelegate_enterEvent;
     ni_InterfaceMethodRef methodDelegate_leaveEvent;
+    ni_InterfaceMethodRef methodDelegate_sizeHint;
     ni_InterfaceMethodRef methodDelegate_resizeEvent;
     ni_InterfaceMethodRef methodDelegate_dragMoveEvent;
     ni_InterfaceMethodRef methodDelegate_dragLeaveEvent;
@@ -801,9 +802,9 @@ namespace Widget
         ~ClientMethodDelegate() override {
             __methodDelegateToPushable.erase(this);
         }
-        Size sizeHint() override {
-            invokeMethod(methodDelegate_sizeHint);
-            return Size__pop();
+        void showEvent(bool isSpontaneous) override {
+            ni_pushBool(isSpontaneous);
+            invokeMethod(methodDelegate_showEvent);
         }
         void paintEvent(Painter::HandleRef painter, Rect updateRect) override {
             Rect__push(updateRect, false);
@@ -834,6 +835,10 @@ namespace Widget
         }
         void leaveEvent() override {
             invokeMethod(methodDelegate_leaveEvent);
+        }
+        Size sizeHint() override {
+            invokeMethod(methodDelegate_sizeHint);
+            return Size__pop();
         }
         void resizeEvent(Size oldSize, Size newSize) override {
             Size__push(newSize, false);
@@ -896,10 +901,11 @@ namespace Widget
         }
     }
 
-    void MethodDelegate_sizeHint__wrapper(int serverID) {
+    void MethodDelegate_showEvent__wrapper(int serverID) {
         auto wrapper = std::static_pointer_cast<ServerMethodDelegateWrapper>(ServerObject::getByID(serverID));
         auto inst = wrapper->rawInterface;
-        Size__push(inst->sizeHint(), true);
+        auto isSpontaneous = ni_popBool();
+        inst->showEvent(isSpontaneous);
     }
 
     void MethodDelegate_paintEvent__wrapper(int serverID) {
@@ -948,6 +954,12 @@ namespace Widget
         auto wrapper = std::static_pointer_cast<ServerMethodDelegateWrapper>(ServerObject::getByID(serverID));
         auto inst = wrapper->rawInterface;
         inst->leaveEvent();
+    }
+
+    void MethodDelegate_sizeHint__wrapper(int serverID) {
+        auto wrapper = std::static_pointer_cast<ServerMethodDelegateWrapper>(ServerObject::getByID(serverID));
+        auto inst = wrapper->rawInterface;
+        Size__push(inst->sizeHint(), true);
     }
 
     void MethodDelegate_resizeEvent__wrapper(int serverID) {
@@ -1105,13 +1117,14 @@ namespace Widget
         signalHandler_windowIconChanged = ni_registerInterfaceMethod(signalHandler, "windowIconChanged", &SignalHandler_windowIconChanged__wrapper);
         signalHandler_windowTitleChanged = ni_registerInterfaceMethod(signalHandler, "windowTitleChanged", &SignalHandler_windowTitleChanged__wrapper);
         auto methodDelegate = ni_registerInterface(m, "MethodDelegate");
-        methodDelegate_sizeHint = ni_registerInterfaceMethod(methodDelegate, "sizeHint", &MethodDelegate_sizeHint__wrapper);
+        methodDelegate_showEvent = ni_registerInterfaceMethod(methodDelegate, "showEvent", &MethodDelegate_showEvent__wrapper);
         methodDelegate_paintEvent = ni_registerInterfaceMethod(methodDelegate, "paintEvent", &MethodDelegate_paintEvent__wrapper);
         methodDelegate_mousePressEvent = ni_registerInterfaceMethod(methodDelegate, "mousePressEvent", &MethodDelegate_mousePressEvent__wrapper);
         methodDelegate_mouseMoveEvent = ni_registerInterfaceMethod(methodDelegate, "mouseMoveEvent", &MethodDelegate_mouseMoveEvent__wrapper);
         methodDelegate_mouseReleaseEvent = ni_registerInterfaceMethod(methodDelegate, "mouseReleaseEvent", &MethodDelegate_mouseReleaseEvent__wrapper);
         methodDelegate_enterEvent = ni_registerInterfaceMethod(methodDelegate, "enterEvent", &MethodDelegate_enterEvent__wrapper);
         methodDelegate_leaveEvent = ni_registerInterfaceMethod(methodDelegate, "leaveEvent", &MethodDelegate_leaveEvent__wrapper);
+        methodDelegate_sizeHint = ni_registerInterfaceMethod(methodDelegate, "sizeHint", &MethodDelegate_sizeHint__wrapper);
         methodDelegate_resizeEvent = ni_registerInterfaceMethod(methodDelegate, "resizeEvent", &MethodDelegate_resizeEvent__wrapper);
         methodDelegate_dragMoveEvent = ni_registerInterfaceMethod(methodDelegate, "dragMoveEvent", &MethodDelegate_dragMoveEvent__wrapper);
         methodDelegate_dragLeaveEvent = ni_registerInterfaceMethod(methodDelegate, "dragLeaveEvent", &MethodDelegate_dragLeaveEvent__wrapper);

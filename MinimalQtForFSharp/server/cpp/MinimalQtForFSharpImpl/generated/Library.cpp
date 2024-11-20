@@ -3,11 +3,11 @@
 #include "Object_wrappers.h"
 #include "Layout_wrappers.h"
 #include "Color_wrappers.h"
-#include "PaintDevice_wrappers.h"
+#include "PaintResources_wrappers.h"
 #include "Enums_wrappers.h"
+#include "PaintDevice_wrappers.h"
 #include "Image_wrappers.h"
 #include "Pixmap_wrappers.h"
-#include "PaintResources_wrappers.h"
 #include "Painter_wrappers.h"
 #include "Icon_wrappers.h"
 #include "KeySequence_wrappers.h"
@@ -69,11 +69,11 @@ extern "C" int nativeLibraryInit() {
     ::Object::__register();
     ::Layout::__register();
     ::Color::__register();
-    ::PaintDevice::__register();
+    ::PaintResources::__register();
     ::Enums::__register();
+    ::PaintDevice::__register();
     ::Image::__register();
     ::Pixmap::__register();
-    ::PaintResources::__register();
     ::Painter::__register();
     ::Icon::__register();
     ::KeySequence::__register();

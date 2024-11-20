@@ -15,8 +15,6 @@
 using namespace ::Common;
 #include "Color.h"
 using namespace ::Color;
-#include "Pixmap.h"
-using namespace ::Pixmap;
 
 namespace PaintResources
 {

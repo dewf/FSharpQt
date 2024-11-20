@@ -166,27 +166,30 @@ namespace Widget
     void DragMoveEvent_acceptDropAction(DragMoveEventRef _this, Enums::DropAction action);
 
     typedef int32_t MethodMask;
-    enum MethodMaskFlags : int32_t {
-        PaintEvent = 1 << 0,
-        MousePressEvent = 1 << 1,
-        MouseMoveEvent = 1 << 2,
-        MouseReleaseEvent = 1 << 3,
-        EnterEvent = 1 << 4,
-        LeaveEvent = 1 << 5,
-        SizeHint = 1 << 6,
-        ResizeEvent = 1 << 7,
-        DropEvents = 1 << 8
+    enum MethodMaskFlags: int32_t {
+        // MethodMask:
+        ShowEvent = 1 << 0,
+        PaintEvent = 1 << 1,
+        MousePressEvent = 1 << 2,
+        MouseMoveEvent = 1 << 3,
+        MouseReleaseEvent = 1 << 4,
+        EnterEvent = 1 << 5,
+        LeaveEvent = 1 << 6,
+        SizeHint = 1 << 7,
+        ResizeEvent = 1 << 8,
+        DropEvents = 1 << 9
     };
 
     class MethodDelegate {
     public:
-        virtual Common::Size sizeHint() = 0;
+        virtual void showEvent(bool isSpontaneous) = 0;
         virtual void paintEvent(Painter::HandleRef painter, Common::Rect updateRect) = 0;
         virtual void mousePressEvent(Common::Point pos, Enums::MouseButton button, Enums::Modifiers modifiers) = 0;
         virtual void mouseMoveEvent(Common::Point pos, Enums::MouseButtonSet buttons, Enums::Modifiers modifiers) = 0;
         virtual void mouseReleaseEvent(Common::Point pos, Enums::MouseButton button, Enums::Modifiers modifiers) = 0;
         virtual void enterEvent(Common::Point pos) = 0;
         virtual void leaveEvent() = 0;
+        virtual Common::Size sizeHint() = 0;
         virtual void resizeEvent(Common::Size oldSize, Common::Size newSize) = 0;
         virtual void dragMoveEvent(Common::Point pos, Enums::Modifiers modifiers, MimeDataRef mimeData, DragMoveEventRef moveEvent, bool isEnterEvent) = 0;
         virtual void dragLeaveEvent() = 0;

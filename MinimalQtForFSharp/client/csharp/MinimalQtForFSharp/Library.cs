@@ -17,11 +17,11 @@ public static class Library
         Object.__Init();
         Layout.__Init();
         Color.__Init();
-        PaintDevice.__Init();
+        PaintResources.__Init();
         Enums.__Init();
+        PaintDevice.__Init();
         Image.__Init();
         Pixmap.__Init();
-        PaintResources.__Init();
         Painter.__Init();
         Icon.__Init();
         KeySequence.__Init();
@@ -135,11 +135,11 @@ public static class Library
         KeySequence.__Shutdown();
         Icon.__Shutdown();
         Painter.__Shutdown();
-        PaintResources.__Shutdown();
         Pixmap.__Shutdown();
         Image.__Shutdown();
-        Enums.__Shutdown();
         PaintDevice.__Shutdown();
+        Enums.__Shutdown();
+        PaintResources.__Shutdown();
         Color.__Shutdown();
         Layout.__Shutdown();
         Object.__Shutdown();

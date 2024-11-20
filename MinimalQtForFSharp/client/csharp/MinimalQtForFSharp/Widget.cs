@@ -132,13 +132,14 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static InterfaceMethodHandle _signalHandler_windowIconChanged;
         internal static InterfaceMethodHandle _signalHandler_windowTitleChanged;
         internal static InterfaceHandle _methodDelegate;
-        internal static InterfaceMethodHandle _methodDelegate_sizeHint;
+        internal static InterfaceMethodHandle _methodDelegate_showEvent;
         internal static InterfaceMethodHandle _methodDelegate_paintEvent;
         internal static InterfaceMethodHandle _methodDelegate_mousePressEvent;
         internal static InterfaceMethodHandle _methodDelegate_mouseMoveEvent;
         internal static InterfaceMethodHandle _methodDelegate_mouseReleaseEvent;
         internal static InterfaceMethodHandle _methodDelegate_enterEvent;
         internal static InterfaceMethodHandle _methodDelegate_leaveEvent;
+        internal static InterfaceMethodHandle _methodDelegate_sizeHint;
         internal static InterfaceMethodHandle _methodDelegate_resizeEvent;
         internal static InterfaceMethodHandle _methodDelegate_dragMoveEvent;
         internal static InterfaceMethodHandle _methodDelegate_dragLeaveEvent;
@@ -1029,25 +1030,27 @@ namespace Org.Whatever.MinimalQtForFSharp
         [Flags]
         public enum MethodMask
         {
-            PaintEvent = 1 << 0,
-            MousePressEvent = 1 << 1,
-            MouseMoveEvent = 1 << 2,
-            MouseReleaseEvent = 1 << 3,
-            EnterEvent = 1 << 4,
-            LeaveEvent = 1 << 5,
-            SizeHint = 1 << 6,
-            ResizeEvent = 1 << 7,
-            DropEvents = 1 << 8
+            // MethodMask:
+            ShowEvent = 1 << 0,
+            PaintEvent = 1 << 1,
+            MousePressEvent = 1 << 2,
+            MouseMoveEvent = 1 << 3,
+            MouseReleaseEvent = 1 << 4,
+            EnterEvent = 1 << 5,
+            LeaveEvent = 1 << 6,
+            SizeHint = 1 << 7,
+            ResizeEvent = 1 << 8,
+            DropEvents = 1 << 9
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void MethodMask__Push(MethodMask value)
+        public static void MethodMask__Push(MethodMask value)
         {
             NativeImplClient.PushInt32((int)value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static MethodMask MethodMask__Pop()
+        public static MethodMask MethodMask__Pop()
         {
             var ret = NativeImplClient.PopInt32();
             return (MethodMask)ret;
@@ -1059,13 +1062,14 @@ namespace Org.Whatever.MinimalQtForFSharp
             {
                 // nothing by default
             }
-            Size SizeHint();
+            void ShowEvent(bool isSpontaneous);
             void PaintEvent(Painter.Handle painter, Rect updateRect);
             void MousePressEvent(Point pos, MouseButton button, Modifiers modifiers);
             void MouseMoveEvent(Point pos, MouseButtonSet buttons, Modifiers modifiers);
             void MouseReleaseEvent(Point pos, MouseButton button, Modifiers modifiers);
             void EnterEvent(Point pos);
             void LeaveEvent();
+            Size SizeHint();
             void ResizeEvent(Size oldSize, Size newSize);
             void DragMoveEvent(Point pos, Modifiers modifiers, MimeData mimeData, DragMoveEvent moveEvent, bool isEnterEvent);
             void DragLeaveEvent();
@@ -1139,10 +1143,10 @@ namespace Org.Whatever.MinimalQtForFSharp
             {
             }
 
-            public Size SizeHint()
+            public void ShowEvent(bool isSpontaneous)
             {
-                NativeImplClient.InvokeInterfaceMethod(_methodDelegate_sizeHint, Id);
-                return Size__Pop();
+                NativeImplClient.PushBool(isSpontaneous);
+                NativeImplClient.InvokeInterfaceMethod(_methodDelegate_showEvent, Id);
             }
 
             public void PaintEvent(Painter.Handle painter, Rect updateRect)
@@ -1185,6 +1189,12 @@ namespace Org.Whatever.MinimalQtForFSharp
             public void LeaveEvent()
             {
                 NativeImplClient.InvokeInterfaceMethod(_methodDelegate_leaveEvent, Id);
+            }
+
+            public Size SizeHint()
+            {
+                NativeImplClient.InvokeInterfaceMethod(_methodDelegate_sizeHint, Id);
+                return Size__Pop();
             }
 
             public void ResizeEvent(Size oldSize, Size newSize)
@@ -1374,21 +1384,23 @@ namespace Org.Whatever.MinimalQtForFSharp
                 inst.WindowTitleChanged(title);
             });
             _methodDelegate = NativeImplClient.GetInterface(_module, "MethodDelegate");
-            _methodDelegate_sizeHint = NativeImplClient.GetInterfaceMethod(_methodDelegate, "sizeHint");
+            _methodDelegate_showEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "showEvent");
             _methodDelegate_paintEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "paintEvent");
             _methodDelegate_mousePressEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "mousePressEvent");
             _methodDelegate_mouseMoveEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "mouseMoveEvent");
             _methodDelegate_mouseReleaseEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "mouseReleaseEvent");
             _methodDelegate_enterEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "enterEvent");
             _methodDelegate_leaveEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "leaveEvent");
+            _methodDelegate_sizeHint = NativeImplClient.GetInterfaceMethod(_methodDelegate, "sizeHint");
             _methodDelegate_resizeEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "resizeEvent");
             _methodDelegate_dragMoveEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "dragMoveEvent");
             _methodDelegate_dragLeaveEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "dragLeaveEvent");
             _methodDelegate_dropEvent = NativeImplClient.GetInterfaceMethod(_methodDelegate, "dropEvent");
-            NativeImplClient.SetClientMethodWrapper(_methodDelegate_sizeHint, delegate(ClientObject __obj)
+            NativeImplClient.SetClientMethodWrapper(_methodDelegate_showEvent, delegate(ClientObject __obj)
             {
                 var inst = ((__MethodDelegateWrapper)__obj).RawInterface;
-                Size__Push(inst.SizeHint(), true);
+                var isSpontaneous = NativeImplClient.PopBool();
+                inst.ShowEvent(isSpontaneous);
             });
             NativeImplClient.SetClientMethodWrapper(_methodDelegate_paintEvent, delegate(ClientObject __obj)
             {
@@ -1431,6 +1443,11 @@ namespace Org.Whatever.MinimalQtForFSharp
             {
                 var inst = ((__MethodDelegateWrapper)__obj).RawInterface;
                 inst.LeaveEvent();
+            });
+            NativeImplClient.SetClientMethodWrapper(_methodDelegate_sizeHint, delegate(ClientObject __obj)
+            {
+                var inst = ((__MethodDelegateWrapper)__obj).RawInterface;
+                Size__Push(inst.SizeHint(), true);
             });
             NativeImplClient.SetClientMethodWrapper(_methodDelegate_resizeEvent, delegate(ClientObject __obj)
             {

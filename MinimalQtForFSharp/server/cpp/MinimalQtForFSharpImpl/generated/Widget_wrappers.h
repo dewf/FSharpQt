@@ -237,7 +237,7 @@ namespace Widget
     void MethodDelegate__push(std::shared_ptr<MethodDelegate> inst, bool isReturn);
     std::shared_ptr<MethodDelegate> MethodDelegate__pop();
 
-    void MethodDelegate_sizeHint__wrapper(int serverID);
+    void MethodDelegate_showEvent__wrapper(int serverID);
 
     void MethodDelegate_paintEvent__wrapper(int serverID);
 
@@ -250,6 +250,8 @@ namespace Widget
     void MethodDelegate_enterEvent__wrapper(int serverID);
 
     void MethodDelegate_leaveEvent__wrapper(int serverID);
+
+    void MethodDelegate_sizeHint__wrapper(int serverID);
 
     void MethodDelegate_resizeEvent__wrapper(int serverID);
 
