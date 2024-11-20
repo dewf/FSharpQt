@@ -1,6 +1,7 @@
 ﻿module FSharpQt.EventDelegate
 
 open System.Collections.Generic
+open FSharpQt.MiscTypes
 open Org.Whatever.MinimalQtForFSharp
 
 open FSharpQt
@@ -19,6 +20,9 @@ type EventDelegateInterface<'msg>() = // obviously it's an abstract class and no
 
     abstract member SizeHint: Size
     default this.SizeHint = Size.Invalid // invalid size = no recommendation
+    
+    abstract member ShowEvent: bool -> WidgetProxy -> 'msg option
+    default this.ShowEvent _ _ = None
     
     abstract member NeedsPaintInternal: EventDelegateInterface<'msg> -> UpdateArea
     

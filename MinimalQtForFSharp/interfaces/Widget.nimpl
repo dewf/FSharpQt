@@ -179,27 +179,29 @@ opaque DragMoveEvent extends Event {
 // sadly client will have to implement all of these, BUT empty methods / returning default values will be OK
 // because only those included in the "method mask" will actually be invoked
 
-flags MethodMask {
-    PaintEvent = 1 << 0,
-    MousePressEvent = 1 << 1,
-    MouseMoveEvent = 1 << 2,
-    MouseReleaseEvent = 1 << 3,
-    EnterEvent = 1 << 4,
-    LeaveEvent = 1 << 5,
-    SizeHint = 1 << 6,
-    ResizeEvent = 1 << 7,
+namedbits MethodMask {
+    ShowEvent,
+    PaintEvent,
+    MousePressEvent,
+    MouseMoveEvent,
+    MouseReleaseEvent,
+    EnterEvent,
+    LeaveEvent,
+    SizeHint,
+    ResizeEvent,
 
-    DropEvents = 1 << 8      // dragenter, dragmove, dragleave
+    DropEvents      // dragenter, dragmove, dragleave
 }
 
 interface MethodDelegate {
-    Size sizeHint();
+    void showEvent(bool isSpontaneous);
     void paintEvent(Painter.Handle painter, Rect updateRect);
     void mousePressEvent(Point pos, MouseButton button, Modifiers modifiers);
     void mouseMoveEvent(Point pos, MouseButtonSet buttons, Modifiers modifiers);
     void mouseReleaseEvent(Point pos, MouseButton button, Modifiers modifiers);
     void enterEvent(Point pos);
     void leaveEvent();
+    Size sizeHint();
     void resizeEvent(Size oldSize, Size newSize);
 
     // dragMove does double duty, also an 'enter' event - check isEnterEvent flag

@@ -523,6 +523,15 @@ namespace Widget
             WidgetWithHandler(std::move(handler))
             {}
     protected:
+        void showEvent(QShowEvent *event) override {
+            if (methodMask & MethodMaskFlags::ShowEvent) {
+                methodDelegate->showEvent(event->spontaneous());
+                event->accept();
+            } else {
+                QWidget::showEvent(event);
+            }
+        }
+
         void paintEvent(QPaintEvent *event) override {
             if (methodMask & MethodMaskFlags::PaintEvent) {
                 QPainter painter(this);

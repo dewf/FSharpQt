@@ -52,6 +52,10 @@ type private Model<'msg>(dispatch: 'msg -> unit, methodMask: Widget.MethodMask, 
         eventDelegate <- newDelegate
     
     interface Widget.MethodDelegate with
+        override this.ShowEvent (isSpontaneous: bool) =
+            eventDelegate.ShowEvent isSpontaneous (WidgetProxy(widget))
+            |> Option.iter dispatch
+            
         override this.PaintEvent(painter: Painter.Handle, updateRect: Common.Rect) =
             use stackResources = new PaintStack() // "stack" (local), vs. the 'lifetimeResources' declared above
             eventDelegate.PaintInternal stackResources (Painter(painter)) (WidgetProxy(widget)) (Rect.From(updateRect))
@@ -127,6 +131,7 @@ let private dispose (model: Model<'msg>) =
     (model :> IDisposable).Dispose()
     
 type EventMaskItem =
+    | ShowEvent
     | MousePressEvent
     | MouseMoveEvent
     | MouseReleaseEvent
@@ -142,6 +147,7 @@ with
         ||> Seq.fold (fun acc item ->
             let value =
                 match item with
+                | ShowEvent -> Widget.MethodMask.ShowEvent
                 | MousePressEvent -> Widget.MethodMask.MousePressEvent
                 | MouseMoveEvent -> Widget.MethodMask.MouseMoveEvent
                 | MouseReleaseEvent -> Widget.MethodMask.MouseReleaseEvent

@@ -704,8 +704,9 @@ type QObjectProxy internal(handle: Object.Handle) =
 
 type WidgetProxy internal(handle: Widget.Handle) =
     member val internal Handle = handle
-    member this.Rect =
-        Rect.From(handle.Rect())
+    member this.Rect = Rect.From(handle.Rect())
+    member this.Width = handle.Width()
+    member this.Height = handle.Height()
         
 type AbstractButtonProxy internal(handle: AbstractButton.Handle) =
     let x = 10
