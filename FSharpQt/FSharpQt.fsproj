@@ -16,6 +16,7 @@
         <Compile Include="Reactor.fs" />
         <Compile Include="Painting.fs" />
         <Compile Include="EventDelegate.fs" />
+        <Compile Include="Resources.fs" />
 
         <Compile Include="Widgets\QObject.fs" />
 
