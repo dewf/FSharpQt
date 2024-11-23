@@ -205,9 +205,18 @@ with
         | RGBA32FPx4_Premultiplied -> Image.Format.RGBA32FPx4_Premultiplied
         | CMYK8888 -> Image.Format.CMYK8888
         
+type PaintDevice internal(handle: Org.Whatever.MinimalQtForFSharp.PaintDevice.Handle) =
+    // as of right now, these can't be owned/disposed directly
+    member val internal Handle = handle
+    member this.Width =
+        this.Handle.Width()
+    member this.Height =
+        this.Handle.Height()
+        
 type Image internal(handle: Org.Whatever.MinimalQtForFSharp.Image.Handle, owned: bool) =
+    inherit PaintDevice(handle)
     let mutable disposed = false
-    member val internal QtValue = handle
+    member val internal Handle = handle
     
     interface IDisposable with
         member this.Dispose() =
@@ -255,12 +264,13 @@ type Image internal(handle: Org.Whatever.MinimalQtForFSharp.Image.Handle, owned:
                 ret.TransformMode <- transformMode.Value.QtValue
             ret
         let handle =
-            this.QtValue.Scaled(width, height, opts)
+            this.Handle.Scaled(width, height, opts)
         new Image(handle, true)
 
 type Pixmap internal(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle, owned: bool) =
+    inherit PaintDevice(handle)
     let mutable disposed = false
-    member val internal QtValue = handle
+    member val internal Handle = handle
     
     interface IDisposable with
         member this.Dispose() =
@@ -287,12 +297,6 @@ type Pixmap internal(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle, owne
             Pixmap.Create(filename, opts)
         new Pixmap(handle, true)
         
-    member this.Width =
-        this.QtValue.Width()
-        
-    member this.Height =
-        this.QtValue.Height()
-        
     static member FromImage(image: Image, ?conversionFlags: ImageConversionFlags seq) =
         // an optional set is kind of silly, since the flags 0-value on the Qt side is the same as the default value for the fromImage API,
         // but I don't want to assume that's always the case
@@ -305,7 +309,7 @@ type Pixmap internal(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle, owne
             | None ->
                 Maybe<Enums.ImageConversionFlags>.None
         let handle =
-            Org.Whatever.MinimalQtForFSharp.Pixmap.FromImage(image.QtValue, maybeFlags)
+            Org.Whatever.MinimalQtForFSharp.Pixmap.FromImage(image.Handle, maybeFlags)
         new Pixmap(handle, true)
         
 type PaintStack() =
@@ -501,34 +505,34 @@ type Painter internal(qtPainter: Org.Whatever.MinimalQtForFSharp.Painter.Handle)
         qtPainter.DrawPolyline(points |> Array.map (_.QtValue))
         
     member this.DrawPixmap(target: RectF, pixmap: Pixmap, source: RectF) =
-        qtPainter.DrawPixmap(target.QtValue, pixmap.QtValue, source.QtValue)
+        qtPainter.DrawPixmap(target.QtValue, pixmap.Handle, source.QtValue)
 
     member this.DrawPixmap(point: Point, pixmap: Pixmap) =
-        qtPainter.DrawPixmap(point.QtValue, pixmap.QtValue)
+        qtPainter.DrawPixmap(point.QtValue, pixmap.Handle)
 
     member this.DrawPixmap(point: PointF, pixmap: Pixmap) =
-        qtPainter.DrawPixmap(point.QtValue, pixmap.QtValue)
+        qtPainter.DrawPixmap(point.QtValue, pixmap.Handle)
 
     member this.DrawPixmap(rect: Rect, pixmap: Pixmap) =
-        qtPainter.DrawPixmap(rect.QtValue, pixmap.QtValue)
+        qtPainter.DrawPixmap(rect.QtValue, pixmap.Handle)
 
     member this.DrawPixmap(point: Point, pixmap: Pixmap, source: Rect) =
-        qtPainter.DrawPixmap(point.QtValue, pixmap.QtValue, source.QtValue)
+        qtPainter.DrawPixmap(point.QtValue, pixmap.Handle, source.QtValue)
 
     member this.DrawPixmap(point: PointF, pixmap: Pixmap, source: RectF) =
-        qtPainter.DrawPixmap(point.QtValue, pixmap.QtValue, source.QtValue)
+        qtPainter.DrawPixmap(point.QtValue, pixmap.Handle, source.QtValue)
 
     member this.DrawPixmap(target: Rect, pixmap: Pixmap, source: Rect) =
-        qtPainter.DrawPixmap(target.QtValue, pixmap.QtValue, source.QtValue)
+        qtPainter.DrawPixmap(target.QtValue, pixmap.Handle, source.QtValue)
 
     member this.DrawPixmap(x: int, y: int, pixmap: Pixmap) =
-        qtPainter.DrawPixmap(x, y, pixmap.QtValue)
+        qtPainter.DrawPixmap(x, y, pixmap.Handle)
 
     member this.DrawPixmap(x: int, y: int, width: int, height: int, pixmap: Pixmap) =
-        qtPainter.DrawPixmap(x, y, width, height, pixmap.QtValue)
+        qtPainter.DrawPixmap(x, y, width, height, pixmap.Handle)
 
     member this.DrawPixmap(x: int, y: int, pixmap: Pixmap, sx: int, sy: int, sw: int, sh: int) =
-        qtPainter.DrawPixmap(x, y, pixmap.QtValue, sx, sy, sw, sh)
+        qtPainter.DrawPixmap(x, y, pixmap.Handle, sx, sy, sw, sh)
 
     member this.DrawPixmap(x: int, y: int, w: int, h: int, pixmap: Pixmap, sx: int, sy: int, sw: int, sh: int) =
-        qtPainter.DrawPixmap(x, y, w, h, pixmap.QtValue, sx, sy, sw, sh)
+        qtPainter.DrawPixmap(x, y, w, h, pixmap.Handle, sx, sy, sw, sh)

@@ -4,6 +4,7 @@
 #include <QImage>
 #include <utility>
 #include "CommonInternal.h" // for PaintStackItem
+#include "PaintDeviceInternal.h"
 
 namespace Image {
     // we could probably avoid inheriting these from PaintStackItem,
@@ -13,9 +14,14 @@ namespace Image {
     // however, until then, and depending on whether we keep the current "paintresources" system
     // of custom widgets (where there's a long-lived paintstack that gets allocated once and freed once),
     // we'll inherit it for now
-    struct __Handle : PaintStackItem {
+    struct __Handle : PaintDevice::__Handle, PaintStackItem {
         QImage qImage;
         explicit __Handle(QImage qImage) : qImage(std::move(qImage)) {}
+
+        // needed for PaintDevice methods to be able to operate on these handles
+        QPaintDevice * getPaintDevice() override {
+            return &qImage;
+        }
     };
 
     struct __Owned : __Handle {

@@ -1,6 +1,9 @@
 module PaintDevice;
 
 @nodispose
-opaque Handle;
+opaque Handle {
+    int width();
+    int height();
+}
 
 // no Owned or creation methods, this is just inherited by Pixmap

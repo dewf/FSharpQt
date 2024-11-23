@@ -5,11 +5,7 @@ import Enums;
 import Image;
 
 @nodispose
-opaque Handle extends PaintDevice.Handle {
-    // temporary, these don't really belong here, but in PaintDevice.Handle instead
-    int width();
-    int height();
-}
+opaque Handle extends PaintDevice.Handle;
 
 opaque Owned extends Handle;
 

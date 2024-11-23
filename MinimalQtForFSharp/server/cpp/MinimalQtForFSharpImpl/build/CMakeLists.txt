@@ -176,6 +176,7 @@ add_library(MinimalQtForFSharpImpl STATIC
     ../generated/PaintDevice.h
     ../generated/PaintDevice_wrappers.cpp
     ../PaintDevice.cpp
+    ../PaintDeviceInternal.h
 
     ../generated/Painter.h
     ../generated/Painter_wrappers.cpp
