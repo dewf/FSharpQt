@@ -3,6 +3,8 @@ open System
 open FSharpQt.MiscTypes
 open FSharpQt.Painting
 
+open FSharpQt.Util
+
 type ResourceKey =
     | ColorKey of name: string
     | ImageKey of name: string
@@ -17,9 +19,9 @@ with
     interface IDisposable with
         member this.Dispose() =
             match this with
-            | Color color -> (color :> IDisposable).Dispose()
-            | Image image -> (image :> IDisposable).Dispose()
-            | Pixmap pixmap -> (pixmap :> IDisposable).Dispose()
+            | Color color -> dispose color
+            | Image image -> dispose image
+            | Pixmap pixmap -> dispose pixmap
 
 type ViewResources = {
     Items: Map<ResourceKey, Resource>
@@ -33,7 +35,7 @@ type ViewResources = {
                 printfn "ViewResources disposing %A" pair.Key
                 (pair.Value :> IDisposable).Dispose()
     
-    member this.Add(name: string, color: Color) =
+    member this.Set(name: string, color: Color) =
         match this.Items.TryFind (ColorKey name) with
         | Some (Resource.Color existing) ->
             // release existing
@@ -43,7 +45,7 @@ type ViewResources = {
             ()
         { this with Items = this.Items.Add(ColorKey name, Resource.Color color) }
         
-    member this.Add(name: string, image: Image) =
+    member this.Set(name: string, image: Image) =
         match this.Items.TryFind (ImageKey name) with
         | Some (Resource.Image existing) ->
             (existing :> IDisposable).Dispose()
@@ -51,7 +53,7 @@ type ViewResources = {
             ()
         { this with Items = this.Items.Add(ImageKey name, Resource.Image image) }
         
-    member this.Add(name: string, pixmap: Pixmap) =
+    member this.Set(name: string, pixmap: Pixmap) =
         match this.Items.TryFind (PixmapKey name) with
         | Some (Resource.Pixmap existing) ->
             (existing :> IDisposable).Dispose()
