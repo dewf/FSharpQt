@@ -154,7 +154,7 @@ namespace Painter
     void Handle_fillRect_overload1__wrapper() {
         auto _this = Handle__pop();
         auto rect = Rect__pop();
-        auto color = Deferred__pop();
+        auto color = Color::Handle__pop();
         Handle_fillRect(_this, rect, color);
     }
 

@@ -22,7 +22,7 @@ namespace PaintResources
     void Gradient_setColorAt__wrapper() {
         auto _this = Gradient__pop();
         auto location = ni_popDouble();
-        auto color = Deferred__pop();
+        auto color = Color::Handle__pop();
         Gradient_setColorAt(_this, location, color);
     }
     void RadialGradient__push(RadialGradientRef value) {
@@ -298,7 +298,7 @@ namespace PaintResources
 
     void Handle_createBrush_overload1__wrapper() {
         auto _this = Handle__pop();
-        auto color = Deferred__pop();
+        auto color = Color::Handle__pop();
         Brush__push(Handle_createBrush(_this, color));
     }
 
@@ -321,7 +321,7 @@ namespace PaintResources
 
     void Handle_createPen_overload2__wrapper() {
         auto _this = Handle__pop();
-        auto color = Deferred__pop();
+        auto color = Color::Handle__pop();
         Pen__push(Handle_createPen(_this, color));
     }
 

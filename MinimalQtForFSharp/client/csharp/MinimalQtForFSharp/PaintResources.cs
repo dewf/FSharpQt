@@ -78,9 +78,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 }
                 throw new Exception("CompareTo: wrong type");
             }
-            public void SetColorAt(double location, Deferred color)
+            public void SetColorAt(double location, Color.Handle color)
             {
-                Deferred__Push(color, false);
+                Color.Handle__Push(color);
                 NativeImplClient.PushDouble(location);
                 Gradient__Push(this);
                 NativeImplClient.InvokeModuleMethod(_gradient_setColorAt);
@@ -607,9 +607,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_createBrush);
                 return Brush__Pop();
             }
-            public Brush CreateBrush(Deferred color)
+            public Brush CreateBrush(Color.Handle color)
             {
-                Deferred__Push(color, false);
+                Color.Handle__Push(color);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createBrush_overload1);
                 return Brush__Pop();
@@ -634,9 +634,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_createPen_overload1);
                 return Pen__Pop();
             }
-            public Pen CreatePen(Deferred color)
+            public Pen CreatePen(Color.Handle color)
             {
-                Deferred__Push(color, false);
+                Color.Handle__Push(color);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_createPen_overload2);
                 return Pen__Pop();

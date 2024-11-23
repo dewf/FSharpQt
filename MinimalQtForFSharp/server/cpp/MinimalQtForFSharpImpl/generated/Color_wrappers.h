@@ -14,10 +14,16 @@ namespace Color
     OwnedRef Owned__pop();
 
     void Owned_dispose__wrapper();
-    void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn);
-    std::shared_ptr<Deferred::Base> Deferred__pop();
 
-    void realize__wrapper();
+    void create__wrapper();
+
+    void create_overload1__wrapper();
+
+    void create_overload2__wrapper();
+
+    void create_overload3__wrapper();
+
+    void create_overload4__wrapper();
 
     int __register();
 }

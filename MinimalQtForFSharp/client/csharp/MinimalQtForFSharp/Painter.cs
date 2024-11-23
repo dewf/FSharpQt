@@ -233,9 +233,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_fillRect);
             }
-            public void FillRect(Rect rect, Deferred color)
+            public void FillRect(Rect rect, Color.Handle color)
             {
-                Deferred__Push(color, false);
+                Color.Handle__Push(color);
                 Rect__Push(rect, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_fillRect_overload1);

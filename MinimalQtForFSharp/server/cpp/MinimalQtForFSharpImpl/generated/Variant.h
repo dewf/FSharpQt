@@ -197,8 +197,8 @@ namespace Variant
 
         class FromColor : public Base {
         public:
-            const std::shared_ptr<Color::Deferred::Base> value;
-            FromColor(std::shared_ptr<Color::Deferred::Base> value) : value(value) {}
+            const Color::HandleRef value;
+            FromColor(Color::HandleRef value) : value(value) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromColor(this);
             }
