@@ -16,4 +16,6 @@ namespace PaintDevice
 
     struct __Handle; typedef struct __Handle* HandleRef;
 
+    int32_t Handle_width(HandleRef _this);
+    int32_t Handle_height(HandleRef _this);
 }

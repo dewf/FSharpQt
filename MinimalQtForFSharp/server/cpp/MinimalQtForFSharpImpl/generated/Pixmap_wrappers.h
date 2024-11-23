@@ -10,10 +10,6 @@ namespace Pixmap
     void Handle__push(HandleRef value);
     HandleRef Handle__pop();
 
-    void Handle_width__wrapper();
-
-    void Handle_height__wrapper();
-
     void Owned__push(OwnedRef value);
     OwnedRef Owned__pop();
 

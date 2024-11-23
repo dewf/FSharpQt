@@ -44,8 +44,6 @@ namespace Org.Whatever.MinimalQtForFSharp
         internal static ModuleMethodHandle _create;
         internal static ModuleMethodHandle _create_overload1;
         internal static ModuleMethodHandle _fromImage;
-        internal static ModuleMethodHandle _handle_width;
-        internal static ModuleMethodHandle _handle_height;
         internal static ModuleMethodHandle _owned_dispose;
 
         public static Owned Create(int width, int height)
@@ -75,18 +73,6 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             internal Handle(IntPtr nativeHandle) : base(nativeHandle)
             {
-            }
-            public int Width()
-            {
-                Handle__Push(this);
-                NativeImplClient.InvokeModuleMethod(_handle_width);
-                return NativeImplClient.PopInt32();
-            }
-            public int Height()
-            {
-                Handle__Push(this);
-                NativeImplClient.InvokeModuleMethod(_handle_height);
-                return NativeImplClient.PopInt32();
             }
         }
 
@@ -216,8 +202,6 @@ namespace Org.Whatever.MinimalQtForFSharp
             _create = NativeImplClient.GetModuleMethod(_module, "create");
             _create_overload1 = NativeImplClient.GetModuleMethod(_module, "create_overload1");
             _fromImage = NativeImplClient.GetModuleMethod(_module, "fromImage");
-            _handle_width = NativeImplClient.GetModuleMethod(_module, "Handle_width");
-            _handle_height = NativeImplClient.GetModuleMethod(_module, "Handle_height");
             _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
 
             // no static init

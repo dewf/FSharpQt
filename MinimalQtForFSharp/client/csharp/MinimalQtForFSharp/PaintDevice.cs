@@ -13,6 +13,8 @@ namespace Org.Whatever.MinimalQtForFSharp
     public static class PaintDevice
     {
         private static ModuleHandle _module;
+        internal static ModuleMethodHandle _handle_width;
+        internal static ModuleMethodHandle _handle_height;
         public class Handle : IComparable
         {
             internal readonly IntPtr NativeHandle;
@@ -27,6 +29,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                     return NativeHandle.CompareTo(other.NativeHandle);
                 }
                 throw new Exception("CompareTo: wrong type");
+            }
+            public int Width()
+            {
+                Handle__Push(this);
+                NativeImplClient.InvokeModuleMethod(_handle_width);
+                return NativeImplClient.PopInt32();
+            }
+            public int Height()
+            {
+                Handle__Push(this);
+                NativeImplClient.InvokeModuleMethod(_handle_height);
+                return NativeImplClient.PopInt32();
             }
         }
 
@@ -47,6 +61,8 @@ namespace Org.Whatever.MinimalQtForFSharp
         {
             _module = NativeImplClient.GetModule("PaintDevice");
             // assign module handles
+            _handle_width = NativeImplClient.GetModuleMethod(_module, "Handle_width");
+            _handle_height = NativeImplClient.GetModuleMethod(_module, "Handle_height");
 
             // no static init
         }

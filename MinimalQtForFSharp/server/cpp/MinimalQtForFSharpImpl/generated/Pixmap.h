@@ -26,8 +26,6 @@ namespace Pixmap
     struct __Handle; typedef struct __Handle* HandleRef; // extends PaintDevice::HandleRef
     struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
-    int32_t Handle_width(HandleRef _this);
-    int32_t Handle_height(HandleRef _this);
 
     void Owned_dispose(OwnedRef _this);
 

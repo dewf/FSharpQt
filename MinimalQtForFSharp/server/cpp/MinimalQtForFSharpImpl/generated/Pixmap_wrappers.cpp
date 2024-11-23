@@ -42,16 +42,6 @@ namespace Pixmap
     HandleRef Handle__pop() {
         return (HandleRef)ni_popPtr();
     }
-
-    void Handle_width__wrapper() {
-        auto _this = Handle__pop();
-        ni_pushInt32(Handle_width(_this));
-    }
-
-    void Handle_height__wrapper() {
-        auto _this = Handle__pop();
-        ni_pushInt32(Handle_height(_this));
-    }
     void Owned__push(OwnedRef value) {
         ni_pushPtr(value);
     }
@@ -113,8 +103,6 @@ namespace Pixmap
         ni_registerModuleMethod(m, "create", &create__wrapper);
         ni_registerModuleMethod(m, "create_overload1", &create_overload1__wrapper);
         ni_registerModuleMethod(m, "fromImage", &fromImage__wrapper);
-        ni_registerModuleMethod(m, "Handle_width", &Handle_width__wrapper);
-        ni_registerModuleMethod(m, "Handle_height", &Handle_height__wrapper);
         ni_registerModuleMethod(m, "Owned_dispose", &Owned_dispose__wrapper);
         return 0; // = OK
     }
