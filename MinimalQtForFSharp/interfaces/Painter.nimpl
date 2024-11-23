@@ -38,7 +38,7 @@ opaque Handle {
     void strokePath(PainterPath path, Pen pen);
 
     void fillRect(Rect rect, Brush brush);
-    void fillRect(Rect rect, Color.Deferred color);
+    void fillRect(Rect rect, Color.Handle color);
 
     void drawRect(Rect rect);
     void drawRect(RectF rect);

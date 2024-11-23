@@ -13,7 +13,7 @@ open Org.Whatever.MinimalQtForFSharp.Support
 type Gradient internal(qtGradient: PaintResources.Gradient) =
     member val qtGradient = qtGradient
     member this.SetColorAt(location: double, color: Color) =
-        qtGradient.SetColorAt(location, color.QtValue)
+        qtGradient.SetColorAt(location, color.Handle)
     
 type RadialGradient internal(qtRadial: PaintResources.RadialGradient) =
     inherit Gradient(qtRadial)
@@ -319,26 +319,30 @@ type PaintStack() =
         member this.Dispose() =
             this.qtResources.Dispose()
             
-    // none of these Color|s below are deferred, because we want them on the paint stack!
     member this.Color(constant: ColorConstant) =
-        this.qtResources.CreateColor(constant.QtValue)
-        |> Color
+        let handle =
+            this.qtResources.CreateColor(constant.QtValue)
+        new Color(handle, false) // NOT owned!
         
     member this.Color(r: int, g: int, b: int) =
-        this.qtResources.CreateColor(r, g, b)
-        |> Color
+        let handle =
+            this.qtResources.CreateColor(r, g, b)
+        new Color(handle, false)
         
     member this.Color(r: int, g: int, b: int, a: int) =
-        this.qtResources.CreateColor(r, g, b, a)
-        |> Color
+        let handle =
+            this.qtResources.CreateColor(r, g, b, a)
+        new Color(handle, false)
         
     member this.Color(r: float, g: float, b: float) =
-        this.qtResources.CreateColor(float32 r, float32 g, float32 b)
-        |> Color
+        let handle =
+            this.qtResources.CreateColor(float32 r, float32 g, float32 b)
+        new Color(handle, false)
         
     member this.Color(r: float, g: float, b: float, a: float) =
-        this.qtResources.CreateColor(float32 r, float32 g, float32 b, float32 a)
-        |> Color
+        let handle =
+            this.qtResources.CreateColor(float32 r, float32 g, float32 b, float32 a)
+        new Color(handle, false)
         
     member this.RadialGradient(center: PointF, radius: double) =
         this.qtResources.CreateRadialGradient(center.QtValue, radius)
@@ -357,7 +361,7 @@ type PaintStack() =
         |> Brush
         
     member this.Brush(color: Color) =
-        this.qtResources.CreateBrush(color.QtValue)
+        this.qtResources.CreateBrush(color.Handle)
         |> Brush
         
     member this.Brush(grad: Gradient) =
@@ -373,7 +377,7 @@ type PaintStack() =
         |> Pen
         
     member this.Pen(color: Color) =
-        this.qtResources.CreatePen(color.QtValue)
+        this.qtResources.CreatePen(color.Handle)
         |> Pen
         
     member this.Pen(brush: Brush, width: double, ?style: PenStyle, ?cap: CapStyle, ?join: JoinStyle) =
@@ -469,7 +473,7 @@ type Painter internal(qtPainter: Org.Whatever.MinimalQtForFSharp.Painter.Handle)
         qtPainter.FillRect(rect.QtValue, brush.qtBrush)
         
     member this.FillRect(rect: Rect, color: Color) =
-        qtPainter.FillRect(rect.QtValue, color.QtValue)
+        qtPainter.FillRect(rect.QtValue, color.Handle)
 
     member this.DrawRect(rect: Rect) =
         qtPainter.DrawRect(rect.QtValue)

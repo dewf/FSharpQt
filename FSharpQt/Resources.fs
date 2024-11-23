@@ -10,7 +10,7 @@ type ResourceKey =
     
 [<RequireQualifiedAccess>]
 type Resource =
-    | Color of color: Color.Owned
+    | Color of color: Color
     | Image of image: Image
     | Pixmap of pixmap: Pixmap
 with
@@ -41,11 +41,7 @@ type ViewResources = {
         | _ ->
             // not found (or is wrong type, but obviously that shouldn't happen)
             ()
-        let realized =
-            match color with
-            | :? Color.Owned as owned -> owned
-            | _ -> color.Realize()
-        { this with Items = this.Items.Add(ColorKey name, Resource.Color realized) }
+        { this with Items = this.Items.Add(ColorKey name, Resource.Color color) }
         
     member this.Add(name: string, image: Image) =
         match this.Items.TryFind (ImageKey name) with

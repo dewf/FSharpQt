@@ -783,67 +783,52 @@ with
         | DarkYellow -> Color.Constant.DarkYellow
         | Transparent -> Color.Constant.Transparent
 
-type Color private(deferred: Org.Whatever.MinimalQtForFSharp.Color.Deferred) =
-    member val internal QtValue = deferred
-    internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
-        Color(Color.Deferred.FromHandle(handle))
-    new(hex: string) =
-        match Util.tryParseHexStringUInt32 hex (Some "#") with
-        | Some value ->
-            let red = (value >>> 16) &&& 0xFFu
-            let green = (value >>> 8) &&& 0xFFu
-            let blue = value &&& 0xFFu
-            Color(Color.Deferred.FromRGB(int red, int green, int blue))
-        | None ->
-            printfn "MiscTypes.Color ctor: failed to parse hex string [%s]" hex
-            Color(Color.Deferred.FromConstant(Color.Constant.Black))
-    new(constant: ColorConstant) =
-        Color(Color.Deferred.FromConstant(constant.QtValue))
-    new(r: int, g: int, b: int) =
-        Color(Color.Deferred.FromRGB(r, g, b))
-    new(r: int, g: int, b: int, a: int) =
-        Color(Color.Deferred.FromRGBA(r, g, b, a))
-    new(r: float, g: float, b: float) =
-        Color(Color.Deferred.FromRGBF(float32 r, float32 g, float32 b))
-    new(r: float, g: float, b: float, a: float) =
-        Color(Color.Deferred.FromRGBAF(float32 r, float32 g, float32 b, float32 a))
-        
-module Color =
-    type Owned internal (owned: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
-        inherit Color(owned)
-        let mutable disposed = false
-        interface IDisposable with
-            member this.Dispose() =
-                if not disposed then
-                    owned.Dispose()
-                    disposed <- true
-        override this.Finalize() =
-            (this :> IDisposable).Dispose()
-    let realize (c: Color) =
-        match c.QtValue with
-        | :? Org.Whatever.MinimalQtForFSharp.Color.Deferred.FromHandle ->
-            printfn "warning: Color.Realize() - attempted to realize a handle-based Color. are you sure this is wanted? (mainly designed to actually create deferred values)"
-        | _ -> ()
-        let owned = Org.Whatever.MinimalQtForFSharp.Color.Realize(c.QtValue)
-        new Owned(owned)
-
-type Color with
-    member this.Realize() = Color.realize this
-    
-type ColorProxy private(qtColor: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
+type Color internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
     let mutable disposed = false
-    member val internal Handle = qtColor
-    internal new(ownedColor: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
-        new ColorProxy(ownedColor, true)
-    internal new(unowned: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
-        new ColorProxy(unowned, false)
-        
+    member val internal Handle = handle
+
     interface IDisposable with
         member this.Dispose() =
             if owned && not disposed then
-                (qtColor :?> Org.Whatever.MinimalQtForFSharp.Color.Owned).Dispose()
+                (handle :?> Org.Whatever.MinimalQtForFSharp.Color.Owned).Dispose()
                 disposed <- true
-    
+    override this.Finalize() =
+        (this :> IDisposable).Dispose()
+        
+    new(constant: ColorConstant) =
+        let handle =
+            Color.Create(constant.QtValue)
+        new Color(handle, true)
+    new(r: int, g: int, b: int) =
+        let handle =
+            Color.Create(r, g, b)
+        new Color(handle, true)
+    new(r: int, g: int, b: int, a: int) =
+        let handle =
+            Color.Create(r, g, b, a)
+        new Color(handle, true)
+    new(r: float, g: float, b: float) =
+        let handle =
+            Color.Create(float32 r, float32 g, float32 b)
+        new Color(handle, true)
+    new(r: float, g: float, b: float, a: float) =
+        let handle =
+            Color.Create(float32 r, float32 g, float32 b, float32 a)
+        new Color(handle, true)
+        
+    new(hex: string) =
+        let handle =
+            match Util.tryParseHexStringUInt32 hex (Some "#") with
+            | Some value ->
+                let red = (value >>> 16) &&& 0xFFu
+                let green = (value >>> 8) &&& 0xFFu
+                let blue = value &&& 0xFFu
+                Color.Create(int red, int green, int blue)
+            | None ->
+                printfn "MiscTypes.Color ctor: failed to parse hex string [%s]" hex
+                Color.Create(Color.Constant.Black)
+        new Color(handle, true)
+        
 type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle, owned: bool) =
     let mutable disposed = false
     member val internal Handle = qtVariant
@@ -871,7 +856,7 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
         | Enums.CheckState.Checked -> Checked
         | _ -> failwith "VariantProxy.ToCheckState() - unknown incoming check state"
     member this.ToColor() =
-        new ColorProxy(qtVariant.ToColor())
+        new Color(qtVariant.ToColor(), true)
         
 [<RequireQualifiedAccess>]
 type Variant =
@@ -895,7 +880,7 @@ with
         | Size size -> Variant.Deferred.FromSize(size.QtValue)
         | CheckState state -> Variant.Deferred.FromCheckState(state.QtValue)
         // | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
-        | Color color -> Variant.Deferred.FromColor(color.QtValue)
+        | Color color -> Variant.Deferred.FromColor(color.Handle)
         | Alignment align -> Variant.Deferred.FromAligment(align.QtValue)
         | Unknown -> failwith "Variant.QtValue: 'Unknown' variants cannot be sent to server side"
     // static member FromQtValue (value: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =

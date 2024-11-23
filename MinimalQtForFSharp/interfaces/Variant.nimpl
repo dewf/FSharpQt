@@ -52,6 +52,6 @@ sumtype Deferred {
     FromCheckState(CheckState value), // convenience for int 0/1/2
     FromSize(Size size),
     FromIcon(Icon.Deferred value),
-    FromColor(Color.Deferred value),
+    FromColor(Color.Handle value),
     FromAligment(Alignment value)
 }

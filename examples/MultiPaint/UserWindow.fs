@@ -224,8 +224,10 @@ type RowDelegate(state: State) =
                 colorAtIndex colorIndex
             match role with
             | DecorationRole ->
-                colorConstant
-                |> Color
+                // right now this sort of leaks the color, which is fine/safe (it will be remotely released when GC'ed),
+                // but in the future we will figure out the best way to manage dynamically-created resource lifetimes without polluting 'state too much
+                // in this particular program, it will just make the most sense to use a fixed list of Color instances (vs. constants)
+                new Color(colorConstant)
                 |> Variant.Color
             | DisplayRole ->
                 colorConstant.ToString()
@@ -267,8 +269,8 @@ type EditorRowDelegate(state: State) =
             rowData.Color.ToString()
             |> Variant.String
         | EditorColumn.Color, DecorationRole ->
-            rowData.Color
-            |> Color
+            // see note in regular RowDelegate DecorationRole above
+            new Color(rowData.Color)
             |> Variant.Color
         | _ ->
             Variant.Empty

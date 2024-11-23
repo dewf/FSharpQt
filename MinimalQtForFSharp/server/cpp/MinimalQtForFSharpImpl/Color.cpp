@@ -51,49 +51,27 @@ namespace Color
         return QColorConstants::Black;
     }
 
-    // deferred stuff =====================================
-    class FromDeferred : public Deferred::Visitor {
-    private:
-        QColor &color;
-    public:
-        explicit FromDeferred(QColor &color) : color(color) {}
-        void onFromHandle(const Deferred::FromHandle *value) override {
-            color = value->color->qColor;
-        }
-        void onFromConstant(const Deferred::FromConstant *fromConstant) override {
-            color = Color::fromConstant(fromConstant->name);
-        }
-        void onFromRGB(const Deferred::FromRGB *fromRGB) override {
-            color = QColor::fromRgb(fromRGB->r, fromRGB->g, fromRGB->b);
-        }
-        void onFromRGBA(const Deferred::FromRGBA *fromRGBA) override {
-            color = QColor::fromRgb(fromRGBA->r, fromRGBA->g, fromRGBA->b, fromRGBA->a);
-        }
-        void onFromRGBF(const Deferred::FromRGBF *fromRGBF) override {
-            color = QColor::fromRgbF(fromRGBF->r, fromRGBF->g, fromRGBF->b);
-        }
-        void onFromRGBAF(const Deferred::FromRGBAF *fromRGBAF) override {
-            color = QColor::fromRgbF(fromRGBAF->r, fromRGBAF->g, fromRGBAF->b, fromRGBAF->a);
-        }
-    };
-
-    QColor fromDeferred(const std::shared_ptr<Deferred::Base>& deferred) {
-        QColor ret;
-        FromDeferred visitor(ret);
-        deferred->accept(&visitor);
-        return ret;
-    }
-
-    // actual module methods =============================================
-
     void Owned_dispose(OwnedRef _this) {
         delete _this;
     }
 
-    OwnedRef realize(std::shared_ptr<Deferred::Base> deferred) {
-        QColor ret;
-        FromDeferred visitor(ret);
-        deferred->accept(&visitor);
-        return new __Owned { ret };
+    OwnedRef create(Constant name) {
+        return new __Owned { fromConstant(name) };
+    }
+
+    OwnedRef create(int32_t r, int32_t g, int32_t b) {
+        return new __Owned { QColor::fromRgb(r, g, b) };
+    }
+
+    OwnedRef create(int32_t r, int32_t g, int32_t b, int32_t a) {
+        return new __Owned { QColor::fromRgb(r, g, b, a) };
+    }
+
+    OwnedRef create(float r, float g, float b) {
+        return new __Owned { QColor::fromRgbF(r, g, b) };
+    }
+
+    OwnedRef create(float r, float g, float b, float a) {
+        return new __Owned { QColor::fromRgbF(r, g, b, a) };
     }
 }

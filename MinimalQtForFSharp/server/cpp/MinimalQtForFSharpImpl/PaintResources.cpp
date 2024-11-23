@@ -8,8 +8,8 @@
 namespace PaintResources
 {
     // gradient ====================
-    void Gradient_setColorAt(GradientRef _this, double location, std::shared_ptr<Deferred::Base> color) {
-        _this->qGradPtr.setColorAt(location, Color::fromDeferred(color));
+    void Gradient_setColorAt(GradientRef _this, double location, Color::HandleRef color) {
+        _this->qGradPtr.setColorAt(location, color->qColor);
     }
 
     // radial gradient =============
@@ -172,8 +172,8 @@ namespace PaintResources
         return ret;
     }
 
-    BrushRef Handle_createBrush(HandleRef _this, std::shared_ptr<Deferred::Base> color) {
-        auto ret = new __Brush { Color::fromDeferred(color) };
+    BrushRef Handle_createBrush(HandleRef _this, Color::HandleRef color) {
+        auto ret = new __Brush { color->qColor };
         _this->items.push_back(ret);
         return ret;
     }
@@ -196,8 +196,8 @@ namespace PaintResources
         return ret;
     }
 
-    PenRef Handle_createPen(HandleRef _this, std::shared_ptr<Deferred::Base> color) {
-        auto ret = new __Pen { Color::fromDeferred(color) };
+    PenRef Handle_createPen(HandleRef _this, Color::HandleRef color) {
+        auto ret = new __Pen { color->qColor };
         _this->items.push_back(ret);
         return ret;
     }

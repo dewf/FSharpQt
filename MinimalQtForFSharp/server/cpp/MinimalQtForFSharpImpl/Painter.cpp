@@ -49,8 +49,8 @@ namespace Painter
         THIS->fillRect(toQRect(rect), brush->qBrush);
     }
 
-    void Handle_fillRect(HandleRef _this, Rect rect, std::shared_ptr<Color::Deferred::Base> color) {
-        THIS->fillRect(toQRect(rect), Color::fromDeferred(color));
+    void Handle_fillRect(HandleRef _this, Rect rect, Color::HandleRef color) {
+        THIS->fillRect(toQRect(rect), color->qColor);
     }
 
     void Handle_drawRect(HandleRef _this, Rect rect) {

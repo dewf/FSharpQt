@@ -25,6 +25,8 @@ open SimpleListModel
 open TrackedRows
 open CustomSortFilterProxyModel
 
+open FSharpQt.Util
+
 type ActiveFilter =
     | ShowAll
     | Active
@@ -42,22 +44,22 @@ type TodoItem = {
 }
 
 type Resources = {
-    LowColor: Color.Owned
-    NormalColor: Color.Owned
-    HighColor: Color.Owned
+    LowColor: Color
+    NormalColor: Color
+    HighColor: Color
 } with
+    static member Init = {
     // see note on State's IDisposable implementation below
-    static member Create() = {
-        LowColor = Color("#b30000").Realize()           // either syntax is fine
-        NormalColor = Color("#ff8000") |> Color.realize
-        HighColor = Color("#ffff00") |> Color.realize
+        LowColor = new Color("#b30000")
+        NormalColor = new Color("#ff8000")
+        HighColor = new Color("#ffff00")
     }
     member this.Dispose() =
         // utility func just lets us skip casting them via :> IDisposable
         // and .tryDispose does :?> instead
-        FSharpQt.Util.dispose this.LowColor
-        FSharpQt.Util.dispose this.NormalColor
-        FSharpQt.Util.dispose this.HighColor
+        dispose this.LowColor
+        dispose this.NormalColor
+        dispose this.HighColor
 
 type State = {
     Resources: Resources
@@ -86,7 +88,7 @@ type Msg =
 
 let init _ =
     let state = {
-        Resources = Resources.Create()
+        Resources = Resources.Init
         Items = TrackedRows.Init [
             { Text = "Take out the trash"; Priority = High; Done = false }
             { Text = "Walk the dog"; Priority = Normal; Done = false }
@@ -187,7 +189,7 @@ type RowDelegate(state: State) =
         | Column.Task, DisplayRole -> Variant.String rowData.Text
         | Column.Priority, DecorationRole ->
             match rowData.Priority with
-            | Low -> state.Resources.LowColor :> Color // sigh
+            | Low -> state.Resources.LowColor
             | Normal -> state.Resources.NormalColor
             | High -> state.Resources.HighColor
             |> Variant.Color
