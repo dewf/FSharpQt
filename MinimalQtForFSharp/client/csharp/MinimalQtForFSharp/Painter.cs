@@ -233,9 +233,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_fillRect);
             }
-            public void FillRect(Rect rect, Color.Deferred color)
+            public void FillRect(Rect rect, Deferred color)
             {
-                Color.Deferred__Push(color, false);
+                Deferred__Push(color, false);
                 Rect__Push(rect, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_fillRect_overload1);
@@ -310,70 +310,70 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPolyline_overload1);
             }
-            public void DrawPixmap(RectF target, Pixmap.Deferred pixmap, RectF source)
+            public void DrawPixmap(RectF target, Pixmap.Handle pixmap, RectF source)
             {
                 RectF__Push(source, false);
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 RectF__Push(target, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap);
             }
-            public void DrawPixmap(Point point, Pixmap.Deferred pixmap)
+            public void DrawPixmap(Point point, Pixmap.Handle pixmap)
             {
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 Point__Push(point, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload1);
             }
-            public void DrawPixmap(PointF point, Pixmap.Deferred pixmap)
+            public void DrawPixmap(PointF point, Pixmap.Handle pixmap)
             {
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 PointF__Push(point, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload2);
             }
-            public void DrawPixmap(Rect rect, Pixmap.Deferred pixmap)
+            public void DrawPixmap(Rect rect, Pixmap.Handle pixmap)
             {
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 Rect__Push(rect, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload3);
             }
-            public void DrawPixmap(Point point, Pixmap.Deferred pixmap, Rect source)
+            public void DrawPixmap(Point point, Pixmap.Handle pixmap, Rect source)
             {
                 Rect__Push(source, false);
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 Point__Push(point, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload4);
             }
-            public void DrawPixmap(PointF point, Pixmap.Deferred pixmap, RectF source)
+            public void DrawPixmap(PointF point, Pixmap.Handle pixmap, RectF source)
             {
                 RectF__Push(source, false);
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 PointF__Push(point, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload5);
             }
-            public void DrawPixmap(Rect target, Pixmap.Deferred pixmap, Rect source)
+            public void DrawPixmap(Rect target, Pixmap.Handle pixmap, Rect source)
             {
                 Rect__Push(source, false);
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 Rect__Push(target, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload6);
             }
-            public void DrawPixmap(int x, int y, Pixmap.Deferred pixmap)
+            public void DrawPixmap(int x, int y, Pixmap.Handle pixmap)
             {
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 NativeImplClient.PushInt32(y);
                 NativeImplClient.PushInt32(x);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload7);
             }
-            public void DrawPixmap(int x, int y, int width, int height, Pixmap.Deferred pixmap)
+            public void DrawPixmap(int x, int y, int width, int height, Pixmap.Handle pixmap)
             {
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 NativeImplClient.PushInt32(height);
                 NativeImplClient.PushInt32(width);
                 NativeImplClient.PushInt32(y);
@@ -381,25 +381,25 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload8);
             }
-            public void DrawPixmap(int x, int y, Pixmap.Deferred pixmap, int sx, int sy, int sw, int sh)
+            public void DrawPixmap(int x, int y, Pixmap.Handle pixmap, int sx, int sy, int sw, int sh)
             {
                 NativeImplClient.PushInt32(sh);
                 NativeImplClient.PushInt32(sw);
                 NativeImplClient.PushInt32(sy);
                 NativeImplClient.PushInt32(sx);
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 NativeImplClient.PushInt32(y);
                 NativeImplClient.PushInt32(x);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_drawPixmap_overload9);
             }
-            public void DrawPixmap(int x, int y, int w, int h, Pixmap.Deferred pixmap, int sx, int sy, int sw, int sh)
+            public void DrawPixmap(int x, int y, int w, int h, Pixmap.Handle pixmap, int sx, int sy, int sw, int sh)
             {
                 NativeImplClient.PushInt32(sh);
                 NativeImplClient.PushInt32(sw);
                 NativeImplClient.PushInt32(sy);
                 NativeImplClient.PushInt32(sx);
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 NativeImplClient.PushInt32(h);
                 NativeImplClient.PushInt32(w);
                 NativeImplClient.PushInt32(y);

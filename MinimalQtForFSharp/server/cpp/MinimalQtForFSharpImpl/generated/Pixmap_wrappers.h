@@ -21,10 +21,10 @@ namespace Pixmap
 
     void FilenameOptions__push(FilenameOptions value, bool isReturn);
     FilenameOptions FilenameOptions__pop();
-    void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn);
-    std::shared_ptr<Deferred::Base> Deferred__pop();
 
-    void realize__wrapper();
+    void create__wrapper();
+
+    void create_overload1__wrapper();
 
     void fromImage__wrapper();
 

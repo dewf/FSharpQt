@@ -60,7 +60,7 @@ namespace Label
     void Handle_setIndent(HandleRef _this, int32_t indent);
     void Handle_setMargin(HandleRef _this, int32_t margin);
     void Handle_setOpenExternalLinks(HandleRef _this, bool state);
-    void Handle_setPixmap(HandleRef _this, std::shared_ptr<Pixmap::Deferred::Base> pixmap);
+    void Handle_setPixmap(HandleRef _this, Pixmap::HandleRef pixmap);
     void Handle_setScaledContents(HandleRef _this, bool state);
     std::string Handle_selectedText(HandleRef _this);
     void Handle_setText(HandleRef _this, std::string text);

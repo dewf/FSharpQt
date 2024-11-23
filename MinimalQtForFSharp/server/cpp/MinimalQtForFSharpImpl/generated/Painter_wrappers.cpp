@@ -154,7 +154,7 @@ namespace Painter
     void Handle_fillRect_overload1__wrapper() {
         auto _this = Handle__pop();
         auto rect = Rect__pop();
-        auto color = Color::Deferred__pop();
+        auto color = Deferred__pop();
         Handle_fillRect(_this, rect, color);
     }
 
@@ -231,7 +231,7 @@ namespace Painter
     void Handle_drawPixmap__wrapper() {
         auto _this = Handle__pop();
         auto target = RectF__pop();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         auto source = RectF__pop();
         Handle_drawPixmap(_this, target, pixmap, source);
     }
@@ -239,28 +239,28 @@ namespace Painter
     void Handle_drawPixmap_overload1__wrapper() {
         auto _this = Handle__pop();
         auto point = Point__pop();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         Handle_drawPixmap(_this, point, pixmap);
     }
 
     void Handle_drawPixmap_overload2__wrapper() {
         auto _this = Handle__pop();
         auto point = PointF__pop();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         Handle_drawPixmap(_this, point, pixmap);
     }
 
     void Handle_drawPixmap_overload3__wrapper() {
         auto _this = Handle__pop();
         auto rect = Rect__pop();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         Handle_drawPixmap(_this, rect, pixmap);
     }
 
     void Handle_drawPixmap_overload4__wrapper() {
         auto _this = Handle__pop();
         auto point = Point__pop();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         auto source = Rect__pop();
         Handle_drawPixmap(_this, point, pixmap, source);
     }
@@ -268,7 +268,7 @@ namespace Painter
     void Handle_drawPixmap_overload5__wrapper() {
         auto _this = Handle__pop();
         auto point = PointF__pop();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         auto source = RectF__pop();
         Handle_drawPixmap(_this, point, pixmap, source);
     }
@@ -276,7 +276,7 @@ namespace Painter
     void Handle_drawPixmap_overload6__wrapper() {
         auto _this = Handle__pop();
         auto target = Rect__pop();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         auto source = Rect__pop();
         Handle_drawPixmap(_this, target, pixmap, source);
     }
@@ -285,7 +285,7 @@ namespace Painter
         auto _this = Handle__pop();
         auto x = ni_popInt32();
         auto y = ni_popInt32();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         Handle_drawPixmap(_this, x, y, pixmap);
     }
 
@@ -295,7 +295,7 @@ namespace Painter
         auto y = ni_popInt32();
         auto width = ni_popInt32();
         auto height = ni_popInt32();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         Handle_drawPixmap(_this, x, y, width, height, pixmap);
     }
 
@@ -303,7 +303,7 @@ namespace Painter
         auto _this = Handle__pop();
         auto x = ni_popInt32();
         auto y = ni_popInt32();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         auto sx = ni_popInt32();
         auto sy = ni_popInt32();
         auto sw = ni_popInt32();
@@ -317,7 +317,7 @@ namespace Painter
         auto y = ni_popInt32();
         auto w = ni_popInt32();
         auto h = ni_popInt32();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         auto sx = ni_popInt32();
         auto sy = ni_popInt32();
         auto sw = ni_popInt32();

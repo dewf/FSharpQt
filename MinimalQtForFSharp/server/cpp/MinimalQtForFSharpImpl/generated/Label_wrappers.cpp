@@ -214,7 +214,7 @@ namespace Label
 
     void Handle_setPixmap__wrapper() {
         auto _this = Handle__pop();
-        auto pixmap = Pixmap::Deferred__pop();
+        auto pixmap = Pixmap::Handle__pop();
         Handle_setPixmap(_this, pixmap);
     }
 

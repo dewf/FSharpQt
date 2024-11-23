@@ -26,10 +26,6 @@ namespace Pixmap
     struct __Handle; typedef struct __Handle* HandleRef; // extends PaintDevice::HandleRef
     struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
-    namespace Deferred {
-        class Base;
-    }
-
     int32_t Handle_width(HandleRef _this);
     int32_t Handle_height(HandleRef _this);
 
@@ -86,53 +82,7 @@ namespace Pixmap
             return defaultValue;
         }
     };
-
-    namespace Deferred {
-        class FromHandle;
-        class FromWidthHeight;
-        class FromFilename;
-
-        class Visitor {
-        public:
-            virtual void onFromHandle(const FromHandle* value) = 0;
-            virtual void onFromWidthHeight(const FromWidthHeight* value) = 0;
-            virtual void onFromFilename(const FromFilename* value) = 0;
-        };
-
-        class Base {
-        public:
-            virtual void accept(Visitor* visitor) = 0;
-        };
-
-        class FromHandle : public Base {
-        public:
-            const HandleRef handle;
-            FromHandle(HandleRef handle) : handle(handle) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromHandle(this);
-            }
-        };
-
-        class FromWidthHeight : public Base {
-        public:
-            const int32_t width;
-            const int32_t height;
-            FromWidthHeight(int32_t width, int32_t height) : width(width), height(height) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromWidthHeight(this);
-            }
-        };
-
-        class FromFilename : public Base {
-        public:
-            const std::string filename;
-            const FilenameOptions opts;
-            FromFilename(std::string filename, FilenameOptions opts) : filename(filename), opts(opts) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromFilename(this);
-            }
-        };
-    }
-    OwnedRef realize(std::shared_ptr<Deferred::Base> deferred);
-    OwnedRef fromImage(std::shared_ptr<Image::Deferred::Base> image, std::optional<Enums::ImageConversionFlags> imageConversionFlags);
+    OwnedRef create(int32_t width, int32_t height);
+    OwnedRef create(std::string filename, FilenameOptions opts);
+    OwnedRef fromImage(Image::HandleRef image, std::optional<Enums::ImageConversionFlags> imageConversionFlags);
 }

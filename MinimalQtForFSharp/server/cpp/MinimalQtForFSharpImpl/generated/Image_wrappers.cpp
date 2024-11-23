@@ -140,89 +140,33 @@ namespace Image
         Owned_dispose(_this);
     }
 
-    class Deferred_PushVisitor : public Deferred::Visitor {
-    private:
-        bool isReturn;
-    public:
-        Deferred_PushVisitor(bool isReturn) : isReturn(isReturn) {}
-        void onFromHandle(const Deferred::FromHandle* fromHandleValue) override {
-            Handle__push(fromHandleValue->handle);
-            // kind:
-            ni_pushInt32(0);
-        }
-        void onFromWidthHeight(const Deferred::FromWidthHeight* fromWidthHeightValue) override {
-            Format__push(fromWidthHeightValue->format);
-            ni_pushInt32(fromWidthHeightValue->height);
-            ni_pushInt32(fromWidthHeightValue->width);
-            // kind:
-            ni_pushInt32(1);
-        }
-        void onFromFilename(const Deferred::FromFilename* fromFilenameValue) override {
-            __String_Option__push(fromFilenameValue->format, isReturn);
-            pushStringInternal(fromFilenameValue->filename);
-            // kind:
-            ni_pushInt32(2);
-        }
-        void onFromData(const Deferred::FromData* fromDataValue) override {
-            __SizeT_Option__push(fromDataValue->bytesPerLine, isReturn);
-            Format__push(fromDataValue->format);
-            ni_pushInt32(fromDataValue->height);
-            ni_pushInt32(fromDataValue->width);
-            __Native_UInt8_Buffer__push(fromDataValue->data, isReturn);
-            // kind:
-            ni_pushInt32(3);
-        }
-    };
-
-    void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn) {
-        Deferred_PushVisitor v(isReturn);
-        value->accept((Deferred::Visitor*)&v);
+    void create__wrapper() {
+        auto width = ni_popInt32();
+        auto height = ni_popInt32();
+        auto format = Format__pop();
+        Owned__push(create(width, height, format));
     }
 
-    std::shared_ptr<Deferred::Base> Deferred__pop() {
-        Deferred::Base* __ret = nullptr;
-        switch (ni_popInt32()) {
-        case 0: {
-            auto handle = Handle__pop();
-            __ret = new Deferred::FromHandle(handle);
-            break;
-        }
-        case 1: {
-            auto width = ni_popInt32();
-            auto height = ni_popInt32();
-            auto format = Format__pop();
-            __ret = new Deferred::FromWidthHeight(width, height, format);
-            break;
-        }
-        case 2: {
-            auto filename = popStringInternal();
-            auto format = __String_Option__pop();
-            __ret = new Deferred::FromFilename(filename, format);
-            break;
-        }
-        case 3: {
-            auto data = __Native_UInt8_Buffer__pop();
-            auto width = ni_popInt32();
-            auto height = ni_popInt32();
-            auto format = Format__pop();
-            auto bytesPerLine = __SizeT_Option__pop();
-            __ret = new Deferred::FromData(data, width, height, format, bytesPerLine);
-            break;
-        }
-        default:
-            printf("C++ Deferred__pop() - unknown kind! returning null\n");
-        }
-        return std::shared_ptr<Deferred::Base>(__ret);
+    void create_overload1__wrapper() {
+        auto filename = popStringInternal();
+        auto format = __String_Option__pop();
+        Owned__push(create(filename, format));
     }
 
-    void realize__wrapper() {
-        auto deferred = Deferred__pop();
-        Owned__push(realize(deferred));
+    void create_overload2__wrapper() {
+        auto data = __Native_UInt8_Buffer__pop();
+        auto width = ni_popInt32();
+        auto height = ni_popInt32();
+        auto format = Format__pop();
+        auto bytesPerLine = __SizeT_Option__pop();
+        Owned__push(create(data, width, height, format, bytesPerLine));
     }
 
     int __register() {
         auto m = ni_registerModule("Image");
-        ni_registerModuleMethod(m, "realize", &realize__wrapper);
+        ni_registerModuleMethod(m, "create", &create__wrapper);
+        ni_registerModuleMethod(m, "create_overload1", &create_overload1__wrapper);
+        ni_registerModuleMethod(m, "create_overload2", &create_overload2__wrapper);
         ni_registerModuleMethod(m, "Handle_scaled", &Handle_scaled__wrapper);
         ni_registerModuleMethod(m, "Owned_dispose", &Owned_dispose__wrapper);
         return 0; // = OK

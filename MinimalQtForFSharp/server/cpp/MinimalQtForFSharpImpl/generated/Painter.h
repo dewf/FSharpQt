@@ -66,15 +66,15 @@ namespace Painter
     void Handle_drawEllipse(HandleRef _this, Common::Point center, int32_t rx, int32_t ry);
     void Handle_drawPolyline(HandleRef _this, std::vector<Common::PointF> points);
     void Handle_drawPolyline(HandleRef _this, std::vector<Common::Point> points);
-    void Handle_drawPixmap(HandleRef _this, Common::RectF target, std::shared_ptr<Pixmap::Deferred::Base> pixmap, Common::RectF source);
-    void Handle_drawPixmap(HandleRef _this, Common::Point point, std::shared_ptr<Pixmap::Deferred::Base> pixmap);
-    void Handle_drawPixmap(HandleRef _this, Common::PointF point, std::shared_ptr<Pixmap::Deferred::Base> pixmap);
-    void Handle_drawPixmap(HandleRef _this, Common::Rect rect, std::shared_ptr<Pixmap::Deferred::Base> pixmap);
-    void Handle_drawPixmap(HandleRef _this, Common::Point point, std::shared_ptr<Pixmap::Deferred::Base> pixmap, Common::Rect source);
-    void Handle_drawPixmap(HandleRef _this, Common::PointF point, std::shared_ptr<Pixmap::Deferred::Base> pixmap, Common::RectF source);
-    void Handle_drawPixmap(HandleRef _this, Common::Rect target, std::shared_ptr<Pixmap::Deferred::Base> pixmap, Common::Rect source);
-    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, std::shared_ptr<Pixmap::Deferred::Base> pixmap);
-    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, int32_t width, int32_t height, std::shared_ptr<Pixmap::Deferred::Base> pixmap);
-    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, std::shared_ptr<Pixmap::Deferred::Base> pixmap, int32_t sx, int32_t sy, int32_t sw, int32_t sh);
-    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, int32_t w, int32_t h, std::shared_ptr<Pixmap::Deferred::Base> pixmap, int32_t sx, int32_t sy, int32_t sw, int32_t sh);
+    void Handle_drawPixmap(HandleRef _this, Common::RectF target, Pixmap::HandleRef pixmap, Common::RectF source);
+    void Handle_drawPixmap(HandleRef _this, Common::Point point, Pixmap::HandleRef pixmap);
+    void Handle_drawPixmap(HandleRef _this, Common::PointF point, Pixmap::HandleRef pixmap);
+    void Handle_drawPixmap(HandleRef _this, Common::Rect rect, Pixmap::HandleRef pixmap);
+    void Handle_drawPixmap(HandleRef _this, Common::Point point, Pixmap::HandleRef pixmap, Common::Rect source);
+    void Handle_drawPixmap(HandleRef _this, Common::PointF point, Pixmap::HandleRef pixmap, Common::RectF source);
+    void Handle_drawPixmap(HandleRef _this, Common::Rect target, Pixmap::HandleRef pixmap, Common::Rect source);
+    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, Pixmap::HandleRef pixmap);
+    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, int32_t width, int32_t height, Pixmap::HandleRef pixmap);
+    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, Pixmap::HandleRef pixmap, int32_t sx, int32_t sy, int32_t sw, int32_t sh);
+    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, int32_t w, int32_t h, Pixmap::HandleRef pixmap, int32_t sx, int32_t sy, int32_t sw, int32_t sh);
 }

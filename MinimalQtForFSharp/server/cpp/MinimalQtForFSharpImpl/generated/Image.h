@@ -24,10 +24,6 @@ namespace Image
     struct __Handle; typedef struct __Handle* HandleRef; // extends PaintDevice::HandleRef
     struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
-    namespace Deferred {
-        class Base;
-    }
-
     enum class Format {
         Invalid,
         Mono,
@@ -124,68 +120,7 @@ namespace Image
     OwnedRef Handle_scaled(HandleRef _this, int32_t width, int32_t height, ScaledOptions opts);
 
     void Owned_dispose(OwnedRef _this);
-
-    namespace Deferred {
-        class FromHandle;
-        class FromWidthHeight;
-        class FromFilename;
-        class FromData;
-
-        class Visitor {
-        public:
-            virtual void onFromHandle(const FromHandle* value) = 0;
-            virtual void onFromWidthHeight(const FromWidthHeight* value) = 0;
-            virtual void onFromFilename(const FromFilename* value) = 0;
-            virtual void onFromData(const FromData* value) = 0;
-        };
-
-        class Base {
-        public:
-            virtual void accept(Visitor* visitor) = 0;
-        };
-
-        class FromHandle : public Base {
-        public:
-            const HandleRef handle;
-            FromHandle(HandleRef handle) : handle(handle) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromHandle(this);
-            }
-        };
-
-        class FromWidthHeight : public Base {
-        public:
-            const int32_t width;
-            const int32_t height;
-            const Format format;
-            FromWidthHeight(int32_t width, int32_t height, Format format) : width(width), height(height), format(format) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromWidthHeight(this);
-            }
-        };
-
-        class FromFilename : public Base {
-        public:
-            const std::string filename;
-            const std::optional<std::string> format;
-            FromFilename(std::string filename, std::optional<std::string> format) : filename(filename), format(format) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromFilename(this);
-            }
-        };
-
-        class FromData : public Base {
-        public:
-            const std::shared_ptr<NativeBuffer<uint8_t>> data;
-            const int32_t width;
-            const int32_t height;
-            const Format format;
-            const std::optional<size_t> bytesPerLine;
-            FromData(std::shared_ptr<NativeBuffer<uint8_t>> data, int32_t width, int32_t height, Format format, std::optional<size_t> bytesPerLine) : data(data), width(width), height(height), format(format), bytesPerLine(bytesPerLine) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromData(this);
-            }
-        };
-    }
-    OwnedRef realize(std::shared_ptr<Deferred::Base> deferred);
+    OwnedRef create(int32_t width, int32_t height, Format format);
+    OwnedRef create(std::string filename, std::optional<std::string> format);
+    OwnedRef create(std::shared_ptr<NativeBuffer<uint8_t>> data, int32_t width, int32_t height, Format format, std::optional<size_t> bytesPerLine);
 }

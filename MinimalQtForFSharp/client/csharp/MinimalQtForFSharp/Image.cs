@@ -95,14 +95,37 @@ namespace Org.Whatever.MinimalQtForFSharp
             }
             return Maybe<string>.None;
         }
-        internal static ModuleMethodHandle _realize;
+        internal static ModuleMethodHandle _create;
+        internal static ModuleMethodHandle _create_overload1;
+        internal static ModuleMethodHandle _create_overload2;
         internal static ModuleMethodHandle _handle_scaled;
         internal static ModuleMethodHandle _owned_dispose;
 
-        public static Owned Realize(Deferred deferred)
+        public static Owned Create(int width, int height, Format format)
         {
-            Deferred__Push(deferred, false);
-            NativeImplClient.InvokeModuleMethod(_realize);
+            Format__Push(format);
+            NativeImplClient.PushInt32(height);
+            NativeImplClient.PushInt32(width);
+            NativeImplClient.InvokeModuleMethod(_create);
+            return Owned__Pop();
+        }
+
+        public static Owned Create(string filename, Maybe<string> format)
+        {
+            __String_Option__Push(format, false);
+            NativeImplClient.PushString(filename);
+            NativeImplClient.InvokeModuleMethod(_create_overload1);
+            return Owned__Pop();
+        }
+
+        public static Owned Create(INativeBuffer<byte> data, int width, int height, Format format, Maybe<IntPtr> bytesPerLine)
+        {
+            __SizeT_Option__Push(bytesPerLine, false);
+            Format__Push(format);
+            NativeImplClient.PushInt32(height);
+            NativeImplClient.PushInt32(width);
+            __Native_Byte_Buffer__Push(data, false);
+            NativeImplClient.InvokeModuleMethod(_create_overload2);
             return Owned__Pop();
         }
         public enum Format
@@ -293,120 +316,14 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ptr = NativeImplClient.PopPtr();
             return ptr != IntPtr.Zero ? new Owned(ptr) : null;
         }
-        public abstract record Deferred
-        {
-            internal abstract void Push(bool isReturn);
-            internal static Deferred Pop()
-            {
-                return NativeImplClient.PopInt32() switch
-                {
-                    0 => FromHandle.PopDerived(),
-                    1 => FromWidthHeight.PopDerived(),
-                    2 => FromFilename.PopDerived(),
-                    3 => FromData.PopDerived(),
-                    _ => throw new Exception("Deferred.Pop() - unknown tag!")
-                };
-            }
-            public sealed record FromHandle(Handle Handle) : Deferred
-            {
-                public Handle Handle { get; } = Handle;
-                internal override void Push(bool isReturn)
-                {
-                    Handle__Push(Handle);
-                    // kind
-                    NativeImplClient.PushInt32(0);
-                }
-                internal static FromHandle PopDerived()
-                {
-                    var handle = Handle__Pop();
-                    return new FromHandle(handle);
-                }
-            }
-            public sealed record FromWidthHeight(int Width, int Height, Format Format) : Deferred
-            {
-                public int Width { get; } = Width;
-                public int Height { get; } = Height;
-                public Format Format { get; } = Format;
-                internal override void Push(bool isReturn)
-                {
-                    Format__Push(Format);
-                    NativeImplClient.PushInt32(Height);
-                    NativeImplClient.PushInt32(Width);
-                    // kind
-                    NativeImplClient.PushInt32(1);
-                }
-                internal static FromWidthHeight PopDerived()
-                {
-                    var width = NativeImplClient.PopInt32();
-                    var height = NativeImplClient.PopInt32();
-                    var format = Format__Pop();
-                    return new FromWidthHeight(width, height, format);
-                }
-            }
-            public sealed record FromFilename(string Filename, Maybe<string> Format) : Deferred
-            {
-                public string Filename { get; } = Filename;
-                public Maybe<string> Format { get; } = Format;
-                internal override void Push(bool isReturn)
-                {
-                    __String_Option__Push(Format, isReturn);
-                    NativeImplClient.PushString(Filename);
-                    // kind
-                    NativeImplClient.PushInt32(2);
-                }
-                internal static FromFilename PopDerived()
-                {
-                    var filename = NativeImplClient.PopString();
-                    var format = __String_Option__Pop();
-                    return new FromFilename(filename, format);
-                }
-            }
-            public sealed record FromData(INativeBuffer<byte> Data, int Width, int Height, Format Format, Maybe<IntPtr> BytesPerLine) : Deferred
-            {
-                public INativeBuffer<byte> Data { get; } = Data;
-                public int Width { get; } = Width;
-                public int Height { get; } = Height;
-                public Format Format { get; } = Format;
-                public Maybe<IntPtr> BytesPerLine { get; } = BytesPerLine;
-                internal override void Push(bool isReturn)
-                {
-                    __SizeT_Option__Push(BytesPerLine, isReturn);
-                    Format__Push(Format);
-                    NativeImplClient.PushInt32(Height);
-                    NativeImplClient.PushInt32(Width);
-                    __Native_Byte_Buffer__Push(Data, isReturn);
-                    // kind
-                    NativeImplClient.PushInt32(3);
-                }
-                internal static FromData PopDerived()
-                {
-                    var data = __Native_Byte_Buffer__Pop();
-                    var width = NativeImplClient.PopInt32();
-                    var height = NativeImplClient.PopInt32();
-                    var format = Format__Pop();
-                    var bytesPerLine = __SizeT_Option__Pop();
-                    return new FromData(data, width, height, format, bytesPerLine);
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Deferred__Push(Deferred thing, bool isReturn)
-        {
-            thing.Push(isReturn);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Deferred Deferred__Pop()
-        {
-            return Deferred.Pop();
-        }
 
         internal static void __Init()
         {
             _module = NativeImplClient.GetModule("Image");
             // assign module handles
-            _realize = NativeImplClient.GetModuleMethod(_module, "realize");
+            _create = NativeImplClient.GetModuleMethod(_module, "create");
+            _create_overload1 = NativeImplClient.GetModuleMethod(_module, "create_overload1");
+            _create_overload2 = NativeImplClient.GetModuleMethod(_module, "create_overload2");
             _handle_scaled = NativeImplClient.GetModuleMethod(_module, "Handle_scaled");
             _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
 

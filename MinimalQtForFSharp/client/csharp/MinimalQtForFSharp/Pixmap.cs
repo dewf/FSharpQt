@@ -41,23 +41,33 @@ namespace Org.Whatever.MinimalQtForFSharp
             }
             return Maybe<ImageConversionFlags>.None;
         }
-        internal static ModuleMethodHandle _realize;
+        internal static ModuleMethodHandle _create;
+        internal static ModuleMethodHandle _create_overload1;
         internal static ModuleMethodHandle _fromImage;
         internal static ModuleMethodHandle _handle_width;
         internal static ModuleMethodHandle _handle_height;
         internal static ModuleMethodHandle _owned_dispose;
 
-        public static Owned Realize(Deferred deferred)
+        public static Owned Create(int width, int height)
         {
-            Deferred__Push(deferred, false);
-            NativeImplClient.InvokeModuleMethod(_realize);
+            NativeImplClient.PushInt32(height);
+            NativeImplClient.PushInt32(width);
+            NativeImplClient.InvokeModuleMethod(_create);
             return Owned__Pop();
         }
 
-        public static Owned FromImage(Image.Deferred image, Maybe<ImageConversionFlags> imageConversionFlags)
+        public static Owned Create(string filename, FilenameOptions opts)
+        {
+            FilenameOptions__Push(opts, false);
+            NativeImplClient.PushString(filename);
+            NativeImplClient.InvokeModuleMethod(_create_overload1);
+            return Owned__Pop();
+        }
+
+        public static Owned FromImage(Image.Handle image, Maybe<ImageConversionFlags> imageConversionFlags)
         {
             __ImageConversionFlags_Option__Push(imageConversionFlags, false);
-            Image.Deferred__Push(image, false);
+            Image.Handle__Push(image);
             NativeImplClient.InvokeModuleMethod(_fromImage);
             return Owned__Pop();
         }
@@ -198,89 +208,13 @@ namespace Org.Whatever.MinimalQtForFSharp
             }
             return opts;
         }
-        public abstract record Deferred
-        {
-            internal abstract void Push(bool isReturn);
-            internal static Deferred Pop()
-            {
-                return NativeImplClient.PopInt32() switch
-                {
-                    0 => FromHandle.PopDerived(),
-                    1 => FromWidthHeight.PopDerived(),
-                    2 => FromFilename.PopDerived(),
-                    _ => throw new Exception("Deferred.Pop() - unknown tag!")
-                };
-            }
-            public sealed record FromHandle(Handle Handle) : Deferred
-            {
-                public Handle Handle { get; } = Handle;
-                internal override void Push(bool isReturn)
-                {
-                    Handle__Push(Handle);
-                    // kind
-                    NativeImplClient.PushInt32(0);
-                }
-                internal static FromHandle PopDerived()
-                {
-                    var handle = Handle__Pop();
-                    return new FromHandle(handle);
-                }
-            }
-            public sealed record FromWidthHeight(int Width, int Height) : Deferred
-            {
-                public int Width { get; } = Width;
-                public int Height { get; } = Height;
-                internal override void Push(bool isReturn)
-                {
-                    NativeImplClient.PushInt32(Height);
-                    NativeImplClient.PushInt32(Width);
-                    // kind
-                    NativeImplClient.PushInt32(1);
-                }
-                internal static FromWidthHeight PopDerived()
-                {
-                    var width = NativeImplClient.PopInt32();
-                    var height = NativeImplClient.PopInt32();
-                    return new FromWidthHeight(width, height);
-                }
-            }
-            public sealed record FromFilename(string Filename, FilenameOptions Opts) : Deferred
-            {
-                public string Filename { get; } = Filename;
-                public FilenameOptions Opts { get; } = Opts;
-                internal override void Push(bool isReturn)
-                {
-                    FilenameOptions__Push(Opts, isReturn);
-                    NativeImplClient.PushString(Filename);
-                    // kind
-                    NativeImplClient.PushInt32(2);
-                }
-                internal static FromFilename PopDerived()
-                {
-                    var filename = NativeImplClient.PopString();
-                    var opts = FilenameOptions__Pop();
-                    return new FromFilename(filename, opts);
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Deferred__Push(Deferred thing, bool isReturn)
-        {
-            thing.Push(isReturn);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Deferred Deferred__Pop()
-        {
-            return Deferred.Pop();
-        }
 
         internal static void __Init()
         {
             _module = NativeImplClient.GetModule("Pixmap");
             // assign module handles
-            _realize = NativeImplClient.GetModuleMethod(_module, "realize");
+            _create = NativeImplClient.GetModuleMethod(_module, "create");
+            _create_overload1 = NativeImplClient.GetModuleMethod(_module, "create_overload1");
             _fromImage = NativeImplClient.GetModuleMethod(_module, "fromImage");
             _handle_width = NativeImplClient.GetModuleMethod(_module, "Handle_width");
             _handle_height = NativeImplClient.GetModuleMethod(_module, "Handle_height");

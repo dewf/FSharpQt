@@ -266,9 +266,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setOpenExternalLinks);
             }
-            public void SetPixmap(Pixmap.Deferred pixmap)
+            public void SetPixmap(Pixmap.Handle pixmap)
             {
-                Pixmap.Deferred__Push(pixmap, false);
+                Pixmap.Handle__Push(pixmap);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setPixmap);
             }

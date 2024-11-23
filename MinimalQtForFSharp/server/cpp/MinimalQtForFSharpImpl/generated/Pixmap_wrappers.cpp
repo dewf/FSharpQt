@@ -90,75 +90,28 @@ namespace Pixmap
         return value;
     }
 
-    class Deferred_PushVisitor : public Deferred::Visitor {
-    private:
-        bool isReturn;
-    public:
-        Deferred_PushVisitor(bool isReturn) : isReturn(isReturn) {}
-        void onFromHandle(const Deferred::FromHandle* fromHandleValue) override {
-            Handle__push(fromHandleValue->handle);
-            // kind:
-            ni_pushInt32(0);
-        }
-        void onFromWidthHeight(const Deferred::FromWidthHeight* fromWidthHeightValue) override {
-            ni_pushInt32(fromWidthHeightValue->height);
-            ni_pushInt32(fromWidthHeightValue->width);
-            // kind:
-            ni_pushInt32(1);
-        }
-        void onFromFilename(const Deferred::FromFilename* fromFilenameValue) override {
-            FilenameOptions__push(fromFilenameValue->opts, isReturn);
-            pushStringInternal(fromFilenameValue->filename);
-            // kind:
-            ni_pushInt32(2);
-        }
-    };
-
-    void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn) {
-        Deferred_PushVisitor v(isReturn);
-        value->accept((Deferred::Visitor*)&v);
+    void create__wrapper() {
+        auto width = ni_popInt32();
+        auto height = ni_popInt32();
+        Owned__push(create(width, height));
     }
 
-    std::shared_ptr<Deferred::Base> Deferred__pop() {
-        Deferred::Base* __ret = nullptr;
-        switch (ni_popInt32()) {
-        case 0: {
-            auto handle = Handle__pop();
-            __ret = new Deferred::FromHandle(handle);
-            break;
-        }
-        case 1: {
-            auto width = ni_popInt32();
-            auto height = ni_popInt32();
-            __ret = new Deferred::FromWidthHeight(width, height);
-            break;
-        }
-        case 2: {
-            auto filename = popStringInternal();
-            auto opts = FilenameOptions__pop();
-            __ret = new Deferred::FromFilename(filename, opts);
-            break;
-        }
-        default:
-            printf("C++ Deferred__pop() - unknown kind! returning null\n");
-        }
-        return std::shared_ptr<Deferred::Base>(__ret);
-    }
-
-    void realize__wrapper() {
-        auto deferred = Deferred__pop();
-        Owned__push(realize(deferred));
+    void create_overload1__wrapper() {
+        auto filename = popStringInternal();
+        auto opts = FilenameOptions__pop();
+        Owned__push(create(filename, opts));
     }
 
     void fromImage__wrapper() {
-        auto image = Image::Deferred__pop();
+        auto image = Image::Handle__pop();
         auto imageConversionFlags = __ImageConversionFlags_Option__pop();
         Owned__push(fromImage(image, imageConversionFlags));
     }
 
     int __register() {
         auto m = ni_registerModule("Pixmap");
-        ni_registerModuleMethod(m, "realize", &realize__wrapper);
+        ni_registerModuleMethod(m, "create", &create__wrapper);
+        ni_registerModuleMethod(m, "create_overload1", &create_overload1__wrapper);
         ni_registerModuleMethod(m, "fromImage", &fromImage__wrapper);
         ni_registerModuleMethod(m, "Handle_width", &Handle_width__wrapper);
         ni_registerModuleMethod(m, "Handle_height", &Handle_height__wrapper);
