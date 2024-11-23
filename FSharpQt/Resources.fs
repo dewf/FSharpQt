@@ -22,88 +22,83 @@ with
             | Color color -> dispose color
             | Image image -> dispose image
             | Pixmap pixmap -> dispose pixmap
-
-type ViewResources = {
-    Items: Map<ResourceKey, Resource>
-} with
-    static member Init = { Items = Map.empty }
+            
+type ResourceManager() =
+    let mutable items: Map<ResourceKey, Resource> = Map.empty
     
     interface IDisposable with
         member this.Dispose() =
             printfn "ViewResources tearing down!"
-            for pair in this.Items do
+            for pair in items do
                 printfn "ViewResources disposing %A" pair.Key
-                (pair.Value :> IDisposable).Dispose()
+                dispose pair.Value
     
     member this.Set(name: string, color: Color) =
-        match this.Items.TryFind (ColorKey name) with
+        match items.TryFind (ColorKey name) with
         | Some (Resource.Color existing) ->
             // release existing
-            (existing :> IDisposable).Dispose()
+            dispose existing
         | _ ->
             // not found (or is wrong type, but obviously that shouldn't happen)
             ()
-        { this with Items = this.Items.Add(ColorKey name, Resource.Color color) }
+        items <- items.Add(ColorKey name, Resource.Color color)
         
     member this.Set(name: string, image: Image) =
-        match this.Items.TryFind (ImageKey name) with
+        match items.TryFind (ImageKey name) with
         | Some (Resource.Image existing) ->
-            (existing :> IDisposable).Dispose()
+            dispose existing
         | _ ->
             ()
-        { this with Items = this.Items.Add(ImageKey name, Resource.Image image) }
+        items <- items.Add(ImageKey name, Resource.Image image)
         
     member this.Set(name: string, pixmap: Pixmap) =
-        match this.Items.TryFind (PixmapKey name) with
+        match items.TryFind (PixmapKey name) with
         | Some (Resource.Pixmap existing) ->
-            (existing :> IDisposable).Dispose()
+            dispose existing
         | _ ->
             ()
-        { this with Items = this.Items.Add(PixmapKey name, Resource.Pixmap pixmap) }
+        items <- items.Add(PixmapKey name, Resource.Pixmap pixmap)
         
     member this.DeleteColor(name: string) =
-        match this.Items.TryFind (ColorKey name) with
+        match items.TryFind (ColorKey name) with
         | Some (Resource.Color existing) ->
-            (existing :> IDisposable).Dispose()
-            { this with Items = this.Items.Remove (ColorKey name) }
+            dispose existing
+            items <- items.Remove (ColorKey name)
         | _ ->
             printfn "warning: ViewResources.DeleteColor - failed to find color '%s'" name
-            this
 
     member this.DeleteImage(name: string) =
-        match this.Items.TryFind (ImageKey name) with
+        match items.TryFind (ImageKey name) with
         | Some (Resource.Image existing) ->
-            (existing :> IDisposable).Dispose()
-            { this with Items = this.Items.Remove (ImageKey name) }
+            dispose existing
+            items <- items.Remove(ImageKey name)
         | _ ->
             printfn "warning: ViewResources.DeleteImage - failed to find image '%s'" name
-            this
 
     member this.DeletePixmap(name: string) =
-        match this.Items.TryFind (PixmapKey name) with
+        match items.TryFind (PixmapKey name) with
         | Some (Resource.Pixmap existing) ->
-            (existing :> IDisposable).Dispose()
-            { this with Items = this.Items.Remove (PixmapKey name) }
+            dispose existing
+            items <- items.Remove (PixmapKey name)
         | _ ->
             printfn "warning: ViewResources.DeletePixmap - failed to find pixmap '%s'" name
-            this
     
     member this.Color (name: string) =
-        match this.Items.TryFind (ColorKey name) with
+        match items.TryFind (ColorKey name) with
         | Some (Resource.Color color) ->
             color
         | _ ->
             failwithf "ViewResources.Color - couldn't find color of name '%s'" name
             
     member this.Image (name: string) =
-        match this.Items.TryFind (ImageKey name) with
+        match items.TryFind (ImageKey name) with
         | Some (Resource.Image image) ->
             image
         | _ ->
             failwithf "ViewResources.Image - couldn't find image of name '%s'" name
             
     member this.Pixmap (name: string) =
-        match this.Items.TryFind (PixmapKey name) with
+        match items.TryFind (PixmapKey name) with
         | Some (Resource.Pixmap pixmap) ->
             pixmap
         | _ ->
