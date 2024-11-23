@@ -165,7 +165,7 @@ type ImageFormat =
     | RGBA32FPx4_Premultiplied
     | CMYK8888
 with
-    member this.toQtFormat() =
+    member this.QtValue =
         match this with
         | Invalid -> Image.Format.Invalid
         | Mono -> Image.Format.Mono
@@ -205,18 +205,32 @@ with
         | RGBA32FPx4_Premultiplied -> Image.Format.RGBA32FPx4_Premultiplied
         | CMYK8888 -> Image.Format.CMYK8888
         
-type Image internal(deferred: Org.Whatever.MinimalQtForFSharp.Image.Deferred) =
-    member val QtValue = deferred
-    internal new (handle: Org.Whatever.MinimalQtForFSharp.Image.Handle) =
-        Image(Image.Deferred.FromHandle(handle))
+type Image internal(handle: Org.Whatever.MinimalQtForFSharp.Image.Handle, owned: bool) =
+    let mutable disposed = false
+    member val internal QtValue = handle
+    
+    interface IDisposable with
+        member this.Dispose() =
+            if owned && not disposed then
+                (handle :?> Org.Whatever.MinimalQtForFSharp.Image.Owned).Dispose()
+                disposed <- true
+    override this.Finalize() =
+        (this :> IDisposable).Dispose()
+    
     new(width: int, height: int, format: ImageFormat) =
-        Image(Image.Deferred.FromWidthHeight(width, height, format.toQtFormat()))
+        let handle =
+            Image.Create(width, height, format.QtValue)
+        new Image(handle, true)
+        
     new(filename: string, maybeFormat: string option) =
         let maybeString =
             match maybeFormat with
             | Some value -> Maybe.From(value)
             | None -> Maybe<string>.None
-        Image(Image.Deferred.FromFilename(filename, maybeString))
+        let handle =
+            Image.Create(filename, maybeString)
+        new Image(handle, true)
+        
     new(data: byte array, width: int, height: int, format: ImageFormat, bytesPerLine: int64 option) =
         let buffer = 
             let retBuffer = new ClientBuffer<byte>(data.Length)
@@ -228,37 +242,10 @@ type Image internal(deferred: Org.Whatever.MinimalQtForFSharp.Image.Deferred) =
             match bytesPerLine with
             | Some value -> Maybe<IntPtr>.From(IntPtr(value))
             | None -> Maybe<IntPtr>.None
-        Image(Image.Deferred.FromData(buffer, width, height, format.toQtFormat(), maybeBytesPerLine))
-    member private this.Handle =
-        match deferred with
-        | :? Org.Whatever.MinimalQtForFSharp.Image.Deferred.FromHandle as fh ->
-            fh.Handle
-        | _ ->
-            failwith "Image.Handle - was a non-Handle deferred type"
-            
-module Image =
-    type Owned internal(owned: Org.Whatever.MinimalQtForFSharp.Image.Owned) =
-        inherit Image(owned)
-        let mutable disposed = false
-        interface IDisposable with
-            member this.Dispose() =
-                if not disposed then
-                    owned.Dispose()
-                    disposed <- true
-        override this.Finalize() =
-            (this :> IDisposable).Dispose()
-    let realize (image: Image) =
-        match image.QtValue with
-        | :? Org.Whatever.MinimalQtForFSharp.Image.Deferred.FromHandle ->
-            failwith "Image.realize - attempted to realize a Handle-based Image"
-        | _ ->
-            let owned = Org.Whatever.MinimalQtForFSharp.Image.Realize(image.QtValue)
-            new Owned(owned)
+        let handle =
+            Image.Create(buffer, width, height, format.QtValue, maybeBytesPerLine)
+        new Image(handle, true)
         
-type Image with
-    member this.Realize() = Image.realize this
-    
-    // handle-only methods:
     member this.Scaled(width: int, height: int, ?aspectMode: AspectRatioMode, ?transformMode: TransformationMode) =
         let opts =
             let mutable ret = Image.ScaledOptions()
@@ -267,14 +254,27 @@ type Image with
             if transformMode.IsSome then
                 ret.TransformMode <- transformMode.Value.QtValue
             ret
-        new Image.Owned(this.Handle.Scaled(width, height, opts))
+        let handle =
+            this.QtValue.Scaled(width, height, opts)
+        new Image(handle, true)
 
-type Pixmap private(deferred: Org.Whatever.MinimalQtForFSharp.Pixmap.Deferred) =
-    member val internal QtValue = deferred
-    internal new(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle) =
-        Pixmap(Pixmap.Deferred.FromHandle(handle))
+type Pixmap internal(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle, owned: bool) =
+    let mutable disposed = false
+    member val internal QtValue = handle
+    
+    interface IDisposable with
+        member this.Dispose() =
+            if owned && not disposed then
+                (handle :?> Org.Whatever.MinimalQtForFSharp.Pixmap.Owned).Dispose()
+                disposed <- true
+    override this.Finalize() =
+        (this :> IDisposable).Dispose()
+        
     new(width: int, height: int) =
-        Pixmap(Pixmap.Deferred.FromWidthHeight(width, height))
+        let handle =
+            Pixmap.Create(width, height)
+        new Pixmap(handle, true)
+        
     new(filename: string, ?format: string, ?flags: ImageConversionFlags seq) =
         let opts =
             let mutable ret = Org.Whatever.MinimalQtForFSharp.Pixmap.FilenameOptions()
@@ -283,60 +283,30 @@ type Pixmap private(deferred: Org.Whatever.MinimalQtForFSharp.Pixmap.Deferred) =
             if flags.IsSome then
                 ret.ImageConversionFlags <- ImageConversionFlags.QtSetFrom flags.Value
             ret
-        Pixmap(Pixmap.Deferred.FromFilename(filename, opts))
-    member private this.Handle =
-        match deferred with
-        | :? Org.Whatever.MinimalQtForFSharp.Pixmap.Deferred.FromHandle as fh ->
-            fh.Handle
-        | _ ->
-            failwith "Pixmap.Handle - was a non-Handle deferred type"
-            
+        let handle =
+            Pixmap.Create(filename, opts)
+        new Pixmap(handle, true)
+        
     member this.Width =
-        this.Handle.Width()
+        this.QtValue.Width()
+        
     member this.Height =
-        this.Handle.Height()
+        this.QtValue.Height()
         
-module Pixmap =
-    type Owned internal(owned: Org.Whatever.MinimalQtForFSharp.Pixmap.Owned) =
-        inherit Pixmap(owned)
-        let mutable disposed = false
-        interface IDisposable with
-            member this.Dispose() =
-                if not disposed then
-                    owned.Dispose()
-                    disposed <- true
-        override this.Finalize() =
-            (this :> IDisposable).Dispose()
-    let realize (pixmap: Pixmap) =
-        match pixmap.QtValue with
-        | :? Org.Whatever.MinimalQtForFSharp.Pixmap.Deferred.FromHandle ->
-            failwith "Pixmap.realize - attempted to realize a Handle-based Pixmap"
-        | _ ->
-            let owned = Org.Whatever.MinimalQtForFSharp.Pixmap.Realize(pixmap.QtValue)
-            new Owned(owned)
-        
-    let private fromImageInternal (image: Image) (imageConversionFlags: ImageConversionFlags seq option) =
+    static member FromImage(image: Image, ?conversionFlags: ImageConversionFlags seq) =
         // an optional set is kind of silly, since the flags 0-value on the Qt side is the same as the default value for the fromImage API,
         // but I don't want to assume that's always the case
         // I can stop such silliness when NI supports default values :(
         let maybeFlags =
-            match imageConversionFlags with
+            match conversionFlags with
             | Some value ->
                 ImageConversionFlags.QtSetFrom value
                 |> Maybe<Enums.ImageConversionFlags>.From
             | None ->
                 Maybe<Enums.ImageConversionFlags>.None
-        let owned = Org.Whatever.MinimalQtForFSharp.Pixmap.FromImage(image.QtValue, maybeFlags)
-        new Owned(owned)
-        
-    let fromImage (image: Image) =
-        fromImageInternal image None
-        
-    let fromImageWithFlags (image: Image) (imageConversionFlags: ImageConversionFlags seq) =
-        fromImageInternal image (Some imageConversionFlags)
-        
-type Pixmap with
-    member this.Realize() = Pixmap.realize this
+        let handle =
+            Org.Whatever.MinimalQtForFSharp.Pixmap.FromImage(image.QtValue, maybeFlags)
+        new Pixmap(handle, true)
         
 type PaintStack() =
     member val qtResources = PaintResources.Create()

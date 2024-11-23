@@ -87,8 +87,8 @@ namespace Label
         THIS->setOpenExternalLinks(state);
     }
 
-    void Handle_setPixmap(HandleRef _this, std::shared_ptr<Pixmap::Deferred::Base> pixmap) {
-        THIS->setPixmap(Pixmap::fromDeferred(pixmap));
+    void Handle_setPixmap(HandleRef _this, Pixmap::HandleRef pixmap) {
+        THIS->setPixmap(pixmap->qPixmap);
     }
 
     void Handle_setScaledContents(HandleRef _this, bool state) {

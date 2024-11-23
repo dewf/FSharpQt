@@ -18,14 +18,9 @@ options FilenameOptions {
     ImageConversionFlags imageConversionFlags; // defaults to Qt::AutoColor
 }
 
-sumtype Deferred {
-    FromHandle(Handle handle),
-    FromWidthHeight(int width, int height),
-    FromFilename(string filename, FilenameOptions opts)
-}
-
-Owned realize(Deferred deferred);
+Owned create(int width, int height);
+Owned create(string filename, FilenameOptions opts);
 
 // static methods:
 // not sure we'd ever want this from Deferred, but ...
-Owned fromImage(Image.Deferred image, Option<ImageConversionFlags> imageConversionFlags);
+Owned fromImage(Image.Handle image, Option<ImageConversionFlags> imageConversionFlags);

@@ -16,7 +16,7 @@ type internal Attr =
     | Indent of indent: int
     | Margin of margin: int
     | OpenExternalLinks of state: bool
-//    | Pixmap of pixmap: Pixmap
+    | Pixmap of pixmap: Pixmap.Handle
     | ScaledContents of state: bool
     | Text of text: string
     | TextFormat of format: TextFormat
@@ -36,6 +36,7 @@ with
             | Indent _ -> "label:indent"
             | Margin _ -> "label:margin"
             | OpenExternalLinks _ -> "label:openexternallinks"
+            | Pixmap _ -> "label:pixmap"
             | ScaledContents _ -> "label:scaledcontents"
             | Text _ -> "label:text"
             | TextFormat _ -> "label:textformat"
@@ -96,8 +97,8 @@ type Props<'msg>() =
     member this.OpenExternalLinks with set value =
         this.PushAttr(OpenExternalLinks value)
         
-    // member this.Pixmap with set value =
-    //     this.PushAttr(Pixmap value)
+    member this.Pixmap with set value =
+        this.PushAttr(Pixmap value)
 
     member this.ScaledContents with set value =
         this.PushAttr(ScaledContents value)
@@ -163,6 +164,8 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
                 label.SetMargin(margin)
             | OpenExternalLinks state ->
                 label.SetOpenExternalLinks(state)
+            | Pixmap handle ->
+                label.SetPixmap(handle)
             | ScaledContents state ->
                 label.SetScaledContents(state)
             | Text text ->

@@ -13,6 +13,4 @@ namespace Pixmap {
     struct __Owned : __Handle {
         explicit __Owned(const QPixmap &qPixmap) : __Handle(qPixmap) {}
     };
-
-    QPixmap fromDeferred(const std::shared_ptr<Pixmap::Deferred::Base>& deferred);
 }

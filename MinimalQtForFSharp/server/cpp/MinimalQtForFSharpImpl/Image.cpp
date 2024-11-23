@@ -4,60 +4,6 @@
 
 namespace Image
 {
-    class FromDeferred : public Deferred::Visitor {
-        QImage &image;
-    public:
-        explicit FromDeferred(QImage &image) : image(image) {}
-
-        void onFromHandle(const Deferred::FromHandle *value) override {
-            image = value->handle->qImage;
-        }
-
-        void onFromWidthHeight(const Deferred::FromWidthHeight *value) override {
-            image = QImage(value->width, value->height, static_cast<QImage::Format>(value->format));
-        }
-
-        void onFromFilename(const Deferred::FromFilename *value) override {
-            const char *format = nullptr;
-            if (value->format.has_value()) {
-                format = value->format->c_str();
-            }
-            image = QImage(value->filename.c_str(), format);
-        }
-
-        struct CleanupInfo {
-            // keep the buffer alive until the Image is done with it
-            std::shared_ptr<NativeBuffer<uint8_t>> buffer;
-        };
-
-        static void cleanupFunc(void *info) {
-            const auto ptr = static_cast<CleanupInfo*>(info);
-            delete ptr;
-        }
-
-        void onFromData(const Deferred::FromData *value) override {
-            size_t length;
-            const auto data = value->data->getSpan(&length);
-            const auto format = static_cast<QImage::Format>(value->format);
-            const auto cleanupPtr = new CleanupInfo { value->data };
-            if (value->bytesPerLine.has_value()) {
-                const auto bytesPerLine = static_cast<qsizetype>(value->bytesPerLine.value());
-                image = QImage(data, value->width, value->height, bytesPerLine, format, cleanupFunc, cleanupPtr);
-            } else {
-                image = QImage(data, value->width, value->height, format, cleanupFunc, cleanupPtr);
-            }
-        }
-    };
-
-    QImage fromDeferred(const std::shared_ptr<Deferred::Base>& deferred) {
-        QImage image;
-        FromDeferred visitor(image);
-        deferred->accept(&visitor);
-        return image;
-    }
-
-    // ===========================================================
-
     OwnedRef Handle_scaled(HandleRef _this, int32_t width, int32_t height, ScaledOptions opts) {
         const auto qAspectMode =
             static_cast<Qt::AspectRatioMode>(
@@ -74,7 +20,38 @@ namespace Image
         delete _this;
     }
 
-    OwnedRef realize(std::shared_ptr<Deferred::Base> deferred) {
-        return new __Owned { fromDeferred(deferred) };
+    OwnedRef create(int32_t width, int32_t height, Format format) {
+        return new __Owned { QImage(width, height, static_cast<QImage::Format>(format)) };
+    }
+
+    OwnedRef create(std::string filename, std::optional<std::string> format) {
+        const char *qformat = nullptr;
+        if (format.has_value()) {
+            qformat = format->c_str();
+        }
+        return new __Owned { QImage(filename.c_str(), qformat) };
+    }
+
+    struct CleanupInfo {
+        // keep the buffer alive until the Image is done with it
+        std::shared_ptr<NativeBuffer<uint8_t>> buffer;
+    };
+
+    static void cleanupFunc(void *info) {
+        const auto ptr = static_cast<CleanupInfo*>(info);
+        delete ptr;
+    }
+
+    OwnedRef create(std::shared_ptr<NativeBuffer<uint8_t>> data, int32_t width, int32_t height, Format format, std::optional<size_t> bytesPerLine) {
+        size_t length;
+        const auto qdata = data->getSpan(&length);
+        const auto qformat = static_cast<QImage::Format>(format);
+        const auto cleanupPtr = new CleanupInfo { data };
+        if (bytesPerLine.has_value()) {
+            const auto qbytesPerLine = static_cast<qsizetype>(bytesPerLine.value());
+            return new __Owned { QImage(qdata, width, height, qbytesPerLine, qformat, cleanupFunc, cleanupPtr) };
+        } else {
+            return new __Owned { QImage(qdata, width, height, qformat, cleanupFunc, cleanupPtr) };
+        }
     }
 }

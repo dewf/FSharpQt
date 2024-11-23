@@ -56,11 +56,6 @@ opaque Handle extends PaintDevice.Handle {
 
 opaque Owned extends Handle;
 
-sumtype Deferred {
-    FromHandle(Handle handle),
-    FromWidthHeight(int width, int height, Format format),
-    FromFilename(string filename, Option<string> format),
-    FromData(Buffer<byte> data, int width, int height, Format format, Option<size_t> bytesPerLine)
-}
-
-Owned realize(Deferred deferred);
+Owned create(int width, int height, Format format);
+Owned create(string filename, Option<string> format);
+Owned create(Buffer<byte> data, int width, int height, Format format, Option<size_t> bytesPerLine);

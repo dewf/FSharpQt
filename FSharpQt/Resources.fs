@@ -11,8 +11,8 @@ type ResourceKey =
 [<RequireQualifiedAccess>]
 type Resource =
     | Color of color: Color.Owned
-    | Image of image: Image.Owned
-    | Pixmap of pixmap: Pixmap.Owned
+    | Image of image: Image
+    | Pixmap of pixmap: Pixmap
 with
     interface IDisposable with
         member this.Dispose() =
@@ -53,11 +53,7 @@ type ViewResources = {
             (existing :> IDisposable).Dispose()
         | _ ->
             ()
-        let realized =
-            match image with
-            | :? Image.Owned as owned -> owned
-            | _ -> image.Realize()
-        { this with Items = this.Items.Add(ImageKey name, Resource.Image realized) }
+        { this with Items = this.Items.Add(ImageKey name, Resource.Image image) }
         
     member this.Add(name: string, pixmap: Pixmap) =
         match this.Items.TryFind (PixmapKey name) with
@@ -65,11 +61,7 @@ type ViewResources = {
             (existing :> IDisposable).Dispose()
         | _ ->
             ()
-        let realized =
-            match pixmap with
-            | :? Pixmap.Owned as owned -> owned
-            | _ -> pixmap.Realize()
-        { this with Items = this.Items.Add(PixmapKey name, Resource.Pixmap realized) }
+        { this with Items = this.Items.Add(PixmapKey name, Resource.Pixmap pixmap) }
         
     member this.DeleteColor(name: string) =
         match this.Items.TryFind (ColorKey name) with

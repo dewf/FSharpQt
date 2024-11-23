@@ -101,47 +101,47 @@ namespace Painter
         THIS->drawPolyline(qPoints.data(), (int)qPoints.size());
     }
 
-    void Handle_drawPixmap(HandleRef _this, RectF target, std::shared_ptr<Pixmap::Deferred::Base> pixmap, RectF source) {
-        THIS->drawPixmap(toQRectF(target), Pixmap::fromDeferred(pixmap), toQRectF(source));
+    void Handle_drawPixmap(HandleRef _this, RectF target, Pixmap::HandleRef pixmap, RectF source) {
+        THIS->drawPixmap(toQRectF(target), pixmap->qPixmap, toQRectF(source));
     }
 
-    void Handle_drawPixmap(HandleRef _this, Point point, std::shared_ptr<Pixmap::Deferred::Base> pixmap) {
-        THIS->drawPixmap(toQPoint(point), Pixmap::fromDeferred(pixmap));
+    void Handle_drawPixmap(HandleRef _this, Point point, Pixmap::HandleRef pixmap) {
+        THIS->drawPixmap(toQPoint(point), pixmap->qPixmap);
     }
 
-    void Handle_drawPixmap(HandleRef _this, PointF point, std::shared_ptr<Pixmap::Deferred::Base> pixmap) {
-        THIS->drawPixmap(toQPointF(point), Pixmap::fromDeferred(pixmap));
+    void Handle_drawPixmap(HandleRef _this, PointF point, Pixmap::HandleRef pixmap) {
+        THIS->drawPixmap(toQPointF(point), pixmap->qPixmap);
     }
 
-    void Handle_drawPixmap(HandleRef _this, Rect rect, std::shared_ptr<Pixmap::Deferred::Base> pixmap) {
-        THIS->drawPixmap(toQRect(rect), Pixmap::fromDeferred(pixmap));
+    void Handle_drawPixmap(HandleRef _this, Rect rect, Pixmap::HandleRef pixmap) {
+        THIS->drawPixmap(toQRect(rect), pixmap->qPixmap);
     }
 
-    void Handle_drawPixmap(HandleRef _this, Point point, std::shared_ptr<Pixmap::Deferred::Base> pixmap, Rect source) {
-        THIS->drawPixmap(toQPoint(point), Pixmap::fromDeferred(pixmap), toQRect(source));
+    void Handle_drawPixmap(HandleRef _this, Point point, Pixmap::HandleRef pixmap, Rect source) {
+        THIS->drawPixmap(toQPoint(point), pixmap->qPixmap, toQRect(source));
     }
 
-    void Handle_drawPixmap(HandleRef _this, PointF point, std::shared_ptr<Pixmap::Deferred::Base> pixmap, RectF source) {
-        THIS->drawPixmap(toQPointF(point), Pixmap::fromDeferred(pixmap), toQRectF(source));
+    void Handle_drawPixmap(HandleRef _this, PointF point, Pixmap::HandleRef pixmap, RectF source) {
+        THIS->drawPixmap(toQPointF(point), pixmap->qPixmap, toQRectF(source));
     }
 
-    void Handle_drawPixmap(HandleRef _this, Rect target, std::shared_ptr<Pixmap::Deferred::Base> pixmap, Rect source) {
-        THIS->drawPixmap(toQRect(target), Pixmap::fromDeferred(pixmap), toQRect(source));
+    void Handle_drawPixmap(HandleRef _this, Rect target, Pixmap::HandleRef pixmap, Rect source) {
+        THIS->drawPixmap(toQRect(target), pixmap->qPixmap, toQRect(source));
     }
 
-    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, std::shared_ptr<Pixmap::Deferred::Base> pixmap) {
-        THIS->drawPixmap(x, y, Pixmap::fromDeferred(pixmap));
+    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, Pixmap::HandleRef pixmap) {
+        THIS->drawPixmap(x, y, pixmap->qPixmap);
     }
 
-    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, int32_t width, int32_t height, std::shared_ptr<Pixmap::Deferred::Base> pixmap) {
-        THIS->drawPixmap(x, y, width, height, Pixmap::fromDeferred(pixmap));
+    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, int32_t width, int32_t height, Pixmap::HandleRef pixmap) {
+        THIS->drawPixmap(x, y, width, height, pixmap->qPixmap);
     }
 
-    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, std::shared_ptr<Pixmap::Deferred::Base> pixmap, int32_t sx, int32_t sy, int32_t sw, int32_t sh) {
-        THIS->drawPixmap(x, y, Pixmap::fromDeferred(pixmap), sx, sy, sw, sh);
+    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, Pixmap::HandleRef pixmap, int32_t sx, int32_t sy, int32_t sw, int32_t sh) {
+        THIS->drawPixmap(x, y, pixmap->qPixmap, sx, sy, sw, sh);
     }
 
-    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, int32_t w, int32_t h, std::shared_ptr<Pixmap::Deferred::Base> pixmap, int32_t sx, int32_t sy, int32_t sw, int32_t sh) {
-        THIS->drawPixmap(x, y, w, h, Pixmap::fromDeferred(pixmap), sx, sy, sw, sh);
+    void Handle_drawPixmap(HandleRef _this, int32_t x, int32_t y, int32_t w, int32_t h, Pixmap::HandleRef pixmap, int32_t sx, int32_t sy, int32_t sw, int32_t sh) {
+        THIS->drawPixmap(x, y, w, h, pixmap->qPixmap, sx, sy, sw, sh);
     }
 }

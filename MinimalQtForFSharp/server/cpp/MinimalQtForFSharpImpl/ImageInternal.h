@@ -21,6 +21,4 @@ namespace Image {
     struct __Owned : __Handle {
         explicit __Owned(const QImage &qImage) : __Handle(qImage) {}
     };
-
-    QImage fromDeferred(const std::shared_ptr<Deferred::Base>& deferred);
 }

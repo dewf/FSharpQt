@@ -36,7 +36,7 @@ opaque Handle extends Frame.Handle {
     void setIndent(int indent);
     void setMargin(int margin);
     void setOpenExternalLinks(bool state);
-    void setPixmap(Pixmap.Deferred pixmap);
+    void setPixmap(Pixmap.Handle pixmap);
     void setScaledContents(bool state);
     string selectedText();
     void setText(string text);
