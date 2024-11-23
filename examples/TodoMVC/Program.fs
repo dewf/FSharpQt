@@ -25,8 +25,6 @@ open SimpleListModel
 open TrackedRows
 open CustomSortFilterProxyModel
 
-open FSharpQt.Util
-
 type ActiveFilter =
     | ShowAll
     | Active
@@ -49,18 +47,11 @@ type Resources = {
     HighColor: Color
 } with
     static member Init = {
-    // see note on State's IDisposable implementation below
         LowColor = new Color("#b30000")
         NormalColor = new Color("#ff8000")
         HighColor = new Color("#ffff00")
     }
-    member this.Dispose() =
-        // utility func just lets us skip casting them via :> IDisposable
-        // and .tryDispose does :?> instead
-        dispose this.LowColor
-        dispose this.NormalColor
-        dispose this.HighColor
-
+    
 type State = {
     Resources: Resources
     Items: TrackedRows<TodoItem>
@@ -68,14 +59,8 @@ type State = {
     AddPriority: Priority
     ActiveFilter: ActiveFilter
     ColumnSortingEnabled: bool
-} with
-    // for this example this is silly and unnecessary, but we're just illustrating that
-    // you can optionally implement IDisposable on any app or component 'state,
-    // in order to release owned resources of whatever kind
-    interface IDisposable with
-        member this.Dispose() =
-            this.Resources.Dispose()
-            
+}
+
 type Msg =
     | Quit
     | TextEdited of text: string
