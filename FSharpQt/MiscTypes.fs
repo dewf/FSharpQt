@@ -783,7 +783,7 @@ with
         | DarkYellow -> Color.Constant.DarkYellow
         | Transparent -> Color.Constant.Transparent
 
-type Color internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
+type Color private(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
     let mutable disposed = false
     member val internal Handle = handle
 
@@ -794,6 +794,12 @@ type Color internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned:
                 disposed <- true
     override this.Finalize() =
         (this :> IDisposable).Dispose()
+        
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
+        new Color(handle, false)
+        
+    internal new(owned: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
+        new Color(owned, true)
         
     new(constant: ColorConstant) =
         let handle =
@@ -856,7 +862,7 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
         | Enums.CheckState.Checked -> Checked
         | _ -> failwith "VariantProxy.ToCheckState() - unknown incoming check state"
     member this.ToColor() =
-        new Color(qtVariant.ToColor(), true)
+        new Color(qtVariant.ToColor())
         
 [<RequireQualifiedAccess>]
 type Variant =

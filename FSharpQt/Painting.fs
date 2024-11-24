@@ -322,27 +322,27 @@ type PaintStack() =
     member this.Color(constant: ColorConstant) =
         let handle =
             this.qtResources.CreateColor(constant.QtValue)
-        new Color(handle, false) // NOT owned!
+        new Color(handle) // NOT owned!
         
     member this.Color(r: int, g: int, b: int) =
         let handle =
             this.qtResources.CreateColor(r, g, b)
-        new Color(handle, false)
+        new Color(handle)
         
     member this.Color(r: int, g: int, b: int, a: int) =
         let handle =
             this.qtResources.CreateColor(r, g, b, a)
-        new Color(handle, false)
+        new Color(handle)
         
     member this.Color(r: float, g: float, b: float) =
         let handle =
             this.qtResources.CreateColor(float32 r, float32 g, float32 b)
-        new Color(handle, false)
+        new Color(handle)
         
     member this.Color(r: float, g: float, b: float, a: float) =
         let handle =
             this.qtResources.CreateColor(float32 r, float32 g, float32 b, float32 a)
-        new Color(handle, false)
+        new Color(handle)
         
     member this.RadialGradient(center: PointF, radius: double) =
         this.qtResources.CreateRadialGradient(center.QtValue, radius)
