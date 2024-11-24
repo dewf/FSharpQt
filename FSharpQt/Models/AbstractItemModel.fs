@@ -248,23 +248,23 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             (this :> Object.SignalHandler).ObjectNameChanged(name)
         // AbstractItemModel ==============
         member this.ColumnsAboutToBeInserted (parent, first, last) =
-            signalDispatch (ColumnsAboutToBeInserted (new ModelIndex(parent, false), first, last))
+            signalDispatch (ColumnsAboutToBeInserted (new ModelIndex(parent), first, last))
         member this.ColumnsAboutToBeMoved (srcParent, srcStart, srcEnd, destParent, destColumn) =
-            signalDispatch (ColumnsAboutToBeMoved (new ModelIndex(srcParent, false), srcStart, srcEnd, new ModelIndex(destParent, false), destColumn))
+            signalDispatch (ColumnsAboutToBeMoved (new ModelIndex(srcParent), srcStart, srcEnd, new ModelIndex(destParent), destColumn))
         member this.ColumnsAboutToBeRemoved (parent, first, last) =
-            signalDispatch (ColumnsAboutToBeRemoved (new ModelIndex(parent, false), first, last))
+            signalDispatch (ColumnsAboutToBeRemoved (new ModelIndex(parent), first, last))
         member this.ColumnsInserted (parent, first, last) =
-            signalDispatch (ColumnsInserted (new ModelIndex(parent, false), first, last))
+            signalDispatch (ColumnsInserted (new ModelIndex(parent), first, last))
         member this.ColumnsMoved (srcParent, srcStart, srcEnd, destParent, destColumn) =
-            signalDispatch (ColumnsMoved (new ModelIndex(srcParent, false), srcStart, srcEnd, new ModelIndex(destParent, false), destColumn))
+            signalDispatch (ColumnsMoved (new ModelIndex(srcParent), srcStart, srcEnd, new ModelIndex(destParent), destColumn))
         member this.ColumnsRemoved (parent, first, last) =
-            signalDispatch (ColumnsRemoved (new ModelIndex(parent, false), first, last))
+            signalDispatch (ColumnsRemoved (new ModelIndex(parent), first, last))
         member this.DataChanged (topLeft, bottomRight, roles) =
             let roles' =
                 roles
                 |> Array.map ItemDataRole.From
                 |> Array.toList
-            signalDispatch (DataChanged (new ModelIndex(topLeft, false), new ModelIndex(bottomRight, false), roles'))
+            signalDispatch (DataChanged (new ModelIndex(topLeft), new ModelIndex(bottomRight), roles'))
         member this.HeaderDataChanged (orientation, first, last) =
             signalDispatch (HeaderDataChanged (Orientation.From orientation, first, last))
         member this.LayoutAboutToBeChanged (parents, hint) =
@@ -284,17 +284,17 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.ModelReset() =
             signalDispatch ModelReset
         member this.RowsAboutToBeInserted (parent, start, ``end``) =
-            signalDispatch (RowsAboutToBeInserted (new ModelIndex(parent, false), start, ``end``))
+            signalDispatch (RowsAboutToBeInserted (new ModelIndex(parent), start, ``end``))
         member this.RowsAboutToBeMoved (srcParent, srcStart, srcEnd, destParent, destRow) =
-            signalDispatch (RowsAboutToBeMoved (new ModelIndex(srcParent, false), srcStart, srcEnd, new ModelIndex(destParent, false), destRow))
+            signalDispatch (RowsAboutToBeMoved (new ModelIndex(srcParent), srcStart, srcEnd, new ModelIndex(destParent), destRow))
         member this.RowsAboutToBeRemoved (parent, first, last) =
-            signalDispatch (RowsAboutToBeRemoved (new ModelIndex(parent, false), first, last))
+            signalDispatch (RowsAboutToBeRemoved (new ModelIndex(parent), first, last))
         member this.RowsInserted (parent, first, last) =
-            signalDispatch (RowsInserted (new ModelIndex(parent, false), first, last))
+            signalDispatch (RowsInserted (new ModelIndex(parent), first, last))
         member this.RowsMoved (srcParent, srcStart, srcEnd, destParent, destRow) =
-            signalDispatch (RowsMoved (new ModelIndex(srcParent, false), srcStart, srcEnd, new ModelIndex(destParent, false), destRow))
+            signalDispatch (RowsMoved (new ModelIndex(srcParent), srcStart, srcEnd, new ModelIndex(destParent), destRow))
         member this.RowsRemoved (parent, first, last) =
-            signalDispatch (RowsRemoved (new ModelIndex(parent, false), first, last))
+            signalDispatch (RowsRemoved (new ModelIndex(parent), first, last))
 
     // interface IDisposable with
     //     member this.Dispose() =

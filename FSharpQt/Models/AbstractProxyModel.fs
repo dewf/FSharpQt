@@ -128,4 +128,4 @@ type AbstractProxyModelBinding internal(handle: AbstractProxyModel.Handle) =
     inherit AbstractItemModel.AbstractItemModelBinding(handle)
     member this.MapToSource (proxyIndex: ModelIndex) =
         let ret = handle.MapToSource(proxyIndex.Handle)
-        new ModelIndex(ret, true)
+        new ModelIndex(ret)

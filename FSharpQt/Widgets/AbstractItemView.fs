@@ -349,17 +349,17 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         // (none)
         // AbstractItemView ===============
         member this.Activated index =
-            signalDispatch (new ModelIndex(index, false) |> Activated)
+            signalDispatch (new ModelIndex(index) |> Activated)
         member this.Clicked index =
-            signalDispatch (new ModelIndex(index, false) |> Clicked)
+            signalDispatch (new ModelIndex(index) |> Clicked)
         member this.DoubleClicked index =
-            signalDispatch (new ModelIndex(index, false) |> Signal.DoubleClicked)
+            signalDispatch (new ModelIndex(index) |> Signal.DoubleClicked)
         member this.Entered index =
-            signalDispatch (new ModelIndex(index, false) |> Entered)
+            signalDispatch (new ModelIndex(index) |> Entered)
         member this.IconSizeChanged size =
             signalDispatch (Size.From size |> IconSizeChanged)
         member this.Pressed index =
-            signalDispatch (new ModelIndex(index, false) |> Pressed)
+            signalDispatch (new ModelIndex(index) |> Pressed)
         member this.ViewportEntered() =
             signalDispatch ViewportEntered
 

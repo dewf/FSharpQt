@@ -79,11 +79,11 @@ type private Model<'msg>(dispatch: 'msg -> unit, filterDelegate: IFilterDelegate
         
     interface SortFilterProxyModel.MethodDelegate with
         member this.FilterAcceptsColumn(sourceColumn: int, sourceParent: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
-            filterDelegate.FilterAcceptsColumn sourceColumn (new ModelIndex(sourceParent, false))
+            filterDelegate.FilterAcceptsColumn sourceColumn (new ModelIndex(sourceParent))
         member this.FilterAcceptsRow(sourceRow: int, sourceParent: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
-            filterDelegate.FilterAcceptsRow sourceRow (new ModelIndex(sourceParent, false))
+            filterDelegate.FilterAcceptsRow sourceRow (new ModelIndex(sourceParent))
         member this.LessThan(sourceLeft: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, sourceRight: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
-            filterDelegate.LessThan (new ModelIndex(sourceLeft, false)) (new ModelIndex(sourceRight, false))
+            filterDelegate.LessThan (new ModelIndex(sourceLeft)) (new ModelIndex(sourceRight))
     
     member this.AddSourceModel (model: AbstractItemModel.Handle) =
         interior.SetSourceModel(model)

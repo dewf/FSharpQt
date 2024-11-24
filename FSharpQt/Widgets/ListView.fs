@@ -276,7 +276,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.IndexesMoved indexes =
             let indexes' =
                 indexes
-                |> Array.map (fun index -> new ModelIndex(index, false))
+                |> Array.map (fun index -> new ModelIndex(index))
                 |> Array.toList
             signalDispatch (IndexesMoved indexes')
 

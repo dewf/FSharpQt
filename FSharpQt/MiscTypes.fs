@@ -890,7 +890,7 @@ with
     //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Int as i -> Variant.Int i.Value
     //     | _ -> Variant.Unknown
 
-type ModelIndex internal(handle: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, owned: bool) =
+type ModelIndex private(handle: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, owned: bool) =
     let mutable disposed = false
     member val internal Handle = handle
     
@@ -901,6 +901,14 @@ type ModelIndex internal(handle: Org.Whatever.MinimalQtForFSharp.ModelIndex.Hand
                 disposed <- true
     override this.Finalize() =
         (this :> IDisposable).Dispose()
+        
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
+        new ModelIndex(handle, false)
+        
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.ModelIndex.Owned) =
+        // I'm assuming the more specific ctor is matched, in the case of an 'Owned' handle
+        // (vs. Handle which it inherits from)
+        new ModelIndex(handle, true)
         
     new() =
         let handle = Org.Whatever.MinimalQtForFSharp.ModelIndex.Create()
@@ -934,11 +942,11 @@ type SizePolicyDeferred private(deferred: Org.Whatever.MinimalQtForFSharp.SizePo
 type AbstractItemModelProxy internal(model: AbstractItemModel.Handle) =
     member this.Index(row: int, column: int) =
         let value = model.Index(row, column)
-        new ModelIndex(value, true)
+        new ModelIndex(value)
         
     member this.Index(row: int, column: int, parent: ModelIndex) =
         let value = model.Index(row, column, parent.Handle)
-        new ModelIndex(value, true)
+        new ModelIndex(value)
     
     member this.Data(index: ModelIndex) =
         let value = model.Data(index.Handle)

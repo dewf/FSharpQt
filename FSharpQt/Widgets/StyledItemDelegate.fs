@@ -107,7 +107,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             
 type IEventDelegate<'msg> =
     interface
-        abstract member CreateEditor: StyleOptionViewItemProxy -> ModelIndex -> IWidgetNode<'msg>
+        abstract member CreateEditor: StyleOptionViewItemProxy -> Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle -> IWidgetNode<'msg>
         abstract member SetEditorDataRaw: Widget.Handle -> Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle -> unit
         abstract member SetModelDataRaw: Widget.Handle -> AbstractItemModel.Handle -> Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle -> unit
     end
@@ -119,17 +119,17 @@ type ComboBoxItemDelegateBase<'msg>() =
     abstract member SetModelData: ComboBoxProxy -> AbstractItemModelProxy -> ModelIndex -> unit
     interface IEventDelegate<'msg> with
         member this.CreateEditor option index =
-            this.CreateEditor option index
+            this.CreateEditor option (new ModelIndex(index))
         member this.SetEditorDataRaw editor index =
             // interesting, F# casting (:?>) can't cant work because (I think) the .NET side only knows this as a widget handle, that's how it came to us in this callback
             // (because it was built from an IWidgetNode), then passed to the other side
             // we don't have any inherent continuity of the raw opaque handles being passed from one side to another
             // so we need a way of "force-casting" an opaque handle, from the C++ side
             let combo = ComboBox.DowncastFrom(editor)
-            this.SetEditorData (ComboBoxProxy(combo)) (new ModelIndex(index, false))
+            this.SetEditorData (ComboBoxProxy(combo)) (new ModelIndex(index))
         member this.SetModelDataRaw editor model index =
             let combo = ComboBox.DowncastFrom(editor)
-            this.SetModelData (ComboBoxProxy(combo)) (AbstractItemModelProxy(model)) (new ModelIndex(index, false))
+            this.SetModelData (ComboBoxProxy(combo)) (AbstractItemModelProxy(model)) (new ModelIndex(index))
     
 // [<AbstractClass>]
 // type AbstractEventDelegate<'msg,'widgetProxy>(proxyFunc: Widget.Handle -> 'widgetProxy) =
@@ -162,7 +162,7 @@ type private Model<'msg>(dispatch: 'msg -> unit, eventDelegate: IEventDelegate<'
         
     interface StyledItemDelegate.MethodDelegate with
         member this.CreateEditor(parent, option, index) =
-            let root = eventDelegate.CreateEditor (StyleOptionViewItemProxy(option)) (new ModelIndex(index, false))
+            let root = eventDelegate.CreateEditor (StyleOptionViewItemProxy(option)) index
             let events = DiffEventsList()
             build dispatch (root :> IBuilderNode<'msg>) { ContainingWindow = None } events
             root.Widget.SetParent(parent)
