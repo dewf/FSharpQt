@@ -63,7 +63,7 @@ namespace AbstractButton
     void Handle_setCheckable(HandleRef _this, bool state);
     void Handle_setChecked(HandleRef _this, bool state);
     void Handle_setDown(HandleRef _this, bool state);
-    void Handle_setIcon(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon);
+    void Handle_setIcon(HandleRef _this, Icon::HandleRef icon);
     void Handle_setIconSize(HandleRef _this, Common::Size size);
     void Handle_setShortcut(HandleRef _this, std::shared_ptr<KeySequence::Deferred::Base> seq);
     void Handle_setText(HandleRef _this, std::string text);

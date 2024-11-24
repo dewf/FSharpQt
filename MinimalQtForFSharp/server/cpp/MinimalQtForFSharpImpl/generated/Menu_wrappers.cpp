@@ -202,7 +202,7 @@ namespace Menu
 
     void Handle_setIcon__wrapper() {
         auto _this = Handle__pop();
-        auto icon = Deferred__pop();
+        auto icon = Icon::Handle__pop();
         Handle_setIcon(_this, icon);
     }
 

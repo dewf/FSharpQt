@@ -424,10 +424,10 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_addTab);
                 return NativeImplClient.PopInt32();
             }
-            public int AddTab(Deferred icon, string text)
+            public int AddTab(Icon.Handle icon, string text)
             {
                 NativeImplClient.PushString(text);
-                Deferred__Push(icon, false);
+                Icon.Handle__Push(icon);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_addTab_overload1);
                 return NativeImplClient.PopInt32();

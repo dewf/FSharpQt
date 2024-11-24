@@ -265,9 +265,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setDown);
             }
-            public void SetIcon(Icon.Deferred icon)
+            public void SetIcon(Icon.Handle icon)
             {
-                Icon.Deferred__Push(icon, false);
+                Icon.Handle__Push(icon);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setIcon);
             }
@@ -277,9 +277,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setIconSize);
             }
-            public void SetShortcut(KeySequence.Deferred seq)
+            public void SetShortcut(Deferred seq)
             {
-                KeySequence.Deferred__Push(seq, false);
+                Deferred__Push(seq, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setShortcut);
             }

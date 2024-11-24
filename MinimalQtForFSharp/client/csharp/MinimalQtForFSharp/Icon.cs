@@ -8,11 +8,45 @@ using CSharpFunctionalExtensions;
 using Org.Whatever.MinimalQtForFSharp.Support;
 using ModuleHandle = Org.Whatever.MinimalQtForFSharp.Support.ModuleHandle;
 
+using static Org.Whatever.MinimalQtForFSharp.Pixmap;
+
 namespace Org.Whatever.MinimalQtForFSharp
 {
     public static class Icon
     {
         private static ModuleHandle _module;
+        internal static ModuleMethodHandle _create;
+        internal static ModuleMethodHandle _create_overload1;
+        internal static ModuleMethodHandle _create_overload2;
+        internal static ModuleMethodHandle _create_overload3;
+        internal static ModuleMethodHandle _owned_dispose;
+
+        public static Owned Create()
+        {
+            NativeImplClient.InvokeModuleMethod(_create);
+            return Owned__Pop();
+        }
+
+        public static Owned Create(ThemeIcon themeIcon)
+        {
+            ThemeIcon__Push(themeIcon);
+            NativeImplClient.InvokeModuleMethod(_create_overload1);
+            return Owned__Pop();
+        }
+
+        public static Owned Create(string filename)
+        {
+            NativeImplClient.PushString(filename);
+            NativeImplClient.InvokeModuleMethod(_create_overload2);
+            return Owned__Pop();
+        }
+
+        public static Owned Create(Pixmap.Handle pixmap)
+        {
+            Pixmap.Handle__Push(pixmap);
+            NativeImplClient.InvokeModuleMethod(_create_overload3);
+            return Owned__Pop();
+        }
         public enum Mode
         {
             Normal,
@@ -247,79 +281,45 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ptr = NativeImplClient.PopPtr();
             return ptr != IntPtr.Zero ? new Handle(ptr) : null;
         }
-        public abstract record Deferred
+        public class Owned : Handle, IDisposable
         {
-            internal abstract void Push(bool isReturn);
-            internal static Deferred Pop()
+            protected bool _disposed;
+            internal Owned(IntPtr nativeHandle) : base(nativeHandle)
             {
-                return NativeImplClient.PopInt32() switch
-                {
-                    0 => Empty.PopDerived(),
-                    1 => FromThemeIcon.PopDerived(),
-                    2 => FromFilename.PopDerived(),
-                    _ => throw new Exception("Deferred.Pop() - unknown tag!")
-                };
             }
-            public sealed record Empty : Deferred
+            public virtual void Dispose()
             {
-                internal override void Push(bool isReturn)
+                if (!_disposed)
                 {
-                    // kind
-                    NativeImplClient.PushInt32(0);
-                }
-                internal static Empty PopDerived()
-                {
-                    return new Empty();
-                }
-            }
-            public sealed record FromThemeIcon(ThemeIcon ThemeIcon) : Deferred
-            {
-                public ThemeIcon ThemeIcon { get; } = ThemeIcon;
-                internal override void Push(bool isReturn)
-                {
-                    ThemeIcon__Push(ThemeIcon);
-                    // kind
-                    NativeImplClient.PushInt32(1);
-                }
-                internal static FromThemeIcon PopDerived()
-                {
-                    var themeIcon = ThemeIcon__Pop();
-                    return new FromThemeIcon(themeIcon);
-                }
-            }
-            public sealed record FromFilename(string Filename) : Deferred
-            {
-                public string Filename { get; } = Filename;
-                internal override void Push(bool isReturn)
-                {
-                    NativeImplClient.PushString(Filename);
-                    // kind
-                    NativeImplClient.PushInt32(2);
-                }
-                internal static FromFilename PopDerived()
-                {
-                    var filename = NativeImplClient.PopString();
-                    return new FromFilename(filename);
+                    Owned__Push(this);
+                    NativeImplClient.InvokeModuleMethod(_owned_dispose);
+                    _disposed = true;
                 }
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Deferred__Push(Deferred thing, bool isReturn)
+        internal static void Owned__Push(Owned thing)
         {
-            thing.Push(isReturn);
+            NativeImplClient.PushPtr(thing?.NativeHandle ?? IntPtr.Zero);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Deferred Deferred__Pop()
+        internal static Owned Owned__Pop()
         {
-            return Deferred.Pop();
+            var ptr = NativeImplClient.PopPtr();
+            return ptr != IntPtr.Zero ? new Owned(ptr) : null;
         }
 
         internal static void __Init()
         {
             _module = NativeImplClient.GetModule("Icon");
             // assign module handles
+            _create = NativeImplClient.GetModuleMethod(_module, "create");
+            _create_overload1 = NativeImplClient.GetModuleMethod(_module, "create_overload1");
+            _create_overload2 = NativeImplClient.GetModuleMethod(_module, "create_overload2");
+            _create_overload3 = NativeImplClient.GetModuleMethod(_module, "create_overload3");
+            _owned_dispose = NativeImplClient.GetModuleMethod(_module, "Owned_dispose");
 
             // no static init
         }

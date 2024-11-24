@@ -101,7 +101,7 @@ namespace ComboBox
     void Handle_setSizeAdjustPolicy(HandleRef _this, SizeAdjustPolicy policy);
     void Handle_clear(HandleRef _this);
     void Handle_addItem(HandleRef _this, std::string text, std::shared_ptr<Variant::Deferred::Base> userData);
-    void Handle_addItem(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon, std::string text, std::shared_ptr<Variant::Deferred::Base> userData);
+    void Handle_addItem(HandleRef _this, Icon::HandleRef icon, std::string text, std::shared_ptr<Variant::Deferred::Base> userData);
     void Handle_addItems(HandleRef _this, std::vector<std::string> texts);
     void Handle_setModel(HandleRef _this, AbstractItemModel::HandleRef model);
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);

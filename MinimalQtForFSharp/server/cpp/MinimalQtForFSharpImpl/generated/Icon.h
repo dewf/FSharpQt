@@ -11,14 +11,14 @@
 #include <optional>
 #include "../support/result.h"
 
+#include "Pixmap.h"
+using namespace ::Pixmap;
+
 namespace Icon
 {
 
     struct __Handle; typedef struct __Handle* HandleRef;
-
-    namespace Deferred {
-        class Base;
-    }
+    struct __Owned; typedef struct __Owned* OwnedRef; // extends HandleRef
 
     enum class Mode {
         Normal,
@@ -187,47 +187,9 @@ namespace Icon
     };
 
 
-    namespace Deferred {
-        class Empty;
-        class FromThemeIcon;
-        class FromFilename;
-
-        class Visitor {
-        public:
-            virtual void onEmpty(const Empty* value) = 0;
-            virtual void onFromThemeIcon(const FromThemeIcon* value) = 0;
-            virtual void onFromFilename(const FromFilename* value) = 0;
-        };
-
-        class Base {
-        public:
-            virtual void accept(Visitor* visitor) = 0;
-        };
-
-        class Empty : public Base {
-        public:
-            Empty() {}
-            void accept(Visitor* visitor) override {
-                visitor->onEmpty(this);
-            }
-        };
-
-        class FromThemeIcon : public Base {
-        public:
-            const ThemeIcon themeIcon;
-            FromThemeIcon(ThemeIcon themeIcon) : themeIcon(themeIcon) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromThemeIcon(this);
-            }
-        };
-
-        class FromFilename : public Base {
-        public:
-            const std::string filename;
-            FromFilename(std::string filename) : filename(filename) {}
-            void accept(Visitor* visitor) override {
-                visitor->onFromFilename(this);
-            }
-        };
-    }
+    void Owned_dispose(OwnedRef _this);
+    OwnedRef create();
+    OwnedRef create(ThemeIcon themeIcon);
+    OwnedRef create(std::string filename);
+    OwnedRef create(Pixmap::HandleRef pixmap);
 }

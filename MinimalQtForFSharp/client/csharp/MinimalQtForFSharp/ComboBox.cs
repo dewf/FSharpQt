@@ -342,18 +342,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_count);
                 return NativeImplClient.PopInt32();
             }
-            public Owned CurrentData()
+            public Variant.Owned CurrentData()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_currentData);
-                return Owned__Pop();
+                return Variant.Owned__Pop();
             }
-            public Owned CurrentData(ItemDataRole role)
+            public Variant.Owned CurrentData(ItemDataRole role)
             {
                 ItemDataRole__Push(role);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_currentData_overload1);
-                return Owned__Pop();
+                return Variant.Owned__Pop();
             }
             public int CurrentIndex()
             {
@@ -444,18 +444,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_clear);
             }
-            public void AddItem(string text, Variant.Deferred userData)
+            public void AddItem(string text, Deferred userData)
             {
-                Variant.Deferred__Push(userData, false);
+                Deferred__Push(userData, false);
                 NativeImplClient.PushString(text);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_addItem);
             }
-            public void AddItem(Icon.Deferred icon, string text, Variant.Deferred userData)
+            public void AddItem(Icon.Handle icon, string text, Deferred userData)
             {
-                Variant.Deferred__Push(userData, false);
+                Deferred__Push(userData, false);
                 NativeImplClient.PushString(text);
-                Icon.Deferred__Push(icon, false);
+                Icon.Handle__Push(icon);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_addItem_overload1);
             }

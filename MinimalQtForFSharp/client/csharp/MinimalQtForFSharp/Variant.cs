@@ -338,18 +338,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                     return new FromSize(size);
                 }
             }
-            public sealed record FromIcon(Icon.Deferred Value) : Deferred
+            public sealed record FromIcon(Icon.Handle Value) : Deferred
             {
-                public Icon.Deferred Value { get; } = Value;
+                public Icon.Handle Value { get; } = Value;
                 internal override void Push(bool isReturn)
                 {
-                    Icon.Deferred__Push(Value, isReturn);
+                    Icon.Handle__Push(Value);
                     // kind
                     NativeImplClient.PushInt32(6);
                 }
                 internal static FromIcon PopDerived()
                 {
-                    var value = Icon.Deferred__Pop();
+                    var value = Icon.Handle__Pop();
                     return new FromIcon(value);
                 }
             }

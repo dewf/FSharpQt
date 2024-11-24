@@ -2,6 +2,9 @@
 #include "Icon_wrappers.h"
 #include "Icon.h"
 
+#include "Pixmap_wrappers.h"
+using namespace ::Pixmap;
+
 namespace Icon
 {
     void Mode__push(Mode value) {
@@ -35,58 +38,45 @@ namespace Icon
     HandleRef Handle__pop() {
         return (HandleRef)ni_popPtr();
     }
-
-    class Deferred_PushVisitor : public Deferred::Visitor {
-    private:
-        bool isReturn;
-    public:
-        Deferred_PushVisitor(bool isReturn) : isReturn(isReturn) {}
-        void onEmpty(const Deferred::Empty* emptyValue) override {
-            // kind:
-            ni_pushInt32(0);
-        }
-        void onFromThemeIcon(const Deferred::FromThemeIcon* fromThemeIconValue) override {
-            ThemeIcon__push(fromThemeIconValue->themeIcon);
-            // kind:
-            ni_pushInt32(1);
-        }
-        void onFromFilename(const Deferred::FromFilename* fromFilenameValue) override {
-            pushStringInternal(fromFilenameValue->filename);
-            // kind:
-            ni_pushInt32(2);
-        }
-    };
-
-    void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn) {
-        Deferred_PushVisitor v(isReturn);
-        value->accept((Deferred::Visitor*)&v);
+    void Owned__push(OwnedRef value) {
+        ni_pushPtr(value);
     }
 
-    std::shared_ptr<Deferred::Base> Deferred__pop() {
-        Deferred::Base* __ret = nullptr;
-        switch (ni_popInt32()) {
-        case 0: {
-            __ret = new Deferred::Empty();
-            break;
-        }
-        case 1: {
-            auto themeIcon = ThemeIcon__pop();
-            __ret = new Deferred::FromThemeIcon(themeIcon);
-            break;
-        }
-        case 2: {
-            auto filename = popStringInternal();
-            __ret = new Deferred::FromFilename(filename);
-            break;
-        }
-        default:
-            printf("C++ Deferred__pop() - unknown kind! returning null\n");
-        }
-        return std::shared_ptr<Deferred::Base>(__ret);
+    OwnedRef Owned__pop() {
+        return (OwnedRef)ni_popPtr();
+    }
+
+    void Owned_dispose__wrapper() {
+        auto _this = Owned__pop();
+        Owned_dispose(_this);
+    }
+
+    void create__wrapper() {
+        Owned__push(create());
+    }
+
+    void create_overload1__wrapper() {
+        auto themeIcon = ThemeIcon__pop();
+        Owned__push(create(themeIcon));
+    }
+
+    void create_overload2__wrapper() {
+        auto filename = popStringInternal();
+        Owned__push(create(filename));
+    }
+
+    void create_overload3__wrapper() {
+        auto pixmap = Pixmap::Handle__pop();
+        Owned__push(create(pixmap));
     }
 
     int __register() {
         auto m = ni_registerModule("Icon");
+        ni_registerModuleMethod(m, "create", &create__wrapper);
+        ni_registerModuleMethod(m, "create_overload1", &create_overload1__wrapper);
+        ni_registerModuleMethod(m, "create_overload2", &create_overload2__wrapper);
+        ni_registerModuleMethod(m, "create_overload3", &create_overload3__wrapper);
+        ni_registerModuleMethod(m, "Owned_dispose", &Owned_dispose__wrapper);
         return 0; // = OK
     }
 }

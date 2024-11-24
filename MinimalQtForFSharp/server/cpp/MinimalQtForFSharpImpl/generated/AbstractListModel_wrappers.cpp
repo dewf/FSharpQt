@@ -556,13 +556,13 @@ namespace AbstractListModel
             invokeMethod(methodDelegate_rowCount);
             return ni_popInt32();
         }
-        std::shared_ptr<Variant::Deferred::Base> data(ModelIndex::HandleRef index, ItemDataRole role) override {
+        std::shared_ptr<Deferred::Base> data(ModelIndex::HandleRef index, ItemDataRole role) override {
             ItemDataRole__push(role);
             ModelIndex::Handle__push(index);
             invokeMethod(methodDelegate_data);
             return Deferred__pop();
         }
-        std::shared_ptr<Variant::Deferred::Base> headerData(int32_t section, Orientation orientation, ItemDataRole role) override {
+        std::shared_ptr<Deferred::Base> headerData(int32_t section, Orientation orientation, ItemDataRole role) override {
             ItemDataRole__push(role);
             Orientation__push(orientation);
             ni_pushInt32(section);

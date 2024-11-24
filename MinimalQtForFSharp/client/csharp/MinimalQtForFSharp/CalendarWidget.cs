@@ -332,15 +332,15 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setHorizontalHeaderFormat);
             }
-            public void SetMaximumDate(Date.Deferred value)
+            public void SetMaximumDate(Deferred value)
             {
-                Date.Deferred__Push(value, false);
+                Deferred__Push(value, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setMaximumDate);
             }
-            public void SetMinimumDate(Date.Deferred value)
+            public void SetMinimumDate(Deferred value)
             {
-                Date.Deferred__Push(value, false);
+                Deferred__Push(value, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setMinimumDate);
             }
@@ -350,15 +350,15 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setNavigationBarVisible);
             }
-            public Owned SelectedDate()
+            public Date.Owned SelectedDate()
             {
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_selectedDate);
-                return Owned__Pop();
+                return Date.Owned__Pop();
             }
-            public void SetSelectedDate(Date.Deferred selected)
+            public void SetSelectedDate(Deferred selected)
             {
-                Date.Deferred__Push(selected, false);
+                Deferred__Push(selected, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setSelectedDate);
             }

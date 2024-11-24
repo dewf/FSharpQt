@@ -73,7 +73,7 @@ namespace Action
     void Handle_setCheckable(HandleRef _this, bool checkable);
     void Handle_setChecked(HandleRef _this, bool checked_);
     void Handle_setEnabled(HandleRef _this, bool enabled);
-    void Handle_setIcon(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon);
+    void Handle_setIcon(HandleRef _this, Icon::HandleRef icon);
     void Handle_setIconText(HandleRef _this, std::string text);
     void Handle_setIconVisibleInMenu(HandleRef _this, bool visible);
     void Handle_setMenuRole(HandleRef _this, MenuRole role);

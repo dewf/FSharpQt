@@ -239,9 +239,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                     _disposed = true;
                 }
             }
-            public void SetIcon(Deferred icon)
+            public void SetIcon(Icon.Handle icon)
             {
-                Deferred__Push(icon, false);
+                Icon.Handle__Push(icon);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setIcon);
             }

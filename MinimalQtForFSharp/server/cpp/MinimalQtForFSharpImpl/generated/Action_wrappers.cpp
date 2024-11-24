@@ -237,7 +237,7 @@ namespace Action
 
     void Handle_setIcon__wrapper() {
         auto _this = Handle__pop();
-        auto icon = Icon::Deferred__pop();
+        auto icon = Icon::Handle__pop();
         Handle_setIcon(_this, icon);
     }
 
@@ -267,7 +267,7 @@ namespace Action
 
     void Handle_setShortcut__wrapper() {
         auto _this = Handle__pop();
-        auto shortcut = KeySequence::Deferred__pop();
+        auto shortcut = Deferred__pop();
         Handle_setShortcut(_this, shortcut);
     }
 

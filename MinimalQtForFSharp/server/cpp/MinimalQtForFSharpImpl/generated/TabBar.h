@@ -97,7 +97,7 @@ namespace TabBar
     void Handle_setUsesScrollButtons(HandleRef _this, bool value);
     void Handle_removeAllTabs(HandleRef _this);
     int32_t Handle_addTab(HandleRef _this, std::string text);
-    int32_t Handle_addTab(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon, std::string text);
+    int32_t Handle_addTab(HandleRef _this, Icon::HandleRef icon, std::string text);
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);
     void Handle_dispose(HandleRef _this);
     HandleRef create(std::shared_ptr<SignalHandler> handler);

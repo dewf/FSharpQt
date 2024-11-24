@@ -15,8 +15,19 @@ namespace Icon
 
     void Handle__push(HandleRef value);
     HandleRef Handle__pop();
-    void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn);
-    std::shared_ptr<Deferred::Base> Deferred__pop();
+
+    void Owned__push(OwnedRef value);
+    OwnedRef Owned__pop();
+
+    void Owned_dispose__wrapper();
+
+    void create__wrapper();
+
+    void create_overload1__wrapper();
+
+    void create_overload2__wrapper();
+
+    void create_overload3__wrapper();
 
     int __register();
 }

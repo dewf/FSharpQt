@@ -500,7 +500,7 @@ namespace Widget
 
     void Handle_setWindowIcon__wrapper() {
         auto _this = Handle__pop();
-        auto icon = Icon::Deferred__pop();
+        auto icon = Icon::Handle__pop();
         Handle_setWindowIcon(_this, icon);
     }
 

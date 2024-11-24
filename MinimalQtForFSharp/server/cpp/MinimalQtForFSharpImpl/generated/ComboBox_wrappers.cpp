@@ -270,13 +270,13 @@ namespace ComboBox
 
     void Handle_currentData__wrapper() {
         auto _this = Handle__pop();
-        Owned__push(Handle_currentData(_this));
+        Variant::Owned__push(Handle_currentData(_this));
     }
 
     void Handle_currentData_overload1__wrapper() {
         auto _this = Handle__pop();
         auto role = ItemDataRole__pop();
-        Owned__push(Handle_currentData(_this, role));
+        Variant::Owned__push(Handle_currentData(_this, role));
     }
 
     void Handle_currentIndex__wrapper() {
@@ -370,15 +370,15 @@ namespace ComboBox
     void Handle_addItem__wrapper() {
         auto _this = Handle__pop();
         auto text = popStringInternal();
-        auto userData = Variant::Deferred__pop();
+        auto userData = Deferred__pop();
         Handle_addItem(_this, text, userData);
     }
 
     void Handle_addItem_overload1__wrapper() {
         auto _this = Handle__pop();
-        auto icon = Icon::Deferred__pop();
+        auto icon = Icon::Handle__pop();
         auto text = popStringInternal();
-        auto userData = Variant::Deferred__pop();
+        auto userData = Deferred__pop();
         Handle_addItem(_this, icon, text, userData);
     }
 

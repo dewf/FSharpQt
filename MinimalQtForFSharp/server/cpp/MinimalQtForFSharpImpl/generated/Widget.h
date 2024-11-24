@@ -116,7 +116,7 @@ namespace Widget
     int32_t Handle_width(HandleRef _this);
     void Handle_setWindowFilePath(HandleRef _this, std::string path);
     void Handle_setWindowFlags(HandleRef _this, Enums::WindowFlags flags_);
-    void Handle_setWindowIcon(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon);
+    void Handle_setWindowIcon(HandleRef _this, Icon::HandleRef icon);
     void Handle_setWindowModality(HandleRef _this, Enums::WindowModality modality);
     void Handle_setWindowModified(HandleRef _this, bool modified);
     void Handle_setWindowOpacity(HandleRef _this, double opacity);

@@ -178,7 +178,7 @@ namespace Variant
             ni_pushInt32(5);
         }
         void onFromIcon(const Deferred::FromIcon* fromIconValue) override {
-            Icon::Deferred__push(fromIconValue->value, isReturn);
+            Icon::Handle__push(fromIconValue->value);
             // kind:
             ni_pushInt32(6);
         }
@@ -232,7 +232,7 @@ namespace Variant
             break;
         }
         case 6: {
-            auto value = Icon::Deferred__pop();
+            auto value = Icon::Handle__pop();
             __ret = new Deferred::FromIcon(value);
             break;
         }

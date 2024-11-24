@@ -188,8 +188,8 @@ namespace Variant
 
         class FromIcon : public Base {
         public:
-            const std::shared_ptr<Icon::Deferred::Base> value;
-            FromIcon(std::shared_ptr<Icon::Deferred::Base> value) : value(value) {}
+            const Icon::HandleRef value;
+            FromIcon(Icon::HandleRef value) : value(value) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromIcon(this);
             }

@@ -343,7 +343,7 @@ namespace TabBar
 
     void Handle_addTab_overload1__wrapper() {
         auto _this = Handle__pop();
-        auto icon = Deferred__pop();
+        auto icon = Icon::Handle__pop();
         auto text = popStringInternal();
         ni_pushInt32(Handle_addTab(_this, icon, text));
     }

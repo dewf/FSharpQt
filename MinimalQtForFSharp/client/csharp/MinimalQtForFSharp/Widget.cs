@@ -673,9 +673,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setWindowFlags);
             }
-            public void SetWindowIcon(Icon.Deferred icon)
+            public void SetWindowIcon(Icon.Handle icon)
             {
-                Icon.Deferred__Push(icon, false);
+                Icon.Handle__Push(icon);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setWindowIcon);
             }

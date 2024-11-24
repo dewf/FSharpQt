@@ -56,7 +56,7 @@ namespace Menu
         virtual void triggered(Action::HandleRef action) = 0;
     };
 
-    void Handle_setIcon(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon);
+    void Handle_setIcon(HandleRef _this, Icon::HandleRef icon);
     void Handle_setSeparatorsCollapsible(HandleRef _this, bool state);
     void Handle_setTearOffEnabled(HandleRef _this, bool state);
     void Handle_setTitle(HandleRef _this, std::string title);
