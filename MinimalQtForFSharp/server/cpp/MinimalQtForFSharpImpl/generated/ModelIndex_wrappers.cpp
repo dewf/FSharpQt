@@ -56,57 +56,13 @@ namespace ModelIndex
         Owned_dispose(_this);
     }
 
-    class Deferred_PushVisitor : public Deferred::Visitor {
-    private:
-        bool isReturn;
-    public:
-        Deferred_PushVisitor(bool isReturn) : isReturn(isReturn) {}
-        void onEmpty(const Deferred::Empty* emptyValue) override {
-            // kind:
-            ni_pushInt32(0);
-        }
-        void onFromHandle(const Deferred::FromHandle* fromHandleValue) override {
-            Handle__push(fromHandleValue->handle);
-            // kind:
-            ni_pushInt32(1);
-        }
-        void onFromOwned(const Deferred::FromOwned* fromOwnedValue) override {
-            Owned__push(fromOwnedValue->owned);
-            // kind:
-            ni_pushInt32(2);
-        }
-    };
-
-    void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn) {
-        Deferred_PushVisitor v(isReturn);
-        value->accept((Deferred::Visitor*)&v);
-    }
-
-    std::shared_ptr<Deferred::Base> Deferred__pop() {
-        Deferred::Base* __ret = nullptr;
-        switch (ni_popInt32()) {
-        case 0: {
-            __ret = new Deferred::Empty();
-            break;
-        }
-        case 1: {
-            auto handle = Handle__pop();
-            __ret = new Deferred::FromHandle(handle);
-            break;
-        }
-        case 2: {
-            auto owned = Owned__pop();
-            __ret = new Deferred::FromOwned(owned);
-            break;
-        }
-        default:
-            printf("C++ Deferred__pop() - unknown kind! returning null\n");
-        }
-        return std::shared_ptr<Deferred::Base>(__ret);
+    void create__wrapper() {
+        Owned__push(create());
     }
 
     int __register() {
         auto m = ni_registerModule("ModelIndex");
+        ni_registerModuleMethod(m, "create", &create__wrapper);
         ni_registerModuleMethod(m, "Handle_isValid", &Handle_isValid__wrapper);
         ni_registerModuleMethod(m, "Handle_row", &Handle_row__wrapper);
         ni_registerModuleMethod(m, "Handle_column", &Handle_column__wrapper);

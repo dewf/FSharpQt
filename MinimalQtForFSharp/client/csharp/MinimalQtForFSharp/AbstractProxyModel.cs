@@ -396,9 +396,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setSourceModel);
             }
-            public Owned MapToSource(Deferred proxyIndex)
+            public Owned MapToSource(ModelIndex.Handle proxyIndex)
             {
-                Deferred__Push(proxyIndex, false);
+                ModelIndex.Handle__Push(proxyIndex);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_mapToSource);
                 return Owned__Pop();

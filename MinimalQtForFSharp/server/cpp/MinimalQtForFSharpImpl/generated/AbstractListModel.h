@@ -83,11 +83,11 @@ namespace AbstractListModel
 
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);
 
-    void Interior_emitDataChanged(InteriorRef _this, std::shared_ptr<ModelIndex::Deferred::Base> topLeft, std::shared_ptr<ModelIndex::Deferred::Base> bottomRight, std::vector<Enums::ItemDataRole> roles);
+    void Interior_emitDataChanged(InteriorRef _this, ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<Enums::ItemDataRole> roles);
     void Interior_emitHeaderDataChanged(InteriorRef _this, Enums::Orientation orientation, int32_t first, int32_t last);
-    void Interior_beginInsertRows(InteriorRef _this, std::shared_ptr<ModelIndex::Deferred::Base> parent, int32_t first, int32_t last);
+    void Interior_beginInsertRows(InteriorRef _this, ModelIndex::HandleRef parent, int32_t first, int32_t last);
     void Interior_endInsertRows(InteriorRef _this);
-    void Interior_beginRemoveRows(InteriorRef _this, std::shared_ptr<ModelIndex::Deferred::Base> parent, int32_t first, int32_t last);
+    void Interior_beginRemoveRows(InteriorRef _this, ModelIndex::HandleRef parent, int32_t first, int32_t last);
     void Interior_endRemoveRows(InteriorRef _this);
     void Interior_beginResetModel(InteriorRef _this);
     void Interior_endResetModel(InteriorRef _this);

@@ -519,9 +519,9 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setFilterKeyColumn);
             }
-            public void SetFilterRegularExpression(RegularExpression.Deferred regex)
+            public void SetFilterRegularExpression(Deferred regex)
             {
-                RegularExpression.Deferred__Push(regex, false);
+                Deferred__Push(regex, false);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setFilterRegularExpression);
             }

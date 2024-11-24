@@ -457,7 +457,7 @@ namespace AbstractProxyModel
 
     void Handle_mapToSource__wrapper() {
         auto _this = Handle__pop();
-        auto proxyIndex = Deferred__pop();
+        auto proxyIndex = ModelIndex::Handle__pop();
         Owned__push(Handle_mapToSource(_this, proxyIndex));
     }
 

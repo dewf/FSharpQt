@@ -16,12 +16,19 @@ namespace Org.Whatever.MinimalQtForFSharp
     public static class ModelIndex
     {
         private static ModuleHandle _module;
+        internal static ModuleMethodHandle _create;
         internal static ModuleMethodHandle _handle_isValid;
         internal static ModuleMethodHandle _handle_row;
         internal static ModuleMethodHandle _handle_column;
         internal static ModuleMethodHandle _handle_data;
         internal static ModuleMethodHandle _handle_data_overload1;
         internal static ModuleMethodHandle _owned_dispose;
+
+        public static Owned Create()
+        {
+            NativeImplClient.InvokeModuleMethod(_create);
+            return Owned__Pop();
+        }
         public class Handle : IComparable
         {
             internal readonly IntPtr NativeHandle;
@@ -111,79 +118,12 @@ namespace Org.Whatever.MinimalQtForFSharp
             var ptr = NativeImplClient.PopPtr();
             return ptr != IntPtr.Zero ? new Owned(ptr) : null;
         }
-        public abstract record Deferred
-        {
-            internal abstract void Push(bool isReturn);
-            internal static Deferred Pop()
-            {
-                return NativeImplClient.PopInt32() switch
-                {
-                    0 => Empty.PopDerived(),
-                    1 => FromHandle.PopDerived(),
-                    2 => FromOwned.PopDerived(),
-                    _ => throw new Exception("Deferred.Pop() - unknown tag!")
-                };
-            }
-            public sealed record Empty : Deferred
-            {
-                internal override void Push(bool isReturn)
-                {
-                    // kind
-                    NativeImplClient.PushInt32(0);
-                }
-                internal static Empty PopDerived()
-                {
-                    return new Empty();
-                }
-            }
-            public sealed record FromHandle(Handle Handle) : Deferred
-            {
-                public Handle Handle { get; } = Handle;
-                internal override void Push(bool isReturn)
-                {
-                    Handle__Push(Handle);
-                    // kind
-                    NativeImplClient.PushInt32(1);
-                }
-                internal static FromHandle PopDerived()
-                {
-                    var handle = Handle__Pop();
-                    return new FromHandle(handle);
-                }
-            }
-            public sealed record FromOwned(Owned Owned) : Deferred
-            {
-                public Owned Owned { get; } = Owned;
-                internal override void Push(bool isReturn)
-                {
-                    Owned__Push(Owned);
-                    // kind
-                    NativeImplClient.PushInt32(2);
-                }
-                internal static FromOwned PopDerived()
-                {
-                    var owned = Owned__Pop();
-                    return new FromOwned(owned);
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Deferred__Push(Deferred thing, bool isReturn)
-        {
-            thing.Push(isReturn);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Deferred Deferred__Pop()
-        {
-            return Deferred.Pop();
-        }
 
         internal static void __Init()
         {
             _module = NativeImplClient.GetModule("ModelIndex");
             // assign module handles
+            _create = NativeImplClient.GetModuleMethod(_module, "create");
             _handle_isValid = NativeImplClient.GetModuleMethod(_module, "Handle_isValid");
             _handle_row = NativeImplClient.GetModuleMethod(_module, "Handle_row");
             _handle_column = NativeImplClient.GetModuleMethod(_module, "Handle_column");

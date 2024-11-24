@@ -436,11 +436,11 @@ namespace Org.Whatever.MinimalQtForFSharp
                     _disposed = true;
                 }
             }
-            public void EmitDataChanged(ModelIndex.Deferred topLeft, ModelIndex.Deferred bottomRight, ItemDataRole[] roles)
+            public void EmitDataChanged(ModelIndex.Handle topLeft, ModelIndex.Handle bottomRight, ItemDataRole[] roles)
             {
                 __ItemDataRole_Array__Push(roles);
-                ModelIndex.Deferred__Push(bottomRight, false);
-                ModelIndex.Deferred__Push(topLeft, false);
+                ModelIndex.Handle__Push(bottomRight);
+                ModelIndex.Handle__Push(topLeft);
                 Interior__Push(this);
                 NativeImplClient.InvokeModuleMethod(_interior_emitDataChanged);
             }
@@ -452,11 +452,11 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Interior__Push(this);
                 NativeImplClient.InvokeModuleMethod(_interior_emitHeaderDataChanged);
             }
-            public void BeginInsertRows(ModelIndex.Deferred parent, int first, int last)
+            public void BeginInsertRows(ModelIndex.Handle parent, int first, int last)
             {
                 NativeImplClient.PushInt32(last);
                 NativeImplClient.PushInt32(first);
-                ModelIndex.Deferred__Push(parent, false);
+                ModelIndex.Handle__Push(parent);
                 Interior__Push(this);
                 NativeImplClient.InvokeModuleMethod(_interior_beginInsertRows);
             }
@@ -465,11 +465,11 @@ namespace Org.Whatever.MinimalQtForFSharp
                 Interior__Push(this);
                 NativeImplClient.InvokeModuleMethod(_interior_endInsertRows);
             }
-            public void BeginRemoveRows(ModelIndex.Deferred parent, int first, int last)
+            public void BeginRemoveRows(ModelIndex.Handle parent, int first, int last)
             {
                 NativeImplClient.PushInt32(last);
                 NativeImplClient.PushInt32(first);
-                ModelIndex.Deferred__Push(parent, false);
+                ModelIndex.Handle__Push(parent);
                 Interior__Push(this);
                 NativeImplClient.InvokeModuleMethod(_interior_beginRemoveRows);
             }
@@ -558,8 +558,8 @@ namespace Org.Whatever.MinimalQtForFSharp
                 // nothing by default
             }
             int RowCount(ModelIndex.Handle parent);
-            Variant.Deferred Data(ModelIndex.Handle index, ItemDataRole role);
-            Variant.Deferred HeaderData(int section, Orientation orientation, ItemDataRole role);
+            Deferred Data(ModelIndex.Handle index, ItemDataRole role);
+            Deferred HeaderData(int section, Orientation orientation, ItemDataRole role);
             ItemFlags GetFlags(ModelIndex.Handle index, ItemFlags baseFlags);
             bool SetData(ModelIndex.Handle index, Variant.Handle value, ItemDataRole role);
             int ColumnCount(ModelIndex.Handle parent);
@@ -639,21 +639,21 @@ namespace Org.Whatever.MinimalQtForFSharp
                 return NativeImplClient.PopInt32();
             }
 
-            public Variant.Deferred Data(ModelIndex.Handle index, ItemDataRole role)
+            public Deferred Data(ModelIndex.Handle index, ItemDataRole role)
             {
                 ItemDataRole__Push(role);
                 ModelIndex.Handle__Push(index);
                 NativeImplClient.InvokeInterfaceMethod(_methodDelegate_data, Id);
-                return Variant.Deferred__Pop();
+                return Deferred__Pop();
             }
 
-            public Variant.Deferred HeaderData(int section, Orientation orientation, ItemDataRole role)
+            public Deferred HeaderData(int section, Orientation orientation, ItemDataRole role)
             {
                 ItemDataRole__Push(role);
                 Orientation__Push(orientation);
                 NativeImplClient.PushInt32(section);
                 NativeImplClient.InvokeInterfaceMethod(_methodDelegate_headerData, Id);
-                return Variant.Deferred__Pop();
+                return Deferred__Pop();
             }
 
             public ItemFlags GetFlags(ModelIndex.Handle index, ItemFlags baseFlags)
@@ -903,7 +903,7 @@ namespace Org.Whatever.MinimalQtForFSharp
                 var inst = ((__MethodDelegateWrapper)__obj).RawInterface;
                 var index = ModelIndex.Handle__Pop();
                 var role = ItemDataRole__Pop();
-                Variant.Deferred__Push(inst.Data(index, role), true);
+                Deferred__Push(inst.Data(index, role), true);
             });
             NativeImplClient.SetClientMethodWrapper(_methodDelegate_headerData, delegate(ClientObject __obj)
             {
@@ -911,7 +911,7 @@ namespace Org.Whatever.MinimalQtForFSharp
                 var section = NativeImplClient.PopInt32();
                 var orientation = Orientation__Pop();
                 var role = ItemDataRole__Pop();
-                Variant.Deferred__Push(inst.HeaderData(section, orientation, role), true);
+                Deferred__Push(inst.HeaderData(section, orientation, role), true);
             });
             NativeImplClient.SetClientMethodWrapper(_methodDelegate_getFlags, delegate(ClientObject __obj)
             {

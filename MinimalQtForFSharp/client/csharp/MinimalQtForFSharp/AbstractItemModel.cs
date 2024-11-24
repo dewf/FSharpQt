@@ -407,43 +407,43 @@ namespace Org.Whatever.MinimalQtForFSharp
                 NativeImplClient.InvokeModuleMethod(_handle_index);
                 return ModelIndex.Owned__Pop();
             }
-            public ModelIndex.Owned Index(int row, int column, ModelIndex.Deferred parent)
+            public ModelIndex.Owned Index(int row, int column, ModelIndex.Handle parent)
             {
-                ModelIndex.Deferred__Push(parent, false);
+                ModelIndex.Handle__Push(parent);
                 NativeImplClient.PushInt32(column);
                 NativeImplClient.PushInt32(row);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_index_overload1);
                 return ModelIndex.Owned__Pop();
             }
-            public bool SetData(ModelIndex.Deferred index, Variant.Deferred value)
+            public bool SetData(ModelIndex.Handle index, Deferred value)
             {
-                Variant.Deferred__Push(value, false);
-                ModelIndex.Deferred__Push(index, false);
+                Deferred__Push(value, false);
+                ModelIndex.Handle__Push(index);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setData);
                 return NativeImplClient.PopBool();
             }
-            public bool SetData(ModelIndex.Deferred index, Variant.Deferred value, ItemDataRole role)
+            public bool SetData(ModelIndex.Handle index, Deferred value, ItemDataRole role)
             {
                 ItemDataRole__Push(role);
-                Variant.Deferred__Push(value, false);
-                ModelIndex.Deferred__Push(index, false);
+                Deferred__Push(value, false);
+                ModelIndex.Handle__Push(index);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_setData_overload1);
                 return NativeImplClient.PopBool();
             }
-            public Variant.Owned Data(ModelIndex.Deferred index)
+            public Variant.Owned Data(ModelIndex.Handle index)
             {
-                ModelIndex.Deferred__Push(index, false);
+                ModelIndex.Handle__Push(index);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_data);
                 return Variant.Owned__Pop();
             }
-            public Variant.Owned Data(ModelIndex.Deferred index, ItemDataRole role)
+            public Variant.Owned Data(ModelIndex.Handle index, ItemDataRole role)
             {
                 ItemDataRole__Push(role);
-                ModelIndex.Deferred__Push(index, false);
+                ModelIndex.Handle__Push(index);
                 Handle__Push(this);
                 NativeImplClient.InvokeModuleMethod(_handle_data_overload1);
                 return Variant.Owned__Pop();

@@ -453,34 +453,34 @@ namespace AbstractItemModel
         auto _this = Handle__pop();
         auto row = ni_popInt32();
         auto column = ni_popInt32();
-        auto parent = ModelIndex::Deferred__pop();
+        auto parent = ModelIndex::Handle__pop();
         ModelIndex::Owned__push(Handle_index(_this, row, column, parent));
     }
 
     void Handle_setData__wrapper() {
         auto _this = Handle__pop();
-        auto index = ModelIndex::Deferred__pop();
-        auto value = Variant::Deferred__pop();
+        auto index = ModelIndex::Handle__pop();
+        auto value = Deferred__pop();
         ni_pushBool(Handle_setData(_this, index, value));
     }
 
     void Handle_setData_overload1__wrapper() {
         auto _this = Handle__pop();
-        auto index = ModelIndex::Deferred__pop();
-        auto value = Variant::Deferred__pop();
+        auto index = ModelIndex::Handle__pop();
+        auto value = Deferred__pop();
         auto role = ItemDataRole__pop();
         ni_pushBool(Handle_setData(_this, index, value, role));
     }
 
     void Handle_data__wrapper() {
         auto _this = Handle__pop();
-        auto index = ModelIndex::Deferred__pop();
+        auto index = ModelIndex::Handle__pop();
         Variant::Owned__push(Handle_data(_this, index));
     }
 
     void Handle_data_overload1__wrapper() {
         auto _this = Handle__pop();
-        auto index = ModelIndex::Deferred__pop();
+        auto index = ModelIndex::Handle__pop();
         auto role = ItemDataRole__pop();
         Variant::Owned__push(Handle_data(_this, index, role));
     }

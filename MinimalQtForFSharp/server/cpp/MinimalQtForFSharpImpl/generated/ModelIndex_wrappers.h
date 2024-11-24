@@ -21,8 +21,8 @@ namespace ModelIndex
     OwnedRef Owned__pop();
 
     void Owned_dispose__wrapper();
-    void Deferred__push(std::shared_ptr<Deferred::Base> value, bool isReturn);
-    std::shared_ptr<Deferred::Base> Deferred__pop();
+
+    void create__wrapper();
 
     int __register();
 }
