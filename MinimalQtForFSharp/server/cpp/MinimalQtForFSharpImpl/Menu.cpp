@@ -71,8 +71,8 @@ namespace Menu
         }
     };
 
-    void Handle_setIcon(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon) {
-        THIS->setIcon(Icon::fromDeferred(icon));
+    void Handle_setIcon(HandleRef _this, Icon::HandleRef icon) {
+        THIS->setIcon(ICON_VALUE(icon));
     }
 
     void Handle_setSeparatorsCollapsible(HandleRef _this, bool state) {

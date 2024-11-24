@@ -163,8 +163,8 @@ namespace ComboBox
         THIS->addItem(QString::fromStdString(text), Variant::fromDeferred(userData));
     }
 
-    void Handle_addItem(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon, std::string text, std::shared_ptr<Variant::Deferred::Base> userData) {
-        THIS->addItem(Icon::fromDeferred(icon), QString::fromStdString(text), Variant::fromDeferred(userData));
+    void Handle_addItem(HandleRef _this, Icon::HandleRef icon, std::string text, std::shared_ptr<Variant::Deferred::Base> userData) {
+        THIS->addItem(ICON_VALUE(icon), QString::fromStdString(text), Variant::fromDeferred(userData));
     }
 
     void Handle_addItems(HandleRef _this, std::vector<std::string> texts) {

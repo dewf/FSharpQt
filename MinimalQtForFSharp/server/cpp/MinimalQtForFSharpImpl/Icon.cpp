@@ -2,39 +2,30 @@
 
 #include <QIcon>
 #include "IconInternal.h"
+#include "PixmapInternal.h"
 
 #define THIS ((QIcon*)_this)
 
 namespace Icon
 {
-    // no opaque methods yet, if ever
-    // currently we only need this for a widget signal (WindowIconChanged), might not for anything else
+    void Owned_dispose(OwnedRef _this) {
+        delete THIS;
+    }
 
-    // F# API will be designed around Deferred version
+    OwnedRef create() {
+        return reinterpret_cast<OwnedRef>(new QIcon());
+    }
 
-    class FromDeferred : public Deferred::Visitor {
-    private:
-        QIcon &icon;
-    public:
-        explicit FromDeferred(QIcon &icon) : icon(icon) {}
+    OwnedRef create(ThemeIcon themeIcon) {
+        auto qThemeIcon = static_cast<QIcon::ThemeIcon>(themeIcon);
+        return ICON_HEAP_COPY(QIcon::fromTheme(qThemeIcon));
+    }
 
-        void onEmpty(const Deferred::Empty *empty) override {
-            icon = QIcon();
-        }
+    OwnedRef create(std::string filename) {
+        return ICON_HEAP_COPY(QString::fromStdString(filename));
+    }
 
-        void onFromThemeIcon(const Deferred::FromThemeIcon *fromThemeIcon) override {
-            icon = QIcon::fromTheme((QIcon::ThemeIcon)fromThemeIcon->themeIcon);
-        }
-
-        void onFromFilename(const Deferred::FromFilename *fromFilename) override {
-            icon = QIcon(QString::fromStdString(fromFilename->filename));
-        }
-    };
-
-    QIcon fromDeferred(const std::shared_ptr<Deferred::Base>& deferred) {
-        QIcon icon;
-        FromDeferred visitor(icon);
-        deferred->accept(&visitor);
-        return icon;
+    OwnedRef create(Pixmap::HandleRef pixmap) {
+        return ICON_HEAP_COPY(pixmap->qPixmap);
     }
 }

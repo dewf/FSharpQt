@@ -1,4 +1,5 @@
 module Icon;
+import Pixmap;
 
 enum Mode { Normal, Disabled, Active, Selected }
 enum State { On, Off }
@@ -160,11 +161,12 @@ enum ThemeIcon {
     NThemeIcons
 }
 
-@nodispose     // as of now, client can't ever create these, and doesn't own them
+@nodispose
 opaque Handle;
 
-sumtype Deferred {
-    Empty,
-    FromThemeIcon(ThemeIcon themeIcon),
-    FromFilename(string filename)
-}
+opaque Owned extends Handle;
+
+Owned create();                     // why?
+Owned create(ThemeIcon themeIcon);
+Owned create(string filename);
+Owned create(Pixmap.Handle pixmap);

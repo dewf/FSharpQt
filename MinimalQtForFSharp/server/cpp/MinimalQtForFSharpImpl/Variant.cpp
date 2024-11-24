@@ -110,7 +110,7 @@ namespace Variant
         }
 
         void onFromIcon(const Deferred::FromIcon *value) override {
-            variant = Icon::fromDeferred(value->value);
+            variant = ICON_VALUE(value->value);
         }
 
         void onFromColor(const Deferred::FromColor *value) override {

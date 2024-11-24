@@ -246,7 +246,7 @@ type FilterDelegate(state: State) =
             left.Data(EditRole).ToInt() < right.Data(EditRole).ToInt()
         | _ ->
             failwith "FilterDelegate.LessThan wat"
-    
+            
 let view (state: State) =
     let model =
         ListModelNode(RowDelegate(state), int Column.NUM_COLUMNS,

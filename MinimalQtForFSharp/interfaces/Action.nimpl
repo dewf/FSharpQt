@@ -52,7 +52,7 @@ opaque Handle extends Object.Handle {
     void setChecked(bool checked_);
     void setEnabled(bool enabled);
     // void setFont(Font.Deferred font); // TODO
-    void setIcon(Icon.Deferred icon);
+    void setIcon(Icon.Handle icon);
     void setIconText(string text);
     void setIconVisibleInMenu(bool visible);
     void setMenuRole(MenuRole role);

@@ -974,20 +974,38 @@ let internal dateOnlyFromQtDate (qtDate: Org.Whatever.MinimalQtForFSharp.Date.Ha
     let x = qtDate.ToYearMonthDay()
     DateOnly(x.Year, x.Month, x.Day)
 
-type Icon private(deferred: Org.Whatever.MinimalQtForFSharp.Icon.Deferred) =
-    member val internal QtValue = deferred
+type Icon private(handle: Org.Whatever.MinimalQtForFSharp.Icon.Handle, owned: bool) =
+    let mutable disposed = false
+    member val internal Handle = handle
+    
+    interface IDisposable with
+        member this.Dispose() =
+            if owned && not disposed then
+                (handle :?> Org.Whatever.MinimalQtForFSharp.Icon.Owned).Dispose()
+                disposed <- true
+    override this.Finalize() =
+        (this :> IDisposable).Dispose()
+        
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.Icon.Handle) =
+        new Icon(handle, false)
+        
+    internal new(owned: Org.Whatever.MinimalQtForFSharp.Icon.Owned) =
+        new Icon(owned, true)
+        
     new() =
-        let deferred =
-            Icon.Deferred.Empty()
-        Icon(deferred)
-    new (filename: string) =
-        let deferred =
-            Icon.Deferred.FromFilename(filename)
-        Icon(deferred)
-    new (themeIcon: ThemeIcon) =
-        let deferred =
-            Icon.Deferred.FromThemeIcon(toQtThemeIcon themeIcon)
-        Icon(deferred)
+        let handle = Icon.Create()
+        new Icon(handle)
+        
+    new(filename: string) =
+        let handle = Icon.Create(filename)
+        new Icon(handle)
+        
+    new(themeIcon: ThemeIcon) =
+        let handle = Icon.Create(toQtThemeIcon themeIcon)
+        new Icon(handle)
+        
+    // TODO: pixmap ctor, but our whole module ordering is a big problem right now
+    // Pixmap lives in Painting.fs which is below this and depends on this file :(
         
 type KeySequence private(deferred: Org.Whatever.MinimalQtForFSharp.KeySequence.Deferred) =
     member val internal QtValue = deferred

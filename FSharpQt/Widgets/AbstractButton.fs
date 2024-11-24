@@ -198,7 +198,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
                     pressed <- state
                     abstractButton.SetDown(state)
             | IconAttr icon ->
-                abstractButton.SetIcon(icon.QtValue)
+                abstractButton.SetIcon(icon.Handle)
             | IconSize size ->
                 abstractButton.SetIconSize(size.QtValue)
             | Shortcut seq ->

@@ -454,7 +454,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
     let mutable currentMask = enum<Widget.SignalMask> 0
     // binding guards
     let mutable lastWindowTitle = ""
-    let mutable lastWindowIcon = Icon()
+    let mutable lastWindowIcon = new Icon()
 
     let signalDispatch (s: Signal) =
         signalMap s
@@ -557,8 +557,9 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
                 widget.SetWindowFlags(flags |> WindowFlag.QtSetFrom)
             | WindowIcon icon ->
                 if icon <> lastWindowIcon then
+                    FSharpQt.Util.dispose lastWindowIcon
                     lastWindowIcon <- icon
-                    widget.SetWindowIcon(icon.QtValue)
+                    widget.SetWindowIcon(icon.Handle)
             | WindowModality modality ->
                 widget.SetWindowModality(modality.QtValue)
             | WindowModified modified ->

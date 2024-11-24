@@ -98,7 +98,7 @@ opaque Handle extends Object.Handle {
     int width();
     void setWindowFilePath(string path);
     void setWindowFlags(WindowFlags flags_);
-    void setWindowIcon(Icon.Deferred icon);
+    void setWindowIcon(Icon.Handle icon);
     void setWindowModality(WindowModality modality);
     void setWindowModified(bool modified);
     void setWindowOpacity(double opacity);

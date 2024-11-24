@@ -75,7 +75,7 @@ opaque Handle extends Widget.Handle {
     // methods
     void removeAllTabs();   // our own method for convenience
     int	addTab(string text);
-    int	addTab(Icon.Deferred icon, string text);
+    int	addTab(Icon.Handle icon, string text);
 
     void setSignalMask(SignalMask mask);
 }

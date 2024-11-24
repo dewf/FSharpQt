@@ -183,7 +183,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.ApplyMenuAttr attr =
             match attr with
             | IconAttr icon ->
-                menu.SetIcon(icon.QtValue)
+                menu.SetIcon(icon.Handle)
             | SeparatorsCollapsible state ->
                 menu.SetSeparatorsCollapsible(state)
             | TearOffEnabled state ->

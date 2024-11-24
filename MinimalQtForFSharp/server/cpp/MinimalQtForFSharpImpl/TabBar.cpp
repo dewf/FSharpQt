@@ -147,8 +147,8 @@ namespace TabBar
         return THIS->addTab(QString::fromStdString(text));
     }
 
-    int32_t Handle_addTab(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon, std::string text) {
-        return THIS->addTab(Icon::fromDeferred(icon), QString::fromStdString(text));
+    int32_t Handle_addTab(HandleRef _this, Icon::HandleRef icon, std::string text) {
+        return THIS->addTab(ICON_VALUE(icon), QString::fromStdString(text));
     }
 
     void Handle_setSignalMask(HandleRef _this, SignalMask mask) {

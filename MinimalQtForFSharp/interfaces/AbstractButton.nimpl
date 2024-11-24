@@ -39,7 +39,7 @@ opaque Handle extends Widget.Handle {
     void setCheckable(bool state);
     void setChecked(bool state);
     void setDown(bool state);
-    void setIcon(Icon.Deferred icon);
+    void setIcon(Icon.Handle icon);
     void setIconSize(Size size);
     void setShortcut(KeySequence.Deferred seq);
     void setText(string text);

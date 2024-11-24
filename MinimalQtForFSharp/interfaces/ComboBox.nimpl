@@ -75,7 +75,7 @@ opaque Handle extends Widget.Handle {
 
     void clear();
     void addItem(string text, Variant.Deferred userData);
-    void addItem(Icon.Deferred icon, string text, Variant.Deferred userData);
+    void addItem(Icon.Handle icon, string text, Variant.Deferred userData);
     void addItems(Array<string> texts);
     void setModel(AbstractItemModel.Handle model);
 

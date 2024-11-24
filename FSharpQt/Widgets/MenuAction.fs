@@ -291,7 +291,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
                     lastEnabled <- state
                     action.SetEnabled(state)
             | IconAttr icon ->
-                action.SetIcon(icon.QtValue)
+                action.SetIcon(icon.Handle)
             | IconText text ->
                 action.SetIconText(text)
             | IconVisibleInMenu visible ->

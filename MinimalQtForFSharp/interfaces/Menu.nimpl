@@ -31,7 +31,7 @@ interface SignalHandler {
 }
 
 opaque Handle extends Widget.Handle {
-    void setIcon(Icon.Deferred icon);
+    void setIcon(Icon.Handle icon);
     void setSeparatorsCollapsible(bool state);
     void setTearOffEnabled(bool state);
     void setTitle(string title);

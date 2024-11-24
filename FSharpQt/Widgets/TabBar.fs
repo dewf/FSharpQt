@@ -314,7 +314,7 @@ type private Model<'msg>(dispatch: 'msg -> unit) as this =
             | TextOnly text ->
                 tabBar.AddTab(text) |> ignore
             | WithIcon(icon, text) ->
-                tabBar.AddTab(icon.QtValue, text) |> ignore
+                tabBar.AddTab(icon.Handle, text) |> ignore
                 
 let private create (attrs: IAttr list) (signalMaps: ISignalMapFunc list) (dispatch: 'msg -> unit) (signalMask: TabBar.SignalMask) =
     let model = new Model<'msg>(dispatch)

@@ -282,8 +282,8 @@ namespace Widget
         THIS->setWindowFlags((Qt::WindowFlags)flags_);
     }
 
-    void Handle_setWindowIcon(HandleRef _this, std::shared_ptr<Icon::Deferred::Base> icon) {
-        THIS->setWindowIcon(Icon::fromDeferred(icon));
+    void Handle_setWindowIcon(HandleRef _this, Icon::HandleRef icon) {
+        THIS->setWindowIcon(ICON_VALUE(icon));
     }
 
     void Handle_setWindowModality(HandleRef _this, WindowModality modality) {
