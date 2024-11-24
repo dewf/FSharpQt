@@ -213,7 +213,7 @@ type PaintDevice internal(handle: Org.Whatever.MinimalQtForFSharp.PaintDevice.Ha
     member this.Height =
         this.Handle.Height()
         
-type Image internal(handle: Org.Whatever.MinimalQtForFSharp.Image.Handle, owned: bool) =
+type Image private(handle: Org.Whatever.MinimalQtForFSharp.Image.Handle, owned: bool) =
     inherit PaintDevice(handle)
     let mutable disposed = false
     member val internal Handle = handle
@@ -225,6 +225,12 @@ type Image internal(handle: Org.Whatever.MinimalQtForFSharp.Image.Handle, owned:
                 disposed <- true
     override this.Finalize() =
         (this :> IDisposable).Dispose()
+        
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.Image.Handle) =
+        new Image(handle, false)
+        
+    internal new(owned: Org.Whatever.MinimalQtForFSharp.Image.Owned) =
+        new Image(owned, true)
     
     new(width: int, height: int, format: ImageFormat) =
         let handle =
@@ -267,7 +273,7 @@ type Image internal(handle: Org.Whatever.MinimalQtForFSharp.Image.Handle, owned:
             this.Handle.Scaled(width, height, opts)
         new Image(handle, true)
 
-type Pixmap internal(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle, owned: bool) =
+type Pixmap private(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle, owned: bool) =
     inherit PaintDevice(handle)
     let mutable disposed = false
     member val internal Handle = handle
@@ -279,6 +285,12 @@ type Pixmap internal(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle, owne
                 disposed <- true
     override this.Finalize() =
         (this :> IDisposable).Dispose()
+        
+    internal new(handle: Org.Whatever.MinimalQtForFSharp.Pixmap.Handle) =
+        new Pixmap(handle, false)
+        
+    internal new(owned: Org.Whatever.MinimalQtForFSharp.Pixmap.Owned) =
+        new Pixmap(owned, true)
         
     new(width: int, height: int) =
         let handle =
