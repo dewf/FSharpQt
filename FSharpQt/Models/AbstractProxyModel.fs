@@ -1,9 +1,8 @@
 ﻿module FSharpQt.Models.AbstractProxyModel
 
-open System
 open FSharpQt.Attrs
-open FSharpQt.MiscTypes
 open Org.Whatever.MinimalQtForFSharp
+open FSharpQt.MiscTypes
 
 type private Signal =
     | SourceModelChanged
@@ -127,6 +126,6 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
 
 type AbstractProxyModelBinding internal(handle: AbstractProxyModel.Handle) =
     inherit AbstractItemModel.AbstractItemModelBinding(handle)
-    member this.MapToSource (proxyIndex: ModelIndexProxy) =
-        let ret = handle.MapToSource(proxyIndex.AsDeferred)
-        new ModelIndexProxy(ret)
+    member this.MapToSource (proxyIndex: ModelIndex) =
+        let ret = handle.MapToSource(proxyIndex.Handle)
+        new ModelIndex(ret, true)

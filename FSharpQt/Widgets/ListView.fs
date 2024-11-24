@@ -7,7 +7,7 @@ open Org.Whatever.MinimalQtForFSharp
 open FSharpQt.MiscTypes
 
 type private Signal =
-    | IndexesMoved of indexes: ModelIndexProxy list
+    | IndexesMoved of indexes: ModelIndex list
 
 type Movement =
     | Static
@@ -114,7 +114,7 @@ type private SignalMapFunc<'msg>(func) =
 type Props<'msg>() =
     inherit AbstractItemView.Props<'msg>()
     
-    let mutable onIndexesMoved: (ModelIndexProxy list -> 'msg) option = None
+    let mutable onIndexesMoved: (ModelIndex list -> 'msg) option = None
     
     member internal this.SignalMask = enum<ListView.SignalMask> (int this._signalMask)
     
@@ -276,7 +276,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.IndexesMoved indexes =
             let indexes' =
                 indexes
-                |> Array.map (fun index -> new ModelIndexProxy(index))
+                |> Array.map (fun index -> new ModelIndex(index, false))
                 |> Array.toList
             signalDispatch (IndexesMoved indexes')
 

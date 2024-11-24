@@ -889,82 +889,38 @@ with
     //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.String as s -> Variant.String s.Value
     //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Int as i -> Variant.Int i.Value
     //     | _ -> Variant.Unknown
-    
-// might merge these ModelIndex types in the future, going to see how it plays out
-// kind of don't like putting IDisposable on the proxy/deferred versions since they aren't owned, and then get IDE warnings about using 'new' etc
-// but we'll see. juggling 3 different ones for different purposes seems kind of crazy (when they all represent a C++ QModelIndex in the end)
-// even 'from scratch' they need to be created from a model somewhere, so would the 'new' be that big a deal?
 
-type ModelIndexProxy private(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, owned: bool) =
+type ModelIndex internal(handle: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, owned: bool) =
     let mutable disposed = false
-    //member val internal Handle = index // see if we can just get away with .AsDeferred below
-    
-    new(index: ModelIndex.Handle) =
-        new ModelIndexProxy(index, false)
-    
-    new(index: ModelIndex.Owned) =
-        new ModelIndexProxy(index, true)
-        
-    member this.AsDeferred =
-        if owned then
-            ModelIndex.Deferred.FromOwned(index :?> ModelIndex.Owned) :> ModelIndex.Deferred
-        else
-            ModelIndex.Deferred.FromHandle(index)
+    member val internal Handle = handle
     
     interface IDisposable with
         member this.Dispose() =
             if owned && not disposed then
-                (index :?> ModelIndex.Owned).Dispose()
+                (handle :?> Org.Whatever.MinimalQtForFSharp.ModelIndex.Owned).Dispose()
                 disposed <- true
-
     override this.Finalize() =
         (this :> IDisposable).Dispose()
         
-    // useful methods begin here ===================================
-    
+    new() =
+        let handle = Org.Whatever.MinimalQtForFSharp.ModelIndex.Create()
+        new ModelIndex(handle, true)
+        
     member this.IsValid =
-        index.IsValid()
+        handle.IsValid()
         
     member this.Row =
-        index.Row()
+        handle.Row()
         
     member this.Column =
-        index.Column()
+        handle.Column()
         
     member this.Data() =
-        new VariantProxy(index.Data())
+        new VariantProxy(handle.Data())
         
     member this.Data(role: ItemDataRole) =
-        new VariantProxy(index.Data(role.QtValue))
+        new VariantProxy(handle.Data(role.QtValue))
     
-// type ModelIndexOwned internal(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.OwnedHandle) =
-//     let mutable disposed = false
-//     
-//     override this.Finalize() =
-//         (this :> IDisposable).Dispose()
-//         
-//     interface IDisposable with
-//         member this.Dispose() =
-//             if not disposed then
-//                 index.Dispose()
-//                 disposed <- true
-//                 
-//     member this.IsValid =
-//         index.IsValid()
-//     member this.Row =
-//         index.Row()
-//     member this.Column =
-//         index.Column()
-        
-// type ModelIndexDeferred private(deferred: ModelIndex.Deferred) =
-//     member val internal QtValue = deferred
-//     internal new(owned: ModelIndex.OwnedHandle) =
-//         ModelIndexDeferred(ModelIndex.Deferred.FromOwned(owned))
-//     internal new(handle: ModelIndex.Handle) =
-//         ModelIndexDeferred(ModelIndex.Deferred.FromHandle(handle))
-//     internal new(proxy: ModelIndexProxy) =
-//         ModelIndexDeferred(proxy.AsDeferred)
-        
 // persistent model index
         
 type PersistentModelIndexProxy internal(index: PersistentModelIndex.Handle) =
@@ -978,22 +934,22 @@ type SizePolicyDeferred private(deferred: Org.Whatever.MinimalQtForFSharp.SizePo
 type AbstractItemModelProxy internal(model: AbstractItemModel.Handle) =
     member this.Index(row: int, column: int) =
         let value = model.Index(row, column)
-        new ModelIndexProxy(value)
+        new ModelIndex(value, true)
         
-    member this.Index(row: int, column: int, parent: ModelIndexProxy) =
-        let value = model.Index(row, column, parent.AsDeferred)
-        new ModelIndexProxy(value)
+    member this.Index(row: int, column: int, parent: ModelIndex) =
+        let value = model.Index(row, column, parent.Handle)
+        new ModelIndex(value, true)
     
-    member this.Data(index: ModelIndexProxy) =
-        let value = model.Data(index.AsDeferred)
+    member this.Data(index: ModelIndex) =
+        let value = model.Data(index.Handle)
         new VariantProxy(value)
         
-    member this.Data(index: ModelIndexProxy, role: ItemDataRole) =
-        let value = model.Data(index.AsDeferred, role.QtValue)
+    member this.Data(index: ModelIndex, role: ItemDataRole) =
+        let value = model.Data(index.Handle, role.QtValue)
         new VariantProxy(value)
         
-    member this.SetData(index: ModelIndexProxy, value: Variant) =
-        model.SetData(index.AsDeferred, value.QtValue)
+    member this.SetData(index: ModelIndex, value: Variant) =
+        model.SetData(index.Handle, value.QtValue)
     
 // other =========================
 

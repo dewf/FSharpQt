@@ -64,13 +64,13 @@ interface SignalHandler {
 opaque Handle extends Object.Handle {
     // overloads of a single method:
     ModelIndex.Owned index(int row, int column);
-    ModelIndex.Owned index(int row, int column, ModelIndex.Deferred parent);
+    ModelIndex.Owned index(int row, int column, ModelIndex.Handle parent);
 
-    bool setData(ModelIndex.Deferred index, Variant.Deferred value);
-    bool setData(ModelIndex.Deferred index, Variant.Deferred value, ItemDataRole role);
+    bool setData(ModelIndex.Handle index, Variant.Deferred value);
+    bool setData(ModelIndex.Handle index, Variant.Deferred value, ItemDataRole role);
 
-    Variant.Owned data(ModelIndex.Deferred index);
-    Variant.Owned data(ModelIndex.Deferred index, ItemDataRole role);
+    Variant.Owned data(ModelIndex.Handle index);
+    Variant.Owned data(ModelIndex.Handle index, ItemDataRole role);
 
     void sort(int column);
     void sort(int column, SortOrder order);

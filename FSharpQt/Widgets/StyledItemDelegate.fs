@@ -96,7 +96,7 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             (this :> AbstractItemDelegate.SignalHandler).CloseEditor(editor, qtHint)
         member this.CommitData(editor: Widget.Handle) =
             (this :> AbstractItemDelegate.SignalHandler).CommitData(editor)
-        member this.SizeHintChanged(index: ModelIndex.Handle) =
+        member this.SizeHintChanged(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
             (this :> AbstractItemDelegate.SignalHandler).SizeHintChanged(index)
         // styleditemdelegate =============
         // (none)
@@ -107,16 +107,16 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             
 type IEventDelegate<'msg> =
     interface
-        abstract member CreateEditor: StyleOptionViewItemProxy -> ModelIndexProxy -> IWidgetNode<'msg>
-        abstract member SetEditorDataRaw: Widget.Handle -> ModelIndex.Handle -> unit
-        abstract member SetModelDataRaw: Widget.Handle -> AbstractItemModel.Handle -> ModelIndex.Handle -> unit
+        abstract member CreateEditor: StyleOptionViewItemProxy -> ModelIndex -> IWidgetNode<'msg>
+        abstract member SetEditorDataRaw: Widget.Handle -> Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle -> unit
+        abstract member SetModelDataRaw: Widget.Handle -> AbstractItemModel.Handle -> Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle -> unit
     end
     
 [<AbstractClass>]
 type ComboBoxItemDelegateBase<'msg>() =
-    abstract member CreateEditor: StyleOptionViewItemProxy -> ModelIndexProxy -> FSharpQt.Widgets.ComboBox.ComboBox<'msg>
-    abstract member SetEditorData: ComboBoxProxy -> ModelIndexProxy -> unit
-    abstract member SetModelData: ComboBoxProxy -> AbstractItemModelProxy -> ModelIndexProxy -> unit
+    abstract member CreateEditor: StyleOptionViewItemProxy -> ModelIndex -> FSharpQt.Widgets.ComboBox.ComboBox<'msg>
+    abstract member SetEditorData: ComboBoxProxy -> ModelIndex -> unit
+    abstract member SetModelData: ComboBoxProxy -> AbstractItemModelProxy -> ModelIndex -> unit
     interface IEventDelegate<'msg> with
         member this.CreateEditor option index =
             this.CreateEditor option index
@@ -126,10 +126,10 @@ type ComboBoxItemDelegateBase<'msg>() =
             // we don't have any inherent continuity of the raw opaque handles being passed from one side to another
             // so we need a way of "force-casting" an opaque handle, from the C++ side
             let combo = ComboBox.DowncastFrom(editor)
-            this.SetEditorData (ComboBoxProxy(combo)) (new ModelIndexProxy(index))
+            this.SetEditorData (ComboBoxProxy(combo)) (new ModelIndex(index, false))
         member this.SetModelDataRaw editor model index =
             let combo = ComboBox.DowncastFrom(editor)
-            this.SetModelData (ComboBoxProxy(combo)) (AbstractItemModelProxy(model)) (new ModelIndexProxy(index))
+            this.SetModelData (ComboBoxProxy(combo)) (AbstractItemModelProxy(model)) (new ModelIndex(index, false))
     
 // [<AbstractClass>]
 // type AbstractEventDelegate<'msg,'widgetProxy>(proxyFunc: Widget.Handle -> 'widgetProxy) =
@@ -162,7 +162,7 @@ type private Model<'msg>(dispatch: 'msg -> unit, eventDelegate: IEventDelegate<'
         
     interface StyledItemDelegate.MethodDelegate with
         member this.CreateEditor(parent, option, index) =
-            let root = eventDelegate.CreateEditor (StyleOptionViewItemProxy(option)) (new ModelIndexProxy(index))
+            let root = eventDelegate.CreateEditor (StyleOptionViewItemProxy(option)) (new ModelIndex(index, false))
             let events = DiffEventsList()
             build dispatch (root :> IBuilderNode<'msg>) { ContainingWindow = None } events
             root.Widget.SetParent(parent)

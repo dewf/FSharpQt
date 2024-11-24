@@ -12,9 +12,9 @@ type IFilterDelegate =
         // internal use only
         abstract member SetInterior: SortFilterProxyModel.Interior -> unit
         // actual
-        abstract member FilterAcceptsColumn: int -> ModelIndexProxy -> bool
-        abstract member FilterAcceptsRow: int -> ModelIndexProxy -> bool
-        abstract member LessThan: ModelIndexProxy -> ModelIndexProxy -> bool
+        abstract member FilterAcceptsColumn: int -> ModelIndex -> bool
+        abstract member FilterAcceptsRow: int -> ModelIndex -> bool
+        abstract member LessThan: ModelIndex -> ModelIndex -> bool
     end
 
 [<AbstractClass>]    
@@ -25,15 +25,15 @@ type FilterDelegateBase() =
     member this.SourceModel =
         AbstractItemModelProxy(interior.SourceModel())
         
-    abstract member FilterAcceptsColumn: int -> ModelIndexProxy -> bool
+    abstract member FilterAcceptsColumn: int -> ModelIndex -> bool
     default this.FilterAcceptsColumn sourceColumn sourceParent =
         true
         
-    abstract member FilterAcceptsRow: int -> ModelIndexProxy -> bool
+    abstract member FilterAcceptsRow: int -> ModelIndex -> bool
     default this.FilterAcceptsRow sourceRow sourceParent =
         true
         
-    abstract member LessThan: ModelIndexProxy -> ModelIndexProxy -> bool
+    abstract member LessThan: ModelIndex -> ModelIndex -> bool
     default this.LessThan sourceLeft sourceRight =
         failwith "CustomSortFilterProxyModel.FilterDelegateBase.LessThan: must be implemented"
         
@@ -78,12 +78,12 @@ type private Model<'msg>(dispatch: 'msg -> unit, filterDelegate: IFilterDelegate
         filterDelegate.SetInterior interior
         
     interface SortFilterProxyModel.MethodDelegate with
-        member this.FilterAcceptsColumn(sourceColumn: int, sourceParent: ModelIndex.Handle) =
-            filterDelegate.FilterAcceptsColumn sourceColumn (new ModelIndexProxy(sourceParent))
-        member this.FilterAcceptsRow(sourceRow: int, sourceParent: ModelIndex.Handle) =
-            filterDelegate.FilterAcceptsRow sourceRow (new ModelIndexProxy(sourceParent))
-        member this.LessThan(sourceLeft: ModelIndex.Handle, sourceRight: ModelIndex.Handle) =
-            filterDelegate.LessThan (new ModelIndexProxy(sourceLeft)) (new ModelIndexProxy(sourceRight))
+        member this.FilterAcceptsColumn(sourceColumn: int, sourceParent: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
+            filterDelegate.FilterAcceptsColumn sourceColumn (new ModelIndex(sourceParent, false))
+        member this.FilterAcceptsRow(sourceRow: int, sourceParent: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
+            filterDelegate.FilterAcceptsRow sourceRow (new ModelIndex(sourceParent, false))
+        member this.LessThan(sourceLeft: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, sourceRight: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
+            filterDelegate.LessThan (new ModelIndex(sourceLeft, false)) (new ModelIndex(sourceRight, false))
     
     member this.AddSourceModel (model: AbstractItemModel.Handle) =
         interior.SetSourceModel(model)

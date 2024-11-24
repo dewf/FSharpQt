@@ -32,7 +32,8 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
     let mutable simpleDelegate = simpleDelegate
     
     let emptyIndex =
-        ModelIndex.Deferred.Empty()
+        // should be static, but right now F#Qt has an issue where we need a way to initialize the native library before absolutely anything else
+        new ModelIndex()
         
     let interior =
         let methodMask =
@@ -60,10 +61,10 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
         interior :> AbstractListModel.Handle
         
     interface AbstractListModel.MethodDelegate with
-        member this.RowCount(parent: ModelIndex.Handle) =
+        member this.RowCount(parent: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
             rows.Length
             
-        member this.Data(index: ModelIndex.Handle, role: Enums.ItemDataRole) =
+        member this.Data(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, role: Enums.ItemDataRole) =
             let value =
                 if index.IsValid() then
                     let rowIndex = index.Row()
@@ -95,7 +96,7 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
                     Variant.Empty
             variant.QtValue
             
-        member this.GetFlags(index: ModelIndex.Handle, baseFlags: AbstractListModel.ItemFlags) =
+        member this.GetFlags(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, baseFlags: AbstractListModel.ItemFlags) =
             let result =
                 if index.IsValid() then
                     let rowIndex = index.Row()
@@ -110,7 +111,7 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
                     Set.empty
             ItemFlag.QtSetFrom result
             
-        member this.SetData(index: ModelIndex.Handle, value: Org.Whatever.MinimalQtForFSharp.Variant.Handle, role: Enums.ItemDataRole) =
+        member this.SetData(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, value: Org.Whatever.MinimalQtForFSharp.Variant.Handle, role: Enums.ItemDataRole) =
             let maybeMsg =
                 if index.IsValid() then
                     let rowIndex = index.Row()
@@ -130,7 +131,7 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
             | None ->
                 false
             
-        member this.ColumnCount(parent: ModelIndex.Handle) =
+        member this.ColumnCount(parent: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
             numColumns
             
     interface IDisposable with
@@ -138,22 +139,22 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
             interior.Dispose()
             
     member this.AddRowAt(index: int, row: 'row) =
-        interior.BeginInsertRows(emptyIndex, index, index)
+        interior.BeginInsertRows(emptyIndex.Handle, index, index)
         rows <- Array.insertAt index row rows
         interior.EndInsertRows()
         
     member this.AddRowsAt(index: int, newRows: 'row list) =
-        interior.BeginInsertRows(emptyIndex, index, index + newRows.Length - 1)
+        interior.BeginInsertRows(emptyIndex.Handle, index, index + newRows.Length - 1)
         rows <- Array.insertManyAt index newRows rows
         interior.EndInsertRows()
         
     member this.DeleteRowAt(index: int) =
-        interior.BeginRemoveRows(emptyIndex, index, index)
+        interior.BeginRemoveRows(emptyIndex.Handle, index, index)
         rows <- Array.removeAt index rows
         interior.EndRemoveRows()
         
     member this.DeleteRowsAt(index: int, count: int) =
-        interior.BeginRemoveRows(emptyIndex, index, index + count - 1)
+        interior.BeginRemoveRows(emptyIndex.Handle, index, index + count - 1)
         rows <- Array.removeManyAt index count rows
         interior.EndRemoveRows()
         
@@ -163,15 +164,13 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
             interior.Index(index, 0)
         use bottomRight =
             interior.Index(index, numColumns - 1)
-        interior.EmitDataChanged(
-            ModelIndex.Deferred.FromOwned(topLeft),
-            ModelIndex.Deferred.FromOwned(bottomRight), [||])
+        interior.EmitDataChanged(topLeft, bottomRight, [||])
         
     member this.DeleteIndices(indices: int list) =
         // over a certain threshold should probably just reset the model
         let reversed =
             indices |> List.sortDescending
         for index in reversed do
-            interior.BeginRemoveRows(emptyIndex, index, index)
+            interior.BeginRemoveRows(emptyIndex.Handle, index, index)
             rows <- Array.removeAt index rows
             interior.EndRemoveRows()

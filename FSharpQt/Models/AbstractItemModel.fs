@@ -1,11 +1,9 @@
 ﻿module FSharpQt.Models.AbstractItemModel
 
-open System
 open FSharpQt.Attrs
-open FSharpQt.MiscTypes
-open FSharpQt.Reactor
 open FSharpQt.Widgets
 open Org.Whatever.MinimalQtForFSharp
+open FSharpQt.MiscTypes
 
 type LayoutChangeHint =
     | NoLayoutChangeHint
@@ -25,24 +23,24 @@ with
         | HorizontalSortHint -> AbstractItemModel.LayoutChangeHint.HorizontalSortHint
 
 type private Signal =
-    | ColumnsAboutToBeInserted of parent: ModelIndexProxy * first: int * last: int
-    | ColumnsAboutToBeMoved of sourceParent: ModelIndexProxy * sourceStart: int * sourceEnd: int * destinationParent: ModelIndexProxy * destinationColumn: int
-    | ColumnsAboutToBeRemoved of parent: ModelIndexProxy * first: int * last: int
-    | ColumnsInserted of parent: ModelIndexProxy * first: int * last: int
-    | ColumnsMoved of sourceParent: ModelIndexProxy * sourceStart: int * sourceEnd: int * destinationParent: ModelIndexProxy * destinationColumn: int
-    | ColumnsRemoved of parent: ModelIndexProxy * first: int * last: int
-    | DataChanged of topLeft: ModelIndexProxy * bottomRight: ModelIndexProxy * roles: ItemDataRole list
+    | ColumnsAboutToBeInserted of parent: ModelIndex * first: int * last: int
+    | ColumnsAboutToBeMoved of sourceParent: ModelIndex * sourceStart: int * sourceEnd: int * destinationParent: ModelIndex * destinationColumn: int
+    | ColumnsAboutToBeRemoved of parent: ModelIndex * first: int * last: int
+    | ColumnsInserted of parent: ModelIndex * first: int * last: int
+    | ColumnsMoved of sourceParent: ModelIndex * sourceStart: int * sourceEnd: int * destinationParent: ModelIndex * destinationColumn: int
+    | ColumnsRemoved of parent: ModelIndex * first: int * last: int
+    | DataChanged of topLeft: ModelIndex * bottomRight: ModelIndex * roles: ItemDataRole list
     | HeaderDataChanged of orientation: Orientation * first: int * last: int
     | LayoutAboutToBeChanged of parents: PersistentModelIndexProxy list * hint: LayoutChangeHint
     | LayoutChanged of parents: PersistentModelIndexProxy list * hint: LayoutChangeHint
     | ModelAboutToBeReset
     | ModelReset
-    | RowsAboutToBeInserted of parent: ModelIndexProxy * start: int * ``end``: int
-    | RowsAboutToBeMoved of sourceParent: ModelIndexProxy * sourceStart: int * sourceEnd: int * destinationParent: ModelIndexProxy * destinationRow: int
-    | RowsAboutToBeRemoved of parent: ModelIndexProxy * first: int * last: int
-    | RowsInserted of parent: ModelIndexProxy * first: int * last: int
-    | RowsMoved of sourceParent: ModelIndexProxy * sourceStart: int * sourceEnd: int * destinationParent: ModelIndexProxy * destinationRow: int
-    | RowsRemoved of parent: ModelIndexProxy * first: int * last: int
+    | RowsAboutToBeInserted of parent: ModelIndex * start: int * ``end``: int
+    | RowsAboutToBeMoved of sourceParent: ModelIndex * sourceStart: int * sourceEnd: int * destinationParent: ModelIndex * destinationRow: int
+    | RowsAboutToBeRemoved of parent: ModelIndex * first: int * last: int
+    | RowsInserted of parent: ModelIndex * first: int * last: int
+    | RowsMoved of sourceParent: ModelIndex * sourceStart: int * sourceEnd: int * destinationParent: ModelIndex * destinationRow: int
+    | RowsRemoved of parent: ModelIndex * first: int * last: int
 
 // no attributes, but for consistency with inherited stuff:
 type internal AttrTarget =
@@ -57,24 +55,24 @@ type private SignalMapFunc<'msg>(func) =
 type Props<'msg>() =
     inherit QObject.Props<'msg>()
     
-    let mutable onColumnsAboutToBeInserted: (ModelIndexProxy * int * int -> 'msg) option = None
-    let mutable onColumnsAboutToBeMoved: (ModelIndexProxy * int * int * ModelIndexProxy * int -> 'msg) option = None
-    let mutable onColumnsAboutToBeRemoved: (ModelIndexProxy * int * int -> 'msg) option = None
-    let mutable onColumnsInserted: (ModelIndexProxy * int * int -> 'msg) option = None
-    let mutable onColumnsMoved: (ModelIndexProxy * int * int * ModelIndexProxy * int -> 'msg) option = None
-    let mutable onColumnsRemoved: (ModelIndexProxy * int * int -> 'msg) option = None
-    let mutable onDataChanged: (ModelIndexProxy * ModelIndexProxy * ItemDataRole list -> 'msg) option = None
+    let mutable onColumnsAboutToBeInserted: (ModelIndex * int * int -> 'msg) option = None
+    let mutable onColumnsAboutToBeMoved: (ModelIndex * int * int * ModelIndex * int -> 'msg) option = None
+    let mutable onColumnsAboutToBeRemoved: (ModelIndex * int * int -> 'msg) option = None
+    let mutable onColumnsInserted: (ModelIndex * int * int -> 'msg) option = None
+    let mutable onColumnsMoved: (ModelIndex * int * int * ModelIndex * int -> 'msg) option = None
+    let mutable onColumnsRemoved: (ModelIndex * int * int -> 'msg) option = None
+    let mutable onDataChanged: (ModelIndex * ModelIndex * ItemDataRole list -> 'msg) option = None
     let mutable onHeaderDataChanged: (Orientation * int * int -> 'msg) option = None
     let mutable onLayoutAboutToBeChanged: (PersistentModelIndexProxy list * LayoutChangeHint -> 'msg) option = None
     let mutable onLayoutChanged: (PersistentModelIndexProxy list * LayoutChangeHint -> 'msg) option = None
     let mutable onModelAboutToBeReset: 'msg option = None
     let mutable onModelReset: 'msg option = None
-    let mutable onRowsAboutToBeInserted: (ModelIndexProxy * int * int -> 'msg) option = None
-    let mutable onRowsAboutToBeMoved: (ModelIndexProxy * int * int * ModelIndexProxy * int -> 'msg) option = None
-    let mutable onRowsAboutToBeRemoved: (ModelIndexProxy * int * int -> 'msg) option = None
-    let mutable onRowsInserted: (ModelIndexProxy * int * int -> 'msg) option = None
-    let mutable onRowsMoved: (ModelIndexProxy * int * int * ModelIndexProxy * int -> 'msg) option = None
-    let mutable onRowsRemoved: (ModelIndexProxy * int * int -> 'msg) option = None
+    let mutable onRowsAboutToBeInserted: (ModelIndex * int * int -> 'msg) option = None
+    let mutable onRowsAboutToBeMoved: (ModelIndex * int * int * ModelIndex * int -> 'msg) option = None
+    let mutable onRowsAboutToBeRemoved: (ModelIndex * int * int -> 'msg) option = None
+    let mutable onRowsInserted: (ModelIndex * int * int -> 'msg) option = None
+    let mutable onRowsMoved: (ModelIndex * int * int * ModelIndex * int -> 'msg) option = None
+    let mutable onRowsRemoved: (ModelIndex * int * int -> 'msg) option = None
     
     member internal this.SignalMask = enum<AbstractItemModel.SignalMask> (int this._signalMask)
     
@@ -250,23 +248,23 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             (this :> Object.SignalHandler).ObjectNameChanged(name)
         // AbstractItemModel ==============
         member this.ColumnsAboutToBeInserted (parent, first, last) =
-            signalDispatch (ColumnsAboutToBeInserted (new ModelIndexProxy(parent), first, last))
+            signalDispatch (ColumnsAboutToBeInserted (new ModelIndex(parent, false), first, last))
         member this.ColumnsAboutToBeMoved (srcParent, srcStart, srcEnd, destParent, destColumn) =
-            signalDispatch (ColumnsAboutToBeMoved (new ModelIndexProxy(srcParent), srcStart, srcEnd, new ModelIndexProxy(destParent), destColumn))
+            signalDispatch (ColumnsAboutToBeMoved (new ModelIndex(srcParent, false), srcStart, srcEnd, new ModelIndex(destParent, false), destColumn))
         member this.ColumnsAboutToBeRemoved (parent, first, last) =
-            signalDispatch (ColumnsAboutToBeRemoved (new ModelIndexProxy(parent), first, last))
+            signalDispatch (ColumnsAboutToBeRemoved (new ModelIndex(parent, false), first, last))
         member this.ColumnsInserted (parent, first, last) =
-            signalDispatch (ColumnsInserted (new ModelIndexProxy(parent), first, last))
+            signalDispatch (ColumnsInserted (new ModelIndex(parent, false), first, last))
         member this.ColumnsMoved (srcParent, srcStart, srcEnd, destParent, destColumn) =
-            signalDispatch (ColumnsMoved (new ModelIndexProxy(srcParent), srcStart, srcEnd, new ModelIndexProxy(destParent), destColumn))
+            signalDispatch (ColumnsMoved (new ModelIndex(srcParent, false), srcStart, srcEnd, new ModelIndex(destParent, false), destColumn))
         member this.ColumnsRemoved (parent, first, last) =
-            signalDispatch (ColumnsRemoved (new ModelIndexProxy(parent), first, last))
+            signalDispatch (ColumnsRemoved (new ModelIndex(parent, false), first, last))
         member this.DataChanged (topLeft, bottomRight, roles) =
             let roles' =
                 roles
                 |> Array.map ItemDataRole.From
                 |> Array.toList
-            signalDispatch (DataChanged (new ModelIndexProxy(topLeft), new ModelIndexProxy(bottomRight), roles'))
+            signalDispatch (DataChanged (new ModelIndex(topLeft, false), new ModelIndex(bottomRight, false), roles'))
         member this.HeaderDataChanged (orientation, first, last) =
             signalDispatch (HeaderDataChanged (Orientation.From orientation, first, last))
         member this.LayoutAboutToBeChanged (parents, hint) =
@@ -286,17 +284,17 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         member this.ModelReset() =
             signalDispatch ModelReset
         member this.RowsAboutToBeInserted (parent, start, ``end``) =
-            signalDispatch (RowsAboutToBeInserted (new ModelIndexProxy(parent), start, ``end``))
+            signalDispatch (RowsAboutToBeInserted (new ModelIndex(parent, false), start, ``end``))
         member this.RowsAboutToBeMoved (srcParent, srcStart, srcEnd, destParent, destRow) =
-            signalDispatch (RowsAboutToBeMoved (new ModelIndexProxy(srcParent), srcStart, srcEnd, new ModelIndexProxy(destParent), destRow))
+            signalDispatch (RowsAboutToBeMoved (new ModelIndex(srcParent, false), srcStart, srcEnd, new ModelIndex(destParent, false), destRow))
         member this.RowsAboutToBeRemoved (parent, first, last) =
-            signalDispatch (RowsAboutToBeRemoved (new ModelIndexProxy(parent), first, last))
+            signalDispatch (RowsAboutToBeRemoved (new ModelIndex(parent, false), first, last))
         member this.RowsInserted (parent, first, last) =
-            signalDispatch (RowsInserted (new ModelIndexProxy(parent), first, last))
+            signalDispatch (RowsInserted (new ModelIndex(parent, false), first, last))
         member this.RowsMoved (srcParent, srcStart, srcEnd, destParent, destRow) =
-            signalDispatch (RowsMoved (new ModelIndexProxy(srcParent), srcStart, srcEnd, new ModelIndexProxy(destParent), destRow))
+            signalDispatch (RowsMoved (new ModelIndex(srcParent, false), srcStart, srcEnd, new ModelIndex(destParent, false), destRow))
         member this.RowsRemoved (parent, first, last) =
-            signalDispatch (RowsRemoved (new ModelIndexProxy(parent), first, last))
+            signalDispatch (RowsRemoved (new ModelIndex(parent, false), first, last))
 
     // interface IDisposable with
     //     member this.Dispose() =

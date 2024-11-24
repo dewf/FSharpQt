@@ -8,8 +8,8 @@ open Org.Whatever.MinimalQtForFSharp
 open FSharpQt.MiscTypes
 
 type private Signal =
-    | Collapsed of index: ModelIndexProxy
-    | Expanded of index: ModelIndexProxy
+    | Collapsed of index: ModelIndex
+    | Expanded of index: ModelIndex
     
 type internal Attr =
     | AllColumnsShowFocus of enabled: bool
@@ -63,8 +63,8 @@ type private SignalMapFunc<'msg>(func) =
 type Props<'msg>() =
     inherit AbstractItemView.Props<'msg>()
     
-    let mutable onCollapsed: (ModelIndexProxy -> 'msg) option = None
-    let mutable onExpanded: (ModelIndexProxy -> 'msg) option = None
+    let mutable onCollapsed: (ModelIndex -> 'msg) option = None
+    let mutable onExpanded: (ModelIndex -> 'msg) option = None
     
     member internal this.SignalMask = enum<TreeView.SignalMask> (int this._signalMask)
     
@@ -216,9 +216,9 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             (this :> AbstractItemView.SignalHandler).ViewportEntered()
         // TreeView =======================
         member this.Collapsed index =
-            signalDispatch (new ModelIndexProxy(index) |> Collapsed)
+            signalDispatch (new ModelIndex(index, false) |> Collapsed)
         member this.Expanded index =
-            signalDispatch (new ModelIndexProxy(index) |> Expanded)
+            signalDispatch (new ModelIndex(index, false) |> Expanded)
             
     interface IDisposable with
         member this.Dispose() =

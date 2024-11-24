@@ -49,14 +49,14 @@ opaque Handle extends AbstractItemModel.Handle {
 
 opaque Interior extends Handle { // this opaque allows the method delegate to call internal methods as if it's a direct subclass
     // signal emission
-    void emitDataChanged(ModelIndex.Deferred topLeft, ModelIndex.Deferred bottomRight, Array<ItemDataRole> roles);
+    void emitDataChanged(ModelIndex.Handle topLeft, ModelIndex.Handle bottomRight, Array<ItemDataRole> roles);
     void emitHeaderDataChanged(Orientation orientation, int first, int last);
 
     // for access to protected stuff from MethodDelegate
-    void beginInsertRows(ModelIndex.Deferred parent, int first, int last);
+    void beginInsertRows(ModelIndex.Handle parent, int first, int last);
     void endInsertRows();
 
-    void beginRemoveRows(ModelIndex.Deferred parent, int first, int last);
+    void beginRemoveRows(ModelIndex.Handle parent, int first, int last);
     void endRemoveRows();
 
     void beginResetModel();

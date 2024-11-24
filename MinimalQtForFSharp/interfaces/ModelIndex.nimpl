@@ -13,18 +13,6 @@ opaque Handle {
     Variant.Owned data(ItemDataRole role);
 }
 
-// Owned handle, for rare instances when we need to manually invoke methods returning ModelIndex
-// you might ask, why not just use a disposable one everywhere (vs. the @nodispose above)?
-// the short version is that the Model/View APIs make HEAVY use of this type,
-// and we want to avoid allocating thousands of these constantly for list/tree widgets, particularly in the data() callback
-// this way only a select few methods will occasionally return an OwnedHandle, which the F# side will auto-dispose on finalize (if not sooner)
-// AbstractProxyModel->mapToSource() is a good example of where we need this
-// also, remember the idea long ago to have some kind of ownership flag for opaques? well, this is one way of doing that
 opaque Owned extends Handle;
 
-sumtype Deferred {
-    Empty,
-    FromHandle(Handle handle),
-    // seeing as this is a one-way thing (from client -> server), why do we need a separate case for Owned? it's not going to be taking ownership or anything ...
-    FromOwned(Owned owned)
-}
+Owned create(); // empty

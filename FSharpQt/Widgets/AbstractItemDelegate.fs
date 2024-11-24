@@ -25,7 +25,7 @@ with
 type private Signal =
     | CloseEditor of editor: WidgetProxy * hint: EndEditHint
     | CommitData of editor: WidgetProxy
-    | SizeHintChanged of index: ModelIndexProxy
+    | SizeHintChanged of index: ModelIndex
     
 type internal Attr =
     | NoneYet
@@ -61,7 +61,7 @@ type Props<'msg>() =
     
     let mutable onCloseEditor: (WidgetProxy * EndEditHint -> 'msg) option = None
     let mutable onCommitData: (WidgetProxy -> 'msg) option = None
-    let mutable onSizeHintChanged: (ModelIndexProxy -> 'msg) option = None
+    let mutable onSizeHintChanged: (ModelIndex -> 'msg) option = None
     
     member internal this.SignalMask = enum<AbstractItemDelegate.SignalMask> (int this._signalMask)
     
@@ -141,8 +141,8 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
             signalDispatch (CloseEditor(WidgetProxy(editor), EndEditHint.From qtHint))
         member this.CommitData(editor: Widget.Handle) =
             signalDispatch (CommitData(WidgetProxy(editor)))
-        member this.SizeHintChanged(index: ModelIndex.Handle) =
-            signalDispatch(SizeHintChanged(new ModelIndexProxy(index)))
+        member this.SizeHintChanged(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle) =
+            signalDispatch(SizeHintChanged(new ModelIndex(index, false)))
             
     // interface IDisposable with
     //     member this.Dispose() =

@@ -36,7 +36,7 @@ type State = {
 
 type Msg =
     | SetFilter of filter: string
-    | SelectRawIndex of modelIndex: ModelIndexProxy
+    | SelectRawIndex of modelIndex: ModelIndex
     | SelectActualIndex of index: int
     | SetFirst of string
     | SetLast of string

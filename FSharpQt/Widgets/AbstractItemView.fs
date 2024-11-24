@@ -2,16 +2,16 @@
 
 open System
 open FSharpQt.Attrs
-open FSharpQt.MiscTypes
 open Org.Whatever.MinimalQtForFSharp
+open FSharpQt.MiscTypes
 
 type private Signal =
-    | Activated of index: ModelIndexProxy
-    | Clicked of index: ModelIndexProxy
-    | DoubleClicked of index: ModelIndexProxy
-    | Entered of index: ModelIndexProxy
+    | Activated of index: ModelIndex
+    | Clicked of index: ModelIndex
+    | DoubleClicked of index: ModelIndex
+    | Entered of index: ModelIndex
     | IconSizeChanged of size: Size
-    | Pressed of index: ModelIndexProxy
+    | Pressed of index: ModelIndex
     | ViewportEntered
 
 type DragDropMode =
@@ -147,12 +147,12 @@ type private SignalMapFunc<'msg>(func) =
 type Props<'msg>() =
     inherit AbstractScrollArea.Props<'msg>()
     
-    let mutable onActivated: (ModelIndexProxy -> 'msg) option = None
-    let mutable onClicked: (ModelIndexProxy -> 'msg) option = None
-    let mutable onDoubleClicked: (ModelIndexProxy -> 'msg) option = None
-    let mutable onEntered: (ModelIndexProxy -> 'msg) option = None
+    let mutable onActivated: (ModelIndex -> 'msg) option = None
+    let mutable onClicked: (ModelIndex -> 'msg) option = None
+    let mutable onDoubleClicked: (ModelIndex -> 'msg) option = None
+    let mutable onEntered: (ModelIndex -> 'msg) option = None
     let mutable onIconSizeChanged: (Size -> 'msg) option = None
-    let mutable onPressed: (ModelIndexProxy -> 'msg) option = None
+    let mutable onPressed: (ModelIndex -> 'msg) option = None
     let mutable onViewportEntered: 'msg option = None
     
     member internal this.SignalMask = enum<AbstractItemView.SignalMask> (int this._signalMask)
@@ -349,17 +349,17 @@ type ModelCore<'msg>(dispatch: 'msg -> unit) =
         // (none)
         // AbstractItemView ===============
         member this.Activated index =
-            signalDispatch (new ModelIndexProxy(index) |> Activated)
+            signalDispatch (new ModelIndex(index, false) |> Activated)
         member this.Clicked index =
-            signalDispatch (new ModelIndexProxy(index) |> Clicked)
+            signalDispatch (new ModelIndex(index, false) |> Clicked)
         member this.DoubleClicked index =
-            signalDispatch (new ModelIndexProxy(index) |> Signal.DoubleClicked)
+            signalDispatch (new ModelIndex(index, false) |> Signal.DoubleClicked)
         member this.Entered index =
-            signalDispatch (new ModelIndexProxy(index) |> Entered)
+            signalDispatch (new ModelIndex(index, false) |> Entered)
         member this.IconSizeChanged size =
             signalDispatch (Size.From size |> IconSizeChanged)
         member this.Pressed index =
-            signalDispatch (new ModelIndexProxy(index) |> Pressed)
+            signalDispatch (new ModelIndex(index, false) |> Pressed)
         member this.ViewportEntered() =
             signalDispatch ViewportEntered
 
