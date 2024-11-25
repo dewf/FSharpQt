@@ -783,57 +783,158 @@ with
         | DarkYellow -> Color.Constant.DarkYellow
         | Transparent -> Color.Constant.Transparent
 
-type Color private(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
-    let mutable disposed = false
-    member val internal Handle = handle
-
-    interface IDisposable with
-        member this.Dispose() =
-            if owned && not disposed then
-                (handle :?> Org.Whatever.MinimalQtForFSharp.Color.Owned).Dispose()
-                disposed <- true
-    override this.Finalize() =
-        (this :> IDisposable).Dispose()
+type IColor =
+    interface
+        abstract Handle: Color.Handle
+    end
+    
+[<RequireQualifiedAccess>]
+type DeferredColor =
+    | Constant of cc: ColorConstant
+    | RGB of r: int * g: int * b: int
+    | RGBA of r: int * g: int * b: int * a: int
+    
+type Color private(deferred: DeferredColor) = // can't have 'cache' argument until we figure out what the API should be. IColor.Handle isn't sufficient, we'll need to know if the Handle requires immediate disposal after use ...
+    static let mutable existing: Map<DeferredColor, Org.Whatever.MinimalQtForFSharp.Color.Handle> = Map.empty
+    member val private DeferredValue = deferred
+    override this.Equals other =
+        match other with
+        | :? Color as other2 ->
+            this.DeferredValue = other2.DeferredValue
+        | _ ->
+            false
+    override this.GetHashCode() =
+        deferred.GetHashCode()
         
-    internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
-        new Color(handle, false)
-        
-    internal new(owned: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
-        new Color(owned, true)
-        
-    new(constant: ColorConstant) =
-        let handle =
-            Color.Create(constant.QtValue)
-        new Color(handle, true)
+    interface IColor with
+        member this.Handle =
+            match existing.TryFind deferred with
+            | Some value ->
+                value
+            | None ->
+                let handle =
+                    match deferred with
+                    | DeferredColor.Constant cc ->
+                        Color.Create(cc.QtValue)
+                    | DeferredColor.RGB(r, g, b) ->
+                        Color.Create(r, g, b)
+                    | DeferredColor.RGBA(r, g, b, a) ->
+                        Color.Create(r, g, b, a)
+                existing <- existing.Add(deferred, handle)
+                handle
+    new(cc: ColorConstant) =
+        Color(DeferredColor.Constant cc)
     new(r: int, g: int, b: int) =
-        let handle =
-            Color.Create(r, g, b)
-        new Color(handle, true)
+        Color(DeferredColor.RGB(r, g, b))
     new(r: int, g: int, b: int, a: int) =
-        let handle =
-            Color.Create(r, g, b, a)
-        new Color(handle, true)
-    new(r: float, g: float, b: float) =
-        let handle =
-            Color.Create(float32 r, float32 g, float32 b)
-        new Color(handle, true)
-    new(r: float, g: float, b: float, a: float) =
-        let handle =
-            Color.Create(float32 r, float32 g, float32 b, float32 a)
-        new Color(handle, true)
+        Color(DeferredColor.RGBA(r, g, b, a))
         
     new(hex: string) =
-        let handle =
+        let deferred =
             match Util.tryParseHexStringUInt32 hex (Some "#") with
             | Some value ->
                 let red = (value >>> 16) &&& 0xFFu
                 let green = (value >>> 8) &&& 0xFFu
                 let blue = value &&& 0xFFu
-                Color.Create(int red, int green, int blue)
+                DeferredColor.RGB(int red, int green, int blue)
             | None ->
                 printfn "MiscTypes.Color ctor: failed to parse hex string [%s]" hex
-                Color.Create(Color.Constant.Black)
-        new Color(handle, true)
+                DeferredColor.Constant(Black)
+        Color(deferred)
+        
+module Color =
+    type Unowned internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
+        member val private Handle = handle
+        override this.Equals other =
+            match other with
+            | :? Unowned as other2 ->
+                this.Handle = other2.Handle
+            | _ ->
+                false
+        override this.GetHashCode() =
+            this.Handle.GetHashCode()
+            
+        interface IColor with
+            member this.Handle = handle
+    type Owned internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
+        let mutable disposed = false
+        member val private Handle = handle
+        override this.Equals other =
+            match other with
+            | :? Owned as other2 ->
+                this.Handle = other2.Handle
+            | _ ->
+                false
+        override this.GetHashCode() =
+            this.Handle.GetHashCode()
+            
+        interface IDisposable with
+            member this.Dispose() =
+                if not disposed then
+                    handle.Dispose()
+                    disposed <- true
+        override this.Finalize() =
+            (this :> IDisposable).Dispose()
+        
+        interface IColor with
+            member this.Handle = handle
+        new(cc: ColorConstant) =
+            new Owned(Color.Create(cc.QtValue))
+        new(r: int, g: int, b: int) =
+            new Owned(Color.Create(r, g, b))
+            
+
+// type Color private(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
+//     let mutable disposed = false
+//     member val internal Handle = handle
+//
+//     interface IDisposable with
+//         member this.Dispose() =
+//             if owned && not disposed then
+//                 (handle :?> Org.Whatever.MinimalQtForFSharp.Color.Owned).Dispose()
+//                 disposed <- true
+//     override this.Finalize() =
+//         (this :> IDisposable).Dispose()
+//         
+//     internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
+//         new Color(handle, false)
+//         
+//     internal new(owned: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
+//         new Color(owned, true)
+//         
+//     new(constant: ColorConstant) =
+//         let handle =
+//             Color.Create(constant.QtValue)
+//         new Color(handle, true)
+//     new(r: int, g: int, b: int) =
+//         let handle =
+//             Color.Create(r, g, b)
+//         new Color(handle, true)
+//     new(r: int, g: int, b: int, a: int) =
+//         let handle =
+//             Color.Create(r, g, b, a)
+//         new Color(handle, true)
+//     new(r: float, g: float, b: float) =
+//         let handle =
+//             Color.Create(float32 r, float32 g, float32 b)
+//         new Color(handle, true)
+//     new(r: float, g: float, b: float, a: float) =
+//         let handle =
+//             Color.Create(float32 r, float32 g, float32 b, float32 a)
+//         new Color(handle, true)
+//         
+//     new(hex: string) =
+//         let handle =
+//             match Util.tryParseHexStringUInt32 hex (Some "#") with
+//             | Some value ->
+//                 let red = (value >>> 16) &&& 0xFFu
+//                 let green = (value >>> 8) &&& 0xFFu
+//                 let blue = value &&& 0xFFu
+//                 Color.Create(int red, int green, int blue)
+//             | None ->
+//                 printfn "MiscTypes.Color ctor: failed to parse hex string [%s]" hex
+//                 Color.Create(Color.Constant.Black)
+//         new Color(handle, true)
         
 type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle, owned: bool) =
     let mutable disposed = false
@@ -862,7 +963,7 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
         | Enums.CheckState.Checked -> Checked
         | _ -> failwith "VariantProxy.ToCheckState() - unknown incoming check state"
     member this.ToColor() =
-        new Color(qtVariant.ToColor())
+        new Color.Owned(qtVariant.ToColor())
         
 [<RequireQualifiedAccess>]
 type Variant =
@@ -873,7 +974,7 @@ type Variant =
     | Size of size: Size
     | CheckState of state: CheckState
     // | Icon of icon: Icon
-    | Color of color: Color
+    | Color of color: IColor
     | Alignment of align: Alignment
     | Unknown
 with

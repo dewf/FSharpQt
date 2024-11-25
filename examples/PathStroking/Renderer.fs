@@ -237,7 +237,7 @@ let update (state: State) (msg: Msg) =
         { state with DragState = NotDragging }, Cmd.None
         
 type PaintResources = {
-    BgColor: Color
+    BgColor: IColor
     LineColorBrush: Brush
     NoPen: Pen
     ControlPointPen: Pen
@@ -251,12 +251,13 @@ type EventDelegate(state: State) =
     inherit EventDelegateBaseWithResources<Msg,State,PaintResources>(state)
     
     override this.CreateResources res =
-        { BgColor = res.Color(DarkGray)
-          LineColorBrush = res.Brush(res.Color(Red))
+        // a smattering of different Color creation methods here, should all be interchangeable
+        { BgColor = new Color.Owned(DarkGray)      
+          LineColorBrush = res.Brush(Color(Red))
           NoPen = res.Pen(NoPen)
-          ControlPointPen = res.Pen(res.Color(50, 100, 120, 200))
-          ControlPointBrush = res.Brush(res.Color(200, 200, 210, 120))
-          HoverPointBrush = res.Brush(res.Color(Yellow))
+          ControlPointPen = res.Pen(Color(50, 100, 120, 200))
+          ControlPointBrush = res.Brush(Color(200, 200, 210, 120))
+          HoverPointBrush = res.Brush(Color(Yellow))
           LightGrayPen = res.Pen(res.Color(LightGray), 0, SolidLine)
           NoBrush = res.Brush(NoBrush) }
     

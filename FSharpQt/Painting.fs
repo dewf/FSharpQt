@@ -12,7 +12,7 @@ open Org.Whatever.MinimalQtForFSharp.Support
 
 type Gradient internal(qtGradient: PaintResources.Gradient) =
     member val qtGradient = qtGradient
-    member this.SetColorAt(location: double, color: Color) =
+    member this.SetColorAt(location: double, color: IColor) =
         qtGradient.SetColorAt(location, color.Handle)
     
 type RadialGradient internal(qtRadial: PaintResources.RadialGradient) =
@@ -334,27 +334,27 @@ type PaintStack() =
     member this.Color(constant: ColorConstant) =
         let handle =
             this.qtResources.CreateColor(constant.QtValue)
-        new Color(handle) // NOT owned!
+        Color.Unowned(handle)
         
     member this.Color(r: int, g: int, b: int) =
         let handle =
             this.qtResources.CreateColor(r, g, b)
-        new Color(handle)
+        Color.Unowned(handle)
         
     member this.Color(r: int, g: int, b: int, a: int) =
         let handle =
             this.qtResources.CreateColor(r, g, b, a)
-        new Color(handle)
+        Color.Unowned(handle)
         
     member this.Color(r: float, g: float, b: float) =
         let handle =
             this.qtResources.CreateColor(float32 r, float32 g, float32 b)
-        new Color(handle)
+        Color.Unowned(handle)
         
     member this.Color(r: float, g: float, b: float, a: float) =
         let handle =
             this.qtResources.CreateColor(float32 r, float32 g, float32 b, float32 a)
-        new Color(handle)
+        Color.Unowned(handle)
         
     member this.RadialGradient(center: PointF, radius: double) =
         this.qtResources.CreateRadialGradient(center.QtValue, radius)
@@ -372,7 +372,7 @@ type PaintStack() =
         this.qtResources.CreateBrush(style.QtValue)
         |> Brush
         
-    member this.Brush(color: Color) =
+    member this.Brush(color: IColor) =
         this.qtResources.CreateBrush(color.Handle)
         |> Brush
         
@@ -388,7 +388,7 @@ type PaintStack() =
         this.qtResources.CreatePen(style.QtValue)
         |> Pen
         
-    member this.Pen(color: Color) =
+    member this.Pen(color: IColor) =
         this.qtResources.CreatePen(color.Handle)
         |> Pen
         
@@ -402,7 +402,7 @@ type PaintStack() =
         this.qtResources.CreatePen(brush.qtBrush, width, useStyle.QtValue, useCap.QtValue, useJoin.QtValue)
         |> Pen
         
-    member this.Pen(color: Color, width: double, ?style: PenStyle, ?cap: CapStyle, ?join: JoinStyle) =
+    member this.Pen(color: IColor, width: double, ?style: PenStyle, ?cap: CapStyle, ?join: JoinStyle) =
         let useStyle =
             defaultArg style SolidLine
         let useCap =
@@ -484,7 +484,7 @@ type Painter internal(qtPainter: Org.Whatever.MinimalQtForFSharp.Painter.Handle)
     member this.FillRect(rect: Rect, brush: Brush) =
         qtPainter.FillRect(rect.QtValue, brush.qtBrush)
         
-    member this.FillRect(rect: Rect, color: Color) =
+    member this.FillRect(rect: Rect, color: IColor) =
         qtPainter.FillRect(rect.QtValue, color.Handle)
 
     member this.DrawRect(rect: Rect) =

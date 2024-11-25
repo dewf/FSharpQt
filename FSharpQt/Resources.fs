@@ -12,7 +12,7 @@ type ResourceKey =
     
 [<RequireQualifiedAccess>]
 type Resource =
-    | Color of color: Color
+    | Color of color: Color.Owned
     | Image of image: Image
     | Pixmap of pixmap: Pixmap
 with
@@ -33,7 +33,7 @@ type ResourceManager() =
                 printfn "ViewResources disposing %A" pair.Key
                 dispose pair.Value
     
-    member this.Set(name: string, color: Color) =
+    member this.Set(name: string, color: Color.Owned) =
         match items.TryFind (ColorKey name) with
         | Some (Resource.Color existing) ->
             // release existing

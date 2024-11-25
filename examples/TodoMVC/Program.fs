@@ -41,19 +41,7 @@ type TodoItem = {
     Done: bool
 }
 
-type Resources = {
-    LowColor: Color
-    NormalColor: Color
-    HighColor: Color
-} with
-    static member Init = {
-        LowColor = new Color("#b30000")
-        NormalColor = new Color("#ff8000")
-        HighColor = new Color("#ffff00")
-    }
-    
 type State = {
-    Resources: Resources
     Items: TrackedRows<TodoItem>
     LineText: string
     AddPriority: Priority
@@ -73,7 +61,6 @@ type Msg =
 
 let init _ =
     let state = {
-        Resources = Resources.Init
         Items = TrackedRows.Init [
             { Text = "Take out the trash"; Priority = High; Done = false }
             { Text = "Walk the dog"; Priority = Normal; Done = false }
@@ -174,9 +161,9 @@ type RowDelegate(state: State) =
         | Column.Task, DisplayRole -> Variant.String rowData.Text
         | Column.Priority, DecorationRole ->
             match rowData.Priority with
-            | Low -> state.Resources.LowColor
-            | Normal -> state.Resources.NormalColor
-            | High -> state.Resources.HighColor
+            | Low -> Color("#b30000") :> IColor // hmmmm
+            | Normal -> Color("#ff8000")
+            | High -> Color("#ffff00")
             |> Variant.Color
         | Column.Priority, DisplayRole -> rowData.Priority |> Priority.toString |> Variant.String
         | Column.Priority, EditRole -> rowData.Priority |> Priority.toInt |> Variant.Int
