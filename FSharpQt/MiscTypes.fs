@@ -793,14 +793,15 @@ type DeferredColor =
     | Constant of cc: ColorConstant
     | RGB of r: int * g: int * b: int
     | RGBA of r: int * g: int * b: int * a: int
+    // TODO: the rest
     
 type Color private(deferred: DeferredColor) = // can't have 'cache' argument until we figure out what the API should be. IColor.Handle isn't sufficient, we'll need to know if the Handle requires immediate disposal after use ...
     static let mutable existing: Map<DeferredColor, Org.Whatever.MinimalQtForFSharp.Color.Handle> = Map.empty
-    member val private DeferredValue = deferred
+    member val private Value = deferred
     override this.Equals other =
         match other with
         | :? Color as other2 ->
-            this.DeferredValue = other2.DeferredValue
+            this.Value = other2.Value
         | _ ->
             false
     override this.GetHashCode() =
@@ -844,30 +845,24 @@ type Color private(deferred: DeferredColor) = // can't have 'cache' argument unt
         
 module Color =
     type Unowned internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
-        member val private Handle = handle
+        member val private Value = handle
         override this.Equals other =
             match other with
             | :? Unowned as other2 ->
-                this.Handle = other2.Handle
+                this.Value = other2.Value
             | _ ->
                 false
         override this.GetHashCode() =
-            this.Handle.GetHashCode()
+            this.Value.GetHashCode()
             
         interface IColor with
             member this.Handle = handle
-    type Owned internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
-        let mutable disposed = false
-        member val private Handle = handle
-        override this.Equals other =
-            match other with
-            | :? Owned as other2 ->
-                this.Handle = other2.Handle
-            | _ ->
-                false
-        override this.GetHashCode() =
-            this.Handle.GetHashCode()
             
+        // any conventional getters/methods would go here
+    
+    type Owned internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
+        inherit Unowned(handle)
+        let mutable disposed = false
         interface IDisposable with
             member this.Dispose() =
                 if not disposed then
@@ -875,66 +870,10 @@ module Color =
                     disposed <- true
         override this.Finalize() =
             (this :> IDisposable).Dispose()
-        
-        interface IColor with
-            member this.Handle = handle
         new(cc: ColorConstant) =
             new Owned(Color.Create(cc.QtValue))
         new(r: int, g: int, b: int) =
             new Owned(Color.Create(r, g, b))
-            
-
-// type Color private(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle, owned: bool) =
-//     let mutable disposed = false
-//     member val internal Handle = handle
-//
-//     interface IDisposable with
-//         member this.Dispose() =
-//             if owned && not disposed then
-//                 (handle :?> Org.Whatever.MinimalQtForFSharp.Color.Owned).Dispose()
-//                 disposed <- true
-//     override this.Finalize() =
-//         (this :> IDisposable).Dispose()
-//         
-//     internal new(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
-//         new Color(handle, false)
-//         
-//     internal new(owned: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
-//         new Color(owned, true)
-//         
-//     new(constant: ColorConstant) =
-//         let handle =
-//             Color.Create(constant.QtValue)
-//         new Color(handle, true)
-//     new(r: int, g: int, b: int) =
-//         let handle =
-//             Color.Create(r, g, b)
-//         new Color(handle, true)
-//     new(r: int, g: int, b: int, a: int) =
-//         let handle =
-//             Color.Create(r, g, b, a)
-//         new Color(handle, true)
-//     new(r: float, g: float, b: float) =
-//         let handle =
-//             Color.Create(float32 r, float32 g, float32 b)
-//         new Color(handle, true)
-//     new(r: float, g: float, b: float, a: float) =
-//         let handle =
-//             Color.Create(float32 r, float32 g, float32 b, float32 a)
-//         new Color(handle, true)
-//         
-//     new(hex: string) =
-//         let handle =
-//             match Util.tryParseHexStringUInt32 hex (Some "#") with
-//             | Some value ->
-//                 let red = (value >>> 16) &&& 0xFFu
-//                 let green = (value >>> 8) &&& 0xFFu
-//                 let blue = value &&& 0xFFu
-//                 Color.Create(int red, int green, int blue)
-//             | None ->
-//                 printfn "MiscTypes.Color ctor: failed to parse hex string [%s]" hex
-//                 Color.Create(Color.Constant.Black)
-//         new Color(handle, true)
         
 type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle, owned: bool) =
     let mutable disposed = false
