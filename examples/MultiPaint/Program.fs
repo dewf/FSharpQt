@@ -109,8 +109,9 @@ type RowDelegate(state: State) =
                 match rowData.Info with
                 | Some info -> $"{info.Name}"
                 | None -> "(awaiting login)"
-            Variant.String text
-        | _ -> Variant.Empty
+            Variant(text)
+        | _ ->
+            Variant()
 
 let view (state: State) =
     let vbox =

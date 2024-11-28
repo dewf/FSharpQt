@@ -136,9 +136,9 @@ type RowDelegate(state: State) =
     inherit AbstractSimpleListModelDelegate<Msg,Name>()
     override this.Data row col role =
         match col, role with
-        | 0, DisplayRole -> Variant.String row.Last
-        | 1, DisplayRole -> Variant.String row.First
-        | _ -> Variant.Empty
+        | 0, DisplayRole -> Variant(row.Last)
+        | 1, DisplayRole -> Variant(row.First)
+        | _ -> Variant()
         
 let view (state: State) =
     let filterLabel = Label(Text = "Filter:")

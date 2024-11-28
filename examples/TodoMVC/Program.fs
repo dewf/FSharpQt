@@ -156,18 +156,25 @@ type RowDelegate(state: State) =
     inherit AbstractSimpleListModelDelegate<Msg,TodoItem>()
     override this.Data rowData col role =
         match enum<Column> col, role with
-        | Column.Done, SizeHintRole -> Variant.Size (Size.From (40, 24)) // give the checkbox a bit more space, and also make the rows taller (uniform heights are enabled)
-        | Column.Done, CheckStateRole -> Variant.CheckState (if rowData.Done then Checked else Unchecked)
-        | Column.Task, DisplayRole -> Variant.String rowData.Text
+        | Column.Done, SizeHintRole -> Variant(Size.From (40, 24)) // give the checkbox a bit more space, and also make the rows taller (uniform heights are enabled)
+        | Column.Done, CheckStateRole -> Variant(if rowData.Done then Checked else Unchecked)
+        | Column.Task, DisplayRole -> Variant(rowData.Text)
         | Column.Priority, DecorationRole ->
             match rowData.Priority with
-            | Low -> Color("#b30000") :> IColor // hmmmm
+            | Low -> Color("#b30000")
             | Normal -> Color("#ff8000")
             | High -> Color("#ffff00")
-            |> Variant.Color
-        | Column.Priority, DisplayRole -> rowData.Priority |> Priority.toString |> Variant.String
-        | Column.Priority, EditRole -> rowData.Priority |> Priority.toInt |> Variant.Int
-        | _ -> Variant.Empty
+            |> Variant
+        | Column.Priority, DisplayRole ->
+            rowData.Priority
+            |> Priority.toString
+            |> Variant
+        | Column.Priority, EditRole ->
+            rowData.Priority
+            |> Priority.toInt
+            |> Variant
+        | _ ->
+            Variant()
     override this.GetFlags rowData col baseFlags =
         match enum<Column> col with
         | Column.Done -> baseFlags.Add(ItemIsUserCheckable)
@@ -206,7 +213,7 @@ type PriorityColumnDelegate(state: State) =
         use value = index.Data(EditRole) // default is display role! no no no!
         combo.CurrentIndex <- value.ToInt()
     override this.SetModelData combo model index =
-        model.SetData(index, Variant.Int combo.CurrentIndex)
+        model.SetData(index, Variant(combo.CurrentIndex))
         |> ignore
         
 type FilterDelegate(state: State) =

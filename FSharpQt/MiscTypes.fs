@@ -905,7 +905,7 @@ type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Han
         new Color.Owned(qtVariant.ToColor())
         
 [<RequireQualifiedAccess>]
-type Variant =
+type private VariantValue =
     | Empty
     | Bool of value: bool
     | String of str: string
@@ -915,27 +915,50 @@ type Variant =
     // | Icon of icon: Icon
     | Color of color: IColor
     | Alignment of align: Alignment
-    | Unknown
-with
-    member this.QtValue =
-        match this with
-        | Empty -> Variant.Deferred.Empty() :> Org.Whatever.MinimalQtForFSharp.Variant.Deferred
-        | Bool value -> Variant.Deferred.FromBool(value)
-        | String str -> Variant.Deferred.FromString(str)
-        | Int value -> Variant.Deferred.FromInt(value)
-        | Size size -> Variant.Deferred.FromSize(size.QtValue)
-        | CheckState state -> Variant.Deferred.FromCheckState(state.QtValue)
-        // | Icon icon -> Variant.Deferred.FromIcon(icon.QtValue)
-        | Color color -> Variant.Deferred.FromColor(color.Handle)
-        | Alignment align -> Variant.Deferred.FromAligment(align.QtValue)
-        | Unknown -> failwith "Variant.QtValue: 'Unknown' variants cannot be sent to server side"
-    // static member FromQtValue (value: Org.Whatever.MinimalQtForFSharp.Variant.Handle) =
-    //     match value.ToServerValue() with
-    //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Bool as b -> Variant.Bool b.Value
-    //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.String as s -> Variant.String s.Value
-    //     | :? Org.Whatever.MinimalQtForFSharp.Variant.ServerValue.Int as i -> Variant.Int i.Value
-    //     | _ -> Variant.Unknown
-
+    // | Unknown
+    
+type Variant private(value: VariantValue) =
+    member val QtValue =
+        // the reason we don't just use a MinimalQtForFSharp.Variant.Deferred in the primary constructor (vs. VariantValue DU),
+        // is to minimize native code execution until the last second
+        // because for example evaluating a Color.Handle() can trigger something on the C++ side
+        // "resource values" (like this, and Color) are meant to be safe to use in the view() function, with no C++ activity until absolutely necessary
+        match value with
+        | VariantValue.Empty ->
+            Variant.Deferred.Empty() :> Org.Whatever.MinimalQtForFSharp.Variant.Deferred
+        | VariantValue.Bool value ->
+            Variant.Deferred.FromBool(value)
+        | VariantValue.String str ->
+            Variant.Deferred.FromString(str)
+        | VariantValue.Int value ->
+            Variant.Deferred.FromInt(value)
+        | VariantValue.Size size ->
+            Variant.Deferred.FromSize(size.QtValue)
+        | VariantValue.CheckState state ->
+            Variant.Deferred.FromCheckState(state.QtValue)
+        | VariantValue.Color color ->
+            Variant.Deferred.FromColor(color.Handle)
+        | VariantValue.Alignment align ->
+            Variant.Deferred.FromAligment(align.QtValue)
+        // | VariantValue.Unknown ->
+        //     failwith "Variant.QtValue: 'Unknown' variants cannot be sent to C++ side"
+    new() =
+        Variant(VariantValue.Empty)
+    new(value: bool) =
+        Variant(VariantValue.Bool(value))
+    new(value: string) =
+        Variant(VariantValue.String(value))
+    new(value: int) =
+        Variant(VariantValue.Int(value))
+    new(value: Size) =
+        Variant(VariantValue.Size(value))
+    new(value: CheckState) =
+        Variant(VariantValue.CheckState(value))
+    new(value: IColor) =
+        Variant(VariantValue.Color(value))
+    new(value: Alignment) =
+        Variant(VariantValue.Alignment(value))
+        
 type ModelIndex private(handle: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, owned: bool) =
     let mutable disposed = false
     member val internal Handle = handle

@@ -74,9 +74,9 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
                             rows[rowIndex]
                         simpleDelegate.Data row colIndex (ItemDataRole.From role)
                     else
-                        Variant.Empty
+                        Variant()
                 else
-                    Variant.Empty
+                    Variant()
             value.QtValue
                 
         // optional depending on mask: ==================================================
@@ -87,13 +87,13 @@ type internal SimpleListModel<'msg,'row>(dispatch: 'msg -> unit, handler: Abstra
                     match maybeHeaders with
                     | Some headers ->
                         if section < headers.Length then
-                            Variant.String headers[section]
+                            Variant(headers[section])
                         else
-                            Variant.String ""
+                            Variant("")
                     | None ->
-                        Variant.Empty
+                        Variant()
                 else
-                    Variant.Empty
+                    Variant()
             variant.QtValue
             
         member this.GetFlags(index: Org.Whatever.MinimalQtForFSharp.ModelIndex.Handle, baseFlags: AbstractListModel.ItemFlags) =

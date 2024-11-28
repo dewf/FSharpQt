@@ -216,7 +216,7 @@ type RowDelegate(state: State) =
     override this.Data rowData col role =
         match enum<Column> col, role with
         | Column.UserName, DisplayRole ->
-            Variant.String rowData.Name
+            Variant(rowData.Name)
         | Column.UserColor, role ->
             let colorIndex =
                 state.ColorMap[rowData.Id]
@@ -224,19 +224,19 @@ type RowDelegate(state: State) =
                 colorAtIndex colorIndex
             match role with
             | DecorationRole ->
-                Color(colorConstant) :> IColor
-                |> Variant.Color
+                Color(colorConstant)
+                |> Variant
             | DisplayRole ->
                 colorConstant.ToString()
-                |> Variant.String
+                |> Variant
             | EditRole ->
-                Variant.Int colorIndex
+                Variant(colorIndex)
             | _ ->
                 // usercolor, any other role
-                Variant.Empty
+                Variant()
         | _ ->
             // any other column
-            Variant.Empty
+            Variant()
     override this.GetFlags rowData col baseFlags =
         match enum<Column> col with
         | Column.UserColor -> baseFlags.Add(ItemIsEditable)
@@ -264,12 +264,12 @@ type EditorRowDelegate(state: State) =
         match enum<EditorColumn> col, role with
         | EditorColumn.Color, DisplayRole ->
             rowData.Color.ToString()
-            |> Variant.String
+            |> Variant
         | EditorColumn.Color, DecorationRole ->
-            Color(rowData.Color) :> IColor
-            |> Variant.Color
+            Color(rowData.Color)
+            |> Variant
         | _ ->
-            Variant.Empty
+            Variant()
         
 type ColorColumnItemDelegate(state: State) =
     inherit ComboBoxItemDelegateBase<Msg>()
@@ -288,7 +288,7 @@ type ColorColumnItemDelegate(state: State) =
     override this.SetModelData combo model index =
         // pretty simple, just grab the current combo index and set it on the model
         // again, this applies to the UserColor (index) of an OtherUser
-        model.SetData(index, Variant.Int combo.CurrentIndex)
+        model.SetData(index, combo.CurrentIndex |> Variant)
         |> ignore
 
 let view (state: State) =
