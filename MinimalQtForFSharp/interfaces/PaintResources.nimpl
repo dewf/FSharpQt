@@ -5,7 +5,7 @@ import Color;
 
 @nodispose
 opaque Gradient {
-    void setColorAt(double location, Color.Handle color);
+    void setColorAt(double location, Color.Deferred color);
 }
 
 @nodispose
@@ -111,6 +111,7 @@ opaque PainterPathStroker {
 }
 
 opaque Handle {
+    // these return handles, because internally owned
     Color.Handle createColor(Color.Constant name);
     Color.Handle createColor(int r, int g, int b);
     Color.Handle createColor(int r, int g, int b, int a);
@@ -122,12 +123,12 @@ opaque Handle {
     LinearGradient createLinearGradient(double x1, double y1, double x2, double y2);
 
     Brush createBrush(Brush.Style style);
-    Brush createBrush(Color.Handle color); // + BrushStyle in the future
+    Brush createBrush(Color.Deferred color); // + BrushStyle in the future
     Brush createBrush(Gradient gradient);
 
     Pen createPen();
     Pen createPen(Pen.Style style);
-    Pen createPen(Color.Handle color);
+    Pen createPen(Color.Deferred color);
     Pen createPen(Brush brush, double width, Pen.Style style, Pen.CapStyle cap, Pen.JoinStyle join);
 
     Font createFont(string family, int pointSize);

@@ -26,8 +26,14 @@ opaque Handle;
 
 opaque Owned extends Handle;
 
-Owned create(Constant name);
-Owned create(int r, int g, int b);
-Owned create(int r, int g, int b, int a);
-Owned create(float r, float g, float b);
-Owned create(float r, float g, float b, float a);
+sumtype Deferred {
+    FromHandle(Handle value),
+    FromConstant(Constant name),
+    FromRGB(int r, int g, int b),
+    FromRGBA(int r, int g, int b, int a),
+    FromFloatRGB(float r, float g, float b),
+    FromFloatRGBA(float r, float g, float b, float a)
+}
+
+// for long-lived handles:
+Owned create(Deferred deferred);

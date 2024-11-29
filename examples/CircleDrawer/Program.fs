@@ -201,9 +201,9 @@ type EventDelegate(state: State) =
         Everything
         
     override this.Paint stack painter widget updateRect =
-        let bgBrush = stack.Brush(stack.Color(DarkBlue))
-        let hoverBrush = stack.Brush(stack.Color(Magenta))
-        let pen = stack.Pen(stack.Color(Yellow), Width = 2)
+        let bgBrush = stack.Brush(Color(DarkBlue))
+        let hoverBrush = stack.Brush(Color(Magenta))
+        let pen = stack.Pen(Color(Yellow), Width = 2)
         
         painter.SetRenderHint Antialiasing true
         painter.FillRect(widget.Rect, bgBrush)

@@ -742,6 +742,11 @@ type ComboBoxProxy internal(model: ComboBox.Handle) =
         and set value =
             model.SetCurrentIndex(value)
 
+type IColor =
+    interface
+        abstract QtValue: Color.Deferred
+    end
+    
 type ColorConstant =
     | Black
     | White
@@ -782,68 +787,35 @@ with
         | DarkMagenta -> Color.Constant.DarkMagenta
         | DarkYellow -> Color.Constant.DarkYellow
         | Transparent -> Color.Constant.Transparent
-
-type IColor =
-    interface
-        abstract Handle: Color.Handle
-    end
     
-[<RequireQualifiedAccess>]
-type DeferredColor =
-    | Constant of cc: ColorConstant
-    | RGB of r: int * g: int * b: int
-    | RGBA of r: int * g: int * b: int * a: int
-    // TODO: the rest
-    
-type Color private(deferred: DeferredColor) = // can't have 'cache' argument until we figure out what the API should be. IColor.Handle isn't sufficient, we'll need to know if the Handle requires immediate disposal after use ...
-    static let mutable existing: Map<DeferredColor, Org.Whatever.MinimalQtForFSharp.Color.Handle> = Map.empty
-    member val private Value = deferred
-    override this.Equals other =
-        match other with
-        | :? Color as other2 ->
-            this.Value = other2.Value
-        | _ ->
-            false
-    override this.GetHashCode() =
-        deferred.GetHashCode()
-        
-    interface IColor with
-        member this.Handle =
-            match existing.TryFind deferred with
-            | Some value ->
-                value
-            | None ->
-                let handle =
-                    match deferred with
-                    | DeferredColor.Constant cc ->
-                        Color.Create(cc.QtValue)
-                    | DeferredColor.RGB(r, g, b) ->
-                        Color.Create(r, g, b)
-                    | DeferredColor.RGBA(r, g, b, a) ->
-                        Color.Create(r, g, b, a)
-                existing <- existing.Add(deferred, handle)
-                handle
-    new(cc: ColorConstant) =
-        Color(DeferredColor.Constant cc)
-    new(r: int, g: int, b: int) =
-        Color(DeferredColor.RGB(r, g, b))
-    new(r: int, g: int, b: int, a: int) =
-        Color(DeferredColor.RGBA(r, g, b, a))
-        
-    new(hex: string) =
-        let deferred =
-            match Util.tryParseHexStringUInt32 hex (Some "#") with
-            | Some value ->
-                let red = (value >>> 16) &&& 0xFFu
-                let green = (value >>> 8) &&& 0xFFu
-                let blue = value &&& 0xFFu
-                DeferredColor.RGB(int red, int green, int blue)
-            | None ->
-                printfn "MiscTypes.Color ctor: failed to parse hex string [%s]" hex
-                DeferredColor.Constant(Black)
-        Color(deferred)
-        
 module Color =
+    [<RequireQualifiedAccess>]
+    type internal Value =
+        | Constant of cc: ColorConstant
+        | RGB of r: int * g: int * b: int
+        | RGBA of r: int * g: int * b: int * a: int
+        | FloatRGB of r: float * g: float * b: float
+        | FloatRGBA of r: float * g: float * b: float * a: float
+        | Hex of hex: string
+    with
+        member this.QtValue =
+            match this with
+            | Constant cc -> Color.Deferred.FromConstant(cc.QtValue) :> Org.Whatever.MinimalQtForFSharp.Color.Deferred
+            | RGB(r, g, b) -> Color.Deferred.FromRGB(r, g, b)
+            | RGBA(r, g, b, a) -> Color.Deferred.FromRGBA(r, g, b, a)
+            | FloatRGB(r, g, b) -> Color.Deferred.FromFloatRGB(float32 r, float32 g, float32 b)
+            | FloatRGBA(r, g, b, a) -> Color.Deferred.FromFloatRGBA(float32 r, float32 g, float32 b, float32 a)
+            | Hex hex ->
+                match Util.tryParseHexStringUInt32 hex (Some "#") with
+                | Some value ->
+                    let red = (value >>> 16) &&& 0xFFu
+                    let green = (value >>> 8) &&& 0xFFu
+                    let blue = value &&& 0xFFu
+                    Color.Deferred.FromRGB(int red, int green, int blue)
+                | None ->
+                    printfn "MiscTypes.Value.QtValue: failed to parse hex string [%s]" hex
+                    Color.Deferred.FromConstant(Black.QtValue)
+                    
     type Unowned internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Handle) =
         member val private Value = handle
         override this.Equals other =
@@ -856,10 +828,13 @@ module Color =
             this.Value.GetHashCode()
             
         interface IColor with
-            member this.Handle = handle
+            member this.QtValue = Color.Deferred.FromHandle(handle)
             
         // any conventional getters/methods would go here
     
+    let internal realize (value: Value) =
+        Color.Create(value.QtValue)
+        
     type Owned internal(handle: Org.Whatever.MinimalQtForFSharp.Color.Owned) =
         inherit Unowned(handle)
         let mutable disposed = false
@@ -871,9 +846,59 @@ module Color =
         override this.Finalize() =
             (this :> IDisposable).Dispose()
         new(cc: ColorConstant) =
-            new Owned(Color.Create(cc.QtValue))
+            new Owned(Value.Constant cc |> realize)
         new(r: int, g: int, b: int) =
-            new Owned(Color.Create(r, g, b))
+            new Owned(Value.RGB(r, g, b) |> realize)
+        new(r: int, g: int, b: int, a: int) =
+            new Owned(Value.RGBA(r, g, b, a) |> realize)
+        new(r: float, g: float, b: float) =
+            new Owned(Value.FloatRGB(r, g, b) |> realize)
+        new(r: float, g: float, b: float, a: float) =
+            new Owned(Value.FloatRGBA(r, g, b, a) |> realize)
+        new(hex: string) =
+            new Owned(Value.Hex(hex) |> realize)
+    
+type Color private(value: Color.Value, cached: bool) =
+    static let mutable existing: Map<Color.Value, Org.Whatever.MinimalQtForFSharp.Color.Owned> = Map.empty
+    member val private Value = value
+    override this.Equals other =
+        match other with
+        | :? Color as other2 ->
+            this.Value = other2.Value
+        | _ ->
+            false
+    override this.GetHashCode() =
+        value.GetHashCode()
+        
+    interface IColor with
+        member this.QtValue =
+            if cached then
+                let handle =
+                    match existing.TryFind value with
+                    | Some handle ->
+                        handle
+                    | None ->
+                        let handle =
+                            Color.Create(value.QtValue)
+                        existing <- existing.Add(value, handle)
+                        handle
+                Color.Deferred.FromHandle(handle)
+            else
+                // direct deferred value
+                // might be useful if you intend on creating a gazillion colors that you'd rather not cache
+                value.QtValue
+    new(cc: ColorConstant, ?cache: bool) =
+        Color(Color.Value.Constant cc, defaultArg cache true)
+    new(r: int, g: int, b: int, ?cache: bool) =
+        Color(Color.Value.RGB(r, g, b), defaultArg cache true)
+    new(r: int, g: int, b: int, a: int, ?cache: bool) =
+        Color(Color.Value.RGBA(r, g, b, a), defaultArg cache true)
+    new(r: float, g: float, b: float, ?cache: bool) =
+        Color(Color.Value.FloatRGB(r, g, b), defaultArg cache true)
+    new(r: float, g: float, b: float, a: float, ?cache: bool) =
+        Color(Color.Value.FloatRGBA(r, g, b, a), defaultArg cache true)
+    new(hex: string, ?cache: bool) =
+        Color(Color.Value.Hex(hex), defaultArg cache true)
         
 type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle, owned: bool) =
     let mutable disposed = false
@@ -937,7 +962,7 @@ type Variant private(value: VariantValue) =
         | VariantValue.CheckState state ->
             Variant.Deferred.FromCheckState(state.QtValue)
         | VariantValue.Color color ->
-            Variant.Deferred.FromColor(color.Handle)
+            Variant.Deferred.FromColor(color.QtValue)
         | VariantValue.Alignment align ->
             Variant.Deferred.FromAligment(align.QtValue)
         // | VariantValue.Unknown ->

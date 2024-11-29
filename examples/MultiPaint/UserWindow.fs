@@ -166,8 +166,8 @@ type CanvasDelegate(state: State) =
         Everything
         
     override this.Paint stack painter widget updateRect =
-        let bgBrush = stack.Brush(stack.Color(Gray))
-        let blackPen = stack.Pen(stack.Color(Black), Width = 3)
+        let bgBrush = stack.Brush(Color(Gray))
+        let blackPen = stack.Pen(Color(Black), Width = 3)
         
         painter.SetRenderHint Antialiasing true
         painter.FillRect(widget.Rect, bgBrush)
@@ -177,7 +177,7 @@ type CanvasDelegate(state: State) =
             let color =
                 state.ColorMap[user.Id]
                 |> colorAtIndex 
-            painter.Pen <- stack.Pen(stack.Color(color), Width = 3)
+            painter.Pen <- stack.Pen(Color(color), Width = 3)
             for stroke in user.Drawing do
                 painter.DrawPolyline(stroke |> List.map PointF.From |> Array.ofList)
         

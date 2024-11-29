@@ -79,7 +79,7 @@ namespace Variant
     }
 
     // deferred stuff ========================================
-    class FromDeferred : public Deferred::Visitor {
+    class FromDeferred : public Variant::Deferred::Visitor {
     private:
         QVariant &variant;
     public:
@@ -114,7 +114,7 @@ namespace Variant
         }
 
         void onFromColor(const Deferred::FromColor *value) override {
-            variant = value->value->qColor;
+            variant = Color::fromDeferred(value->value);
         }
 
         void onFromAligment(const Deferred::FromAligment *value) override {

@@ -252,8 +252,8 @@ type EventDelegate(state: State) =
     
     override this.CreateResources res =
         // a smattering of different Color creation methods here, should all be interchangeable
-        { BgColor = new Color.Owned(DarkGray)      
-          LineColorBrush = res.Brush(Color(Red))
+        { BgColor = new Color.Owned(DarkGray)
+          LineColorBrush = res.Brush(res.Color(Red))
           NoPen = res.Pen(NoPen)
           ControlPointPen = res.Pen(Color(50, 100, 120, 200))
           ControlPointBrush = res.Brush(Color(200, 200, 210, 120))

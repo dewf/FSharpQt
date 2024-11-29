@@ -17,4 +17,5 @@ namespace Color {
     };
 
     QColor fromConstant(Constant name);
+    QColor fromDeferred(const std::shared_ptr<Deferred::Base> &deferred);
 }

@@ -13,7 +13,7 @@ open Org.Whatever.MinimalQtForFSharp.Support
 type Gradient internal(qtGradient: PaintResources.Gradient) =
     member val qtGradient = qtGradient
     member this.SetColorAt(location: double, color: IColor) =
-        qtGradient.SetColorAt(location, color.Handle)
+        qtGradient.SetColorAt(location, color.QtValue)
     
 type RadialGradient internal(qtRadial: PaintResources.RadialGradient) =
     inherit Gradient(qtRadial)
@@ -373,7 +373,7 @@ type PaintStack() =
         |> Brush
         
     member this.Brush(color: IColor) =
-        this.qtResources.CreateBrush(color.Handle)
+        this.qtResources.CreateBrush(color.QtValue)
         |> Brush
         
     member this.Brush(grad: Gradient) =
@@ -389,7 +389,7 @@ type PaintStack() =
         |> Pen
         
     member this.Pen(color: IColor) =
-        this.qtResources.CreatePen(color.Handle)
+        this.qtResources.CreatePen(color.QtValue)
         |> Pen
         
     member this.Pen(brush: Brush, width: double, ?style: PenStyle, ?cap: CapStyle, ?join: JoinStyle) =
@@ -485,7 +485,7 @@ type Painter internal(qtPainter: Org.Whatever.MinimalQtForFSharp.Painter.Handle)
         qtPainter.FillRect(rect.QtValue, brush.qtBrush)
         
     member this.FillRect(rect: Rect, color: IColor) =
-        qtPainter.FillRect(rect.QtValue, color.Handle)
+        qtPainter.FillRect(rect.QtValue, color.QtValue)
 
     member this.DrawRect(rect: Rect) =
         qtPainter.DrawRect(rect.QtValue)
