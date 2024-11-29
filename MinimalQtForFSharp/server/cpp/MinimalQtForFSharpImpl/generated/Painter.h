@@ -55,7 +55,7 @@ namespace Painter
     void Handle_fillPath(HandleRef _this, PaintResources::PainterPathRef path, PaintResources::BrushRef brush);
     void Handle_strokePath(HandleRef _this, PaintResources::PainterPathRef path, PaintResources::PenRef pen);
     void Handle_fillRect(HandleRef _this, Common::Rect rect, PaintResources::BrushRef brush);
-    void Handle_fillRect(HandleRef _this, Common::Rect rect, Color::HandleRef color);
+    void Handle_fillRect(HandleRef _this, Common::Rect rect, std::shared_ptr<Color::Deferred::Base> color);
     void Handle_drawRect(HandleRef _this, Common::Rect rect);
     void Handle_drawRect(HandleRef _this, Common::RectF rect);
     void Handle_drawRect(HandleRef _this, int32_t x, int32_t y, int32_t width, int32_t height);

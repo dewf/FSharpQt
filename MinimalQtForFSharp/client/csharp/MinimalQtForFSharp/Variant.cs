@@ -353,18 +353,18 @@ namespace Org.Whatever.MinimalQtForFSharp
                     return new FromIcon(value);
                 }
             }
-            public sealed record FromColor(Color.Handle Value) : Deferred
+            public sealed record FromColor(Color.Deferred Value) : Deferred
             {
-                public Color.Handle Value { get; } = Value;
+                public Color.Deferred Value { get; } = Value;
                 internal override void Push(bool isReturn)
                 {
-                    Color.Handle__Push(Value);
+                    Color.Deferred__Push(Value, isReturn);
                     // kind
                     NativeImplClient.PushInt32(7);
                 }
                 internal static FromColor PopDerived()
                 {
-                    var value = Color.Handle__Pop();
+                    var value = Color.Deferred__Pop();
                     return new FromColor(value);
                 }
             }

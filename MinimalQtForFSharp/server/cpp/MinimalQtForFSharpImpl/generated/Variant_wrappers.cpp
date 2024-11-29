@@ -183,7 +183,7 @@ namespace Variant
             ni_pushInt32(6);
         }
         void onFromColor(const Deferred::FromColor* fromColorValue) override {
-            Color::Handle__push(fromColorValue->value);
+            Color::Deferred__push(fromColorValue->value, isReturn);
             // kind:
             ni_pushInt32(7);
         }
@@ -237,7 +237,7 @@ namespace Variant
             break;
         }
         case 7: {
-            auto value = Color::Handle__pop();
+            auto value = Color::Deferred__pop();
             __ret = new Deferred::FromColor(value);
             break;
         }

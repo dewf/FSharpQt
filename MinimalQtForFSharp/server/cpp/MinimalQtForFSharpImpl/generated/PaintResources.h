@@ -29,7 +29,7 @@ namespace PaintResources
     struct __PainterPathStroker; typedef struct __PainterPathStroker* PainterPathStrokerRef;
     struct __Handle; typedef struct __Handle* HandleRef;
 
-    void Gradient_setColorAt(GradientRef _this, double location, Color::HandleRef color);
+    void Gradient_setColorAt(GradientRef _this, double location, std::shared_ptr<Color::Deferred::Base> color);
 
 
 
@@ -125,11 +125,11 @@ namespace PaintResources
     LinearGradientRef Handle_createLinearGradient(HandleRef _this, Common::PointF start, Common::PointF stop);
     LinearGradientRef Handle_createLinearGradient(HandleRef _this, double x1, double y1, double x2, double y2);
     BrushRef Handle_createBrush(HandleRef _this, Brush::Style style);
-    BrushRef Handle_createBrush(HandleRef _this, Color::HandleRef color);
+    BrushRef Handle_createBrush(HandleRef _this, std::shared_ptr<Color::Deferred::Base> color);
     BrushRef Handle_createBrush(HandleRef _this, GradientRef gradient);
     PenRef Handle_createPen(HandleRef _this);
     PenRef Handle_createPen(HandleRef _this, Pen::Style style);
-    PenRef Handle_createPen(HandleRef _this, Color::HandleRef color);
+    PenRef Handle_createPen(HandleRef _this, std::shared_ptr<Color::Deferred::Base> color);
     PenRef Handle_createPen(HandleRef _this, BrushRef brush, double width, Pen::Style style, Pen::CapStyle cap, Pen::JoinStyle join);
     FontRef Handle_createFont(HandleRef _this, std::string family, int32_t pointSize);
     FontRef Handle_createFont(HandleRef _this, std::string family, int32_t pointSize, Font::Weight weight);
