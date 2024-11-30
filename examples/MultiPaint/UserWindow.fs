@@ -46,25 +46,28 @@ type State = {
 }
 
 let possibleColors =
-    [| Red
-       DarkRed
-       Green
-       DarkGreen
-       Blue
-       DarkBlue
-       Cyan
-       DarkCyan
-       Magenta
-       DarkMagenta
-       Yellow
-       DarkYellow |]
+    [| Color.Red, "Red"
+       Color.DarkRed, "DarkRed"
+       Color.Green, "Green"
+       Color.DarkGreen, "DarkGreen"
+       Color.Blue, "Blue"
+       Color.DarkBlue, "DarkBlue"
+       Color.Cyan, "Cyan"
+       Color.DarkCyan, "DarkCyan"
+       Color.Magenta, "Magenta"
+       Color.DarkMagenta, "DarkMagenta"
+       Color.Yellow, "Yellow"
+       Color.DarkYellow, "DarkYellow" |]
     
 let randomColorIndex () =
     let r = Random()
     r.Next() % possibleColors.Length
     
 let colorAtIndex i =
-    possibleColors[i]
+    fst possibleColors[i]
+    
+let colorNameAtIndex i =
+    snd possibleColors[i]
 
 type Msg =
     | UsernameSubmitted             // for return/tab, requires cmd to get text value
@@ -166,8 +169,8 @@ type CanvasDelegate(state: State) =
         Everything
         
     override this.Paint stack painter widget updateRect =
-        let bgBrush = stack.Brush(Color(Gray))
-        let blackPen = stack.Pen(Color(Black), Width = 3)
+        let bgBrush = stack.Brush(Color.Gray)
+        let blackPen = stack.Pen(Color.Black, Width = 3)
         
         painter.SetRenderHint Antialiasing true
         painter.FillRect(widget.Rect, bgBrush)
@@ -177,7 +180,7 @@ type CanvasDelegate(state: State) =
             let color =
                 state.ColorMap[user.Id]
                 |> colorAtIndex 
-            painter.Pen <- stack.Pen(Color(color), Width = 3)
+            painter.Pen <- stack.Pen(color, Width = 3)
             for stroke in user.Drawing do
                 painter.DrawPolyline(stroke |> List.map PointF.From |> Array.ofList)
         
@@ -220,14 +223,12 @@ type RowDelegate(state: State) =
         | Column.UserColor, role ->
             let colorIndex =
                 state.ColorMap[rowData.Id]
-            let colorConstant =
-                colorAtIndex colorIndex
             match role with
             | DecorationRole ->
-                Color(colorConstant)
+                colorAtIndex colorIndex
                 |> Variant
             | DisplayRole ->
-                colorConstant.ToString()
+                colorNameAtIndex colorIndex
                 |> Variant
             | EditRole ->
                 Variant(colorIndex)
@@ -251,7 +252,8 @@ type RowDelegate(state: State) =
             
 type ColorEditorRow = {
     Index: int
-    Color: ColorConstant
+    Color: Color
+    ColorName: string
 }
 
 type EditorColumn =
@@ -263,20 +265,20 @@ type EditorRowDelegate(state: State) =
     override this.Data rowData col role =
         match enum<EditorColumn> col, role with
         | EditorColumn.Color, DisplayRole ->
-            rowData.Color.ToString()
+            rowData.ColorName
             |> Variant
         | EditorColumn.Color, DecorationRole ->
-            Color(rowData.Color)
+            rowData.Color
             |> Variant
         | _ ->
             Variant()
         
 type ColorColumnItemDelegate(state: State) =
     inherit ComboBoxItemDelegateBase<Msg>()
-    override this.CreateEditor option index =
+    override this.CreateEditor _ _ =
         let rows =
             [0 .. possibleColors.Length - 1]
-            |> List.map (fun i -> { Index = i; Color = colorAtIndex i })
+            |> List.map (fun i -> { Index = i; Color = colorAtIndex i; ColorName = colorNameAtIndex i })
             |> TrackedRows.Init
         let model =
             ListModelNode(EditorRowDelegate(state), int EditorColumn.NUM_COLUMNS, Rows = rows)

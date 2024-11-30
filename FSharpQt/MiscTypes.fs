@@ -887,7 +887,7 @@ type Color private(value: Color.Value, cached: bool) =
                 // direct deferred value
                 // might be useful if you intend on creating a gazillion colors that you'd rather not cache
                 value.QtValue
-    new(cc: ColorConstant, ?cache: bool) =
+    private new(cc: ColorConstant, ?cache: bool) =
         Color(Color.Value.Constant cc, defaultArg cache true)
     new(r: int, g: int, b: int, ?cache: bool) =
         Color(Color.Value.RGB(r, g, b), defaultArg cache true)
@@ -899,6 +899,25 @@ type Color private(value: Color.Value, cached: bool) =
         Color(Color.Value.FloatRGBA(r, g, b, a), defaultArg cache true)
     new(hex: string, ?cache: bool) =
         Color(Color.Value.Hex(hex), defaultArg cache true)
+    static member Black = Color(Black)
+    static member White = Color(White)
+    static member DarkGray = Color(DarkGray)
+    static member Gray = Color(Gray)
+    static member LightGray = Color(LightGray)
+    static member Red = Color(Red)
+    static member Green = Color(Green)
+    static member Blue = Color(Blue)
+    static member Cyan = Color(Cyan)
+    static member Magenta = Color(Magenta)
+    static member Yellow = Color(Yellow)
+    static member DarkRed = Color(DarkRed)
+    static member DarkGreen = Color(DarkGreen)
+    static member DarkBlue = Color(DarkBlue)
+    static member DarkCyan = Color(DarkCyan)
+    static member DarkMagenta = Color(DarkMagenta)
+    static member DarkYellow = Color(DarkYellow)
+    static member Transparent = Color(Transparent)
+        
         
 type VariantProxy private(qtVariant: Org.Whatever.MinimalQtForFSharp.Variant.Handle, owned: bool) =
     let mutable disposed = false

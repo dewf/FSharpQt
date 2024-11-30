@@ -122,9 +122,9 @@ type EventDelegate(state: State) =
         Everything
         
     override this.Paint stack painter widget updateRect =
-        let darkBlue = Color(DarkBlue)
+        let darkBlue = Color.DarkBlue
         let orangeBrush = stack.Brush(Color(1, 0.5, 0.5, 0.25))
-        let yellowPen = stack.Pen(Color(Yellow))
+        let yellowPen = stack.Pen(Color.Yellow)
         let noPen = stack.Pen(NoPen)
         
         painter.FillRect(widget.Rect, darkBlue)

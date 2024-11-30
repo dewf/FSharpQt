@@ -257,8 +257,8 @@ type EventDelegate(state: State) =
           NoPen = res.Pen(NoPen)
           ControlPointPen = res.Pen(Color(50, 100, 120, 200))
           ControlPointBrush = res.Brush(Color(200, 200, 210, 120))
-          HoverPointBrush = res.Brush(Color(Yellow))
-          LightGrayPen = res.Pen(res.Color(LightGray), 0, SolidLine)
+          HoverPointBrush = res.Brush(Color.Yellow)
+          LightGrayPen = res.Pen(Color.LightGray, 0, SolidLine)
           NoBrush = res.Brush(NoBrush) }
     
     override this.SizeHint =
