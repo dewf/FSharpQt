@@ -177,12 +177,16 @@ type private Model<'msg>(dispatch: 'msg -> unit, eventDelegate: IEventDelegate<'
             eventDelegate.SetModelDataRaw editor model index
         member this.DestroyEditor(editor, index) =
             // need to destroy the tree built in .CreateEditor()
-            match EditorRoot with
-            | Some root ->
-                disposeTree root
-                EditorRoot <- None
-            | None ->
-                ()
+            // however I think we need to 'deleteLater' the root widget, which might be why we're crashing in the multipaint demo
+            // TODO:
+            printfn "StyledItemDelegate.DestroyEditor() called, but we're currently leaking it (need .deleteLater())"
+            ()
+            // match EditorRoot with
+            // | Some root ->
+            //     disposeTree root
+            //     EditorRoot <- None
+            // | None ->
+            //     ()
 
 let private create (attrs: IAttr list) (signalMaps: ISignalMapFunc list) (dispatch: 'msg -> unit) (signalMask: StyledItemDelegate.SignalMask) (eventDelegate: IEventDelegate<'msg>) =
     let model = new Model<'msg>(dispatch, eventDelegate)
