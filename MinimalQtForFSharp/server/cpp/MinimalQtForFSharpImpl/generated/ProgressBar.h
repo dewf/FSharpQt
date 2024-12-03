@@ -44,7 +44,7 @@ namespace ProgressBar
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void valueChanged(int32_t value) = 0;
@@ -55,12 +55,12 @@ namespace ProgressBar
         BottomToTop
     };
 
-    void Handle_setAlignment(HandleRef _this, Enums::Alignment align);
+    void Handle_setAlignment(HandleRef _this, Alignment align);
     void Handle_setFormat(HandleRef _this, std::string format);
     void Handle_setInvertedAppearance(HandleRef _this, bool invert);
     void Handle_setMaximum(HandleRef _this, int32_t value);
     void Handle_setMinimum(HandleRef _this, int32_t value);
-    void Handle_setOrientation(HandleRef _this, Enums::Orientation orient);
+    void Handle_setOrientation(HandleRef _this, Orientation orient);
     std::string Handle_text(HandleRef _this);
     void Handle_setTextDirection(HandleRef _this, Direction direction);
     void Handle_setTextVisible(HandleRef _this, bool visible);

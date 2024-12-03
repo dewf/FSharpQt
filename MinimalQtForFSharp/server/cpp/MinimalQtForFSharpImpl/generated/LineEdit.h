@@ -50,7 +50,7 @@ namespace LineEdit
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void cursorPositionChanged(int32_t oldPos, int32_t newPos) = 0;
@@ -70,9 +70,9 @@ namespace LineEdit
     };
 
     bool Handle_hasAcceptableInput(HandleRef _this);
-    void Handle_setAlignment(HandleRef _this, Enums::Alignment align);
+    void Handle_setAlignment(HandleRef _this, Alignment align);
     void Handle_setClearButtonEnabled(HandleRef _this, bool enabled);
-    void Handle_setCursorMoveStyle(HandleRef _this, Enums::CursorMoveStyle style);
+    void Handle_setCursorMoveStyle(HandleRef _this, CursorMoveStyle style);
     void Handle_setCursorPosition(HandleRef _this, int32_t pos);
     std::string Handle_displayText(HandleRef _this);
     void Handle_setDragEnabled(HandleRef _this, bool enabled);

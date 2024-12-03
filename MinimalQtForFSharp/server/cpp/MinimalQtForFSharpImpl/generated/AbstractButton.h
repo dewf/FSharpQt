@@ -47,7 +47,7 @@ namespace AbstractButton
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void clicked(bool checkState) = 0;
@@ -64,7 +64,7 @@ namespace AbstractButton
     void Handle_setChecked(HandleRef _this, bool state);
     void Handle_setDown(HandleRef _this, bool state);
     void Handle_setIcon(HandleRef _this, Icon::HandleRef icon);
-    void Handle_setIconSize(HandleRef _this, Common::Size size);
+    void Handle_setIconSize(HandleRef _this, Size size);
     void Handle_setShortcut(HandleRef _this, std::shared_ptr<KeySequence::Deferred::Base> seq);
     void Handle_setText(HandleRef _this, std::string text);
 }

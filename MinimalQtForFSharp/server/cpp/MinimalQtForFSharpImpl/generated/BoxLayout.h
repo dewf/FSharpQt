@@ -54,7 +54,7 @@ namespace BoxLayout
     void Handle_addStretch(HandleRef _this, int32_t stretch);
     void Handle_addWidget(HandleRef _this, Widget::HandleRef widget);
     void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t stretch);
-    void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t stretch, Enums::Alignment align);
+    void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t stretch, Alignment align);
     void Handle_addLayout(HandleRef _this, Layout::HandleRef layout);
     void Handle_addLayout(HandleRef _this, Layout::HandleRef layout, int32_t stretch);
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);

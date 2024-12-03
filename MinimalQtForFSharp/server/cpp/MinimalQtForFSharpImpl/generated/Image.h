@@ -72,8 +72,8 @@ namespace Image
             TransformModeField = 2
         };
         int32_t _usedFields = 0;
-        Enums::AspectRatioMode _aspectMode;
-        Enums::TransformationMode _transformMode;
+        AspectRatioMode _aspectMode;
+        TransformationMode _transformMode;
     protected:
         int32_t getUsedFields() {
             return _usedFields;
@@ -81,35 +81,35 @@ namespace Image
         friend void ScaledOptions__push(ScaledOptions value, bool isReturn);
         friend ScaledOptions ScaledOptions__pop();
     public:
-        void setAspectMode(Enums::AspectRatioMode value) {
+        void setAspectMode(AspectRatioMode value) {
             _aspectMode = value;
             _usedFields |= Fields::AspectModeField;
         }
-        bool hasAspectMode(Enums::AspectRatioMode *value) const {
+        bool hasAspectMode(AspectRatioMode *value) const {
             if (_usedFields & Fields::AspectModeField) {
                 *value = _aspectMode;
                 return true;
             }
             return false;
         }
-        [[nodiscard]] Enums::AspectRatioMode getOrDefaultAspectMode(Enums::AspectRatioMode defaultValue) const {
+        [[nodiscard]] AspectRatioMode getOrDefaultAspectMode(AspectRatioMode defaultValue) const {
             if (_usedFields & Fields::AspectModeField) {
                 return _aspectMode;
             }
             return defaultValue;
         }
-        void setTransformMode(Enums::TransformationMode value) {
+        void setTransformMode(TransformationMode value) {
             _transformMode = value;
             _usedFields |= Fields::TransformModeField;
         }
-        bool hasTransformMode(Enums::TransformationMode *value) const {
+        bool hasTransformMode(TransformationMode *value) const {
             if (_usedFields & Fields::TransformModeField) {
                 *value = _transformMode;
                 return true;
             }
             return false;
         }
-        [[nodiscard]] Enums::TransformationMode getOrDefaultTransformMode(Enums::TransformationMode defaultValue) const {
+        [[nodiscard]] TransformationMode getOrDefaultTransformMode(TransformationMode defaultValue) const {
             if (_usedFields & Fields::TransformModeField) {
                 return _transformMode;
             }

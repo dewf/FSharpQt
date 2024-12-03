@@ -45,14 +45,14 @@ namespace GroupBox
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void clicked(bool checked_) = 0;
         virtual void toggled(bool state) = 0;
     };
 
-    void Handle_setAlignment(HandleRef _this, Enums::Alignment align);
+    void Handle_setAlignment(HandleRef _this, Alignment align);
     void Handle_setCheckable(HandleRef _this, bool state);
     void Handle_setChecked(HandleRef _this, bool state);
     void Handle_setFlat(HandleRef _this, bool state);

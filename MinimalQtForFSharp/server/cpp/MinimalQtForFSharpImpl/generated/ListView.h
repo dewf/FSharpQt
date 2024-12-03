@@ -58,14 +58,14 @@ namespace ListView
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void activated(ModelIndex::HandleRef index) = 0;
         virtual void clicked(ModelIndex::HandleRef index) = 0;
         virtual void doubleClicked(ModelIndex::HandleRef index) = 0;
         virtual void entered(ModelIndex::HandleRef index) = 0;
-        virtual void iconSizeChanged(Common::Size size) = 0;
+        virtual void iconSizeChanged(Size size) = 0;
         virtual void pressed(ModelIndex::HandleRef index) = 0;
         virtual void viewportEntered() = 0;
         virtual void indexesMoved(std::vector<ModelIndex::HandleRef> indexes) = 0;
@@ -99,9 +99,9 @@ namespace ListView
 
     void Handle_setBatchSize(HandleRef _this, int32_t size);
     void Handle_setFlow(HandleRef _this, Flow flow);
-    void Handle_setGridSize(HandleRef _this, Common::Size size);
+    void Handle_setGridSize(HandleRef _this, Size size);
     void Handle_setWrapping(HandleRef _this, bool wrapping);
-    void Handle_setItemAlignment(HandleRef _this, Enums::Alignment align);
+    void Handle_setItemAlignment(HandleRef _this, Alignment align);
     void Handle_setLayoutMode(HandleRef _this, LayoutMode mode);
     void Handle_setModelColumn(HandleRef _this, int32_t column);
     void Handle_setMovement(HandleRef _this, Movement value);

@@ -132,9 +132,9 @@ namespace KeySequence
 
         class FromKey : public Base {
         public:
-            const Enums::Key key;
-            const Enums::Modifiers modifiers;
-            FromKey(Enums::Key key, Enums::Modifiers modifiers) : key(key), modifiers(modifiers) {}
+            const Key key;
+            const Modifiers modifiers;
+            FromKey(Key key, Modifiers modifiers) : key(key), modifiers(modifiers) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromKey(this);
             }

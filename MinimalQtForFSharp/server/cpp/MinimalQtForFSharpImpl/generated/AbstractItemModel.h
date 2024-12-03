@@ -69,8 +69,8 @@ namespace AbstractItemModel
         virtual void columnsInserted(ModelIndex::HandleRef parent, int32_t first, int32_t last) = 0;
         virtual void columnsMoved(ModelIndex::HandleRef sourceParent, int32_t sourceStart, int32_t sourceEnd, ModelIndex::HandleRef destinationParent, int32_t destinationColumn) = 0;
         virtual void columnsRemoved(ModelIndex::HandleRef parent, int32_t first, int32_t last) = 0;
-        virtual void dataChanged(ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<Enums::ItemDataRole> roles) = 0;
-        virtual void headerDataChanged(Enums::Orientation orientation, int32_t first, int32_t last) = 0;
+        virtual void dataChanged(ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<ItemDataRole> roles) = 0;
+        virtual void headerDataChanged(Orientation orientation, int32_t first, int32_t last) = 0;
         virtual void layoutAboutToBeChanged(std::vector<PersistentModelIndex::HandleRef> parents, LayoutChangeHint hint) = 0;
         virtual void layoutChanged(std::vector<PersistentModelIndex::HandleRef> parents, LayoutChangeHint hint) = 0;
         virtual void modelAboutToBeReset() = 0;
@@ -86,9 +86,9 @@ namespace AbstractItemModel
     ModelIndex::OwnedRef Handle_index(HandleRef _this, int32_t row, int32_t column);
     ModelIndex::OwnedRef Handle_index(HandleRef _this, int32_t row, int32_t column, ModelIndex::HandleRef parent);
     bool Handle_setData(HandleRef _this, ModelIndex::HandleRef index, std::shared_ptr<Variant::Deferred::Base> value);
-    bool Handle_setData(HandleRef _this, ModelIndex::HandleRef index, std::shared_ptr<Variant::Deferred::Base> value, Enums::ItemDataRole role);
+    bool Handle_setData(HandleRef _this, ModelIndex::HandleRef index, std::shared_ptr<Variant::Deferred::Base> value, ItemDataRole role);
     Variant::OwnedRef Handle_data(HandleRef _this, ModelIndex::HandleRef index);
-    Variant::OwnedRef Handle_data(HandleRef _this, ModelIndex::HandleRef index, Enums::ItemDataRole role);
+    Variant::OwnedRef Handle_data(HandleRef _this, ModelIndex::HandleRef index, ItemDataRole role);
     void Handle_sort(HandleRef _this, int32_t column);
-    void Handle_sort(HandleRef _this, int32_t column, Enums::SortOrder order);
+    void Handle_sort(HandleRef _this, int32_t column, SortOrder order);
 }

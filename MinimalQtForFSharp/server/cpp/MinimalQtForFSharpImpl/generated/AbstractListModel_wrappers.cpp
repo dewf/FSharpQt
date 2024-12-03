@@ -560,14 +560,14 @@ namespace AbstractListModel
             ItemDataRole__push(role);
             ModelIndex::Handle__push(index);
             invokeMethod(methodDelegate_data);
-            return Deferred__pop();
+            return Variant::Deferred__pop();
         }
         std::shared_ptr<Variant::Deferred::Base> headerData(int32_t section, Orientation orientation, ItemDataRole role) override {
             ItemDataRole__push(role);
             Orientation__push(orientation);
             ni_pushInt32(section);
             invokeMethod(methodDelegate_headerData);
-            return Deferred__pop();
+            return Variant::Deferred__pop();
         }
         ItemFlags getFlags(ModelIndex::HandleRef index, ItemFlags baseFlags) override {
             ItemFlags__push(baseFlags);
@@ -637,7 +637,7 @@ namespace AbstractListModel
         auto inst = wrapper->rawInterface;
         auto index = ModelIndex::Handle__pop();
         auto role = ItemDataRole__pop();
-        Deferred__push(inst->data(index, role), true);
+        Variant::Deferred__push(inst->data(index, role), true);
     }
 
     void MethodDelegate_headerData__wrapper(int serverID) {
@@ -646,7 +646,7 @@ namespace AbstractListModel
         auto section = ni_popInt32();
         auto orientation = Orientation__pop();
         auto role = ItemDataRole__pop();
-        Deferred__push(inst->headerData(section, orientation, role), true);
+        Variant::Deferred__push(inst->headerData(section, orientation, role), true);
     }
 
     void MethodDelegate_getFlags__wrapper(int serverID) {

@@ -47,7 +47,7 @@ namespace TabWidget
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void currentChanged(int32_t index) = 0;
@@ -71,8 +71,8 @@ namespace TabWidget
     int32_t Handle_count(HandleRef _this);
     void Handle_setCurrentIndex(HandleRef _this, int32_t index);
     void Handle_setDocumentMode(HandleRef _this, bool state);
-    void Handle_setElideMode(HandleRef _this, Enums::TextElideMode mode);
-    void Handle_setIconSize(HandleRef _this, Common::Size size);
+    void Handle_setElideMode(HandleRef _this, TextElideMode mode);
+    void Handle_setIconSize(HandleRef _this, Size size);
     void Handle_setMovable(HandleRef _this, bool state);
     void Handle_setTabBarAutoHide(HandleRef _this, bool state);
     void Handle_setTabPosition(HandleRef _this, TabPosition position);

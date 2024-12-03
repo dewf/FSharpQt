@@ -460,14 +460,14 @@ namespace AbstractItemModel
     void Handle_setData__wrapper() {
         auto _this = Handle__pop();
         auto index = ModelIndex::Handle__pop();
-        auto value = Deferred__pop();
+        auto value = Variant::Deferred__pop();
         ni_pushBool(Handle_setData(_this, index, value));
     }
 
     void Handle_setData_overload1__wrapper() {
         auto _this = Handle__pop();
         auto index = ModelIndex::Handle__pop();
-        auto value = Deferred__pop();
+        auto value = Variant::Deferred__pop();
         auto role = ItemDataRole__pop();
         ni_pushBool(Handle_setData(_this, index, value, role));
     }

@@ -54,7 +54,7 @@ namespace ComboBox
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void activated(int32_t index) = 0;
@@ -84,14 +84,14 @@ namespace ComboBox
 
     int32_t Handle_count(HandleRef _this);
     Variant::OwnedRef Handle_currentData(HandleRef _this);
-    Variant::OwnedRef Handle_currentData(HandleRef _this, Enums::ItemDataRole role);
+    Variant::OwnedRef Handle_currentData(HandleRef _this, ItemDataRole role);
     int32_t Handle_currentIndex(HandleRef _this);
     void Handle_setCurrentIndex(HandleRef _this, int32_t index);
     void Handle_setCurrentText(HandleRef _this, std::string text);
     void Handle_setDuplicatesEnabled(HandleRef _this, bool enabled);
     void Handle_setEditable(HandleRef _this, bool editable);
     void Handle_setFrame(HandleRef _this, bool hasFrame);
-    void Handle_setIconSize(HandleRef _this, Common::Size size);
+    void Handle_setIconSize(HandleRef _this, Size size);
     void Handle_setInsertPolicy(HandleRef _this, InsertPolicy policy);
     void Handle_setMaxCount(HandleRef _this, int32_t count);
     void Handle_setMaxVisibleItems(HandleRef _this, int32_t count);

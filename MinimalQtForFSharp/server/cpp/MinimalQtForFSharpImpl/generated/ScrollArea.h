@@ -47,12 +47,12 @@ namespace ScrollArea
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
     };
 
-    void Handle_setAlignment(HandleRef _this, Enums::Alignment align);
+    void Handle_setAlignment(HandleRef _this, Alignment align);
     void Handle_setWidgetResizable(HandleRef _this, bool resizable);
     void Handle_setWidget(HandleRef _this, Widget::HandleRef widget);
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);

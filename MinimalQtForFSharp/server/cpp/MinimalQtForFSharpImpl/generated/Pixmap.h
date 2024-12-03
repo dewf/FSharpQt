@@ -37,7 +37,7 @@ namespace Pixmap
         };
         int32_t _usedFields = 0;
         std::string _format;
-        Enums::ImageConversionFlags _imageConversionFlags;
+        ImageConversionFlags _imageConversionFlags;
     protected:
         int32_t getUsedFields() {
             return _usedFields;
@@ -62,18 +62,18 @@ namespace Pixmap
             }
             return defaultValue;
         }
-        void setImageConversionFlags(Enums::ImageConversionFlags value) {
+        void setImageConversionFlags(ImageConversionFlags value) {
             _imageConversionFlags = value;
             _usedFields |= Fields::ImageConversionFlagsField;
         }
-        bool hasImageConversionFlags(Enums::ImageConversionFlags *value) const {
+        bool hasImageConversionFlags(ImageConversionFlags *value) const {
             if (_usedFields & Fields::ImageConversionFlagsField) {
                 *value = _imageConversionFlags;
                 return true;
             }
             return false;
         }
-        [[nodiscard]] Enums::ImageConversionFlags getOrDefaultImageConversionFlags(Enums::ImageConversionFlags defaultValue) const {
+        [[nodiscard]] ImageConversionFlags getOrDefaultImageConversionFlags(ImageConversionFlags defaultValue) const {
             if (_usedFields & Fields::ImageConversionFlagsField) {
                 return _imageConversionFlags;
             }
@@ -82,5 +82,5 @@ namespace Pixmap
     };
     OwnedRef create(int32_t width, int32_t height);
     OwnedRef create(std::string filename, FilenameOptions opts);
-    OwnedRef fromImage(Image::HandleRef image, std::optional<Enums::ImageConversionFlags> imageConversionFlags);
+    OwnedRef fromImage(Image::HandleRef image, std::optional<ImageConversionFlags> imageConversionFlags);
 }

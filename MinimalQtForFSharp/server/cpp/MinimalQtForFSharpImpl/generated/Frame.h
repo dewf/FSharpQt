@@ -41,7 +41,7 @@ namespace Frame
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
     };
@@ -62,7 +62,7 @@ namespace Frame
         Sunken = 0x30
     };
 
-    void Handle_setFrameRect(HandleRef _this, Common::Rect rect);
+    void Handle_setFrameRect(HandleRef _this, Rect rect);
     void Handle_setFrameShadow(HandleRef _this, Shadow shadow);
     void Handle_setFrameShape(HandleRef _this, Shape shape);
     int32_t Handle_frameWidth(HandleRef _this);

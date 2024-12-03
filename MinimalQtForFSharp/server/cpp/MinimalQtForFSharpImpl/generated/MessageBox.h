@@ -52,7 +52,7 @@ namespace MessageBox
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void accepted() = 0;
@@ -125,8 +125,8 @@ namespace MessageBox
     void Handle_setOptions(HandleRef _this, Options opts);
     void Handle_setStandardButtons(HandleRef _this, StandardButtonSet buttons);
     void Handle_setText(HandleRef _this, std::string text);
-    void Handle_setTextFormat(HandleRef _this, Enums::TextFormat format);
-    void Handle_setTextInteractionFlags(HandleRef _this, Enums::TextInteractionFlags tiFlags);
+    void Handle_setTextFormat(HandleRef _this, TextFormat format);
+    void Handle_setTextInteractionFlags(HandleRef _this, TextInteractionFlags tiFlags);
     void Handle_setDefaultButton(HandleRef _this, StandardButton button);
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);
     void Handle_dispose(HandleRef _this);

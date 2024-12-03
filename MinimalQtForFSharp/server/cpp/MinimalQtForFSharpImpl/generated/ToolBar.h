@@ -53,26 +53,26 @@ namespace ToolBar
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void actionTriggered(Action::HandleRef action) = 0;
-        virtual void allowedAreasChanged(Enums::ToolBarAreas allowed) = 0;
-        virtual void iconSizeChanged(Common::Size size) = 0;
+        virtual void allowedAreasChanged(ToolBarAreas allowed) = 0;
+        virtual void iconSizeChanged(Size size) = 0;
         virtual void movableChanged(bool movable) = 0;
-        virtual void orientationChanged(Enums::Orientation value) = 0;
-        virtual void toolButtonStyleChanged(Enums::ToolButtonStyle style) = 0;
+        virtual void orientationChanged(Orientation value) = 0;
+        virtual void toolButtonStyleChanged(ToolButtonStyle style) = 0;
         virtual void topLevelChanged(bool topLevel) = 0;
         virtual void visibilityChanged(bool visible) = 0;
     };
 
-    void Handle_setAllowedAreas(HandleRef _this, Enums::ToolBarAreas allowed);
+    void Handle_setAllowedAreas(HandleRef _this, ToolBarAreas allowed);
     void Handle_setFloatable(HandleRef _this, bool floatable);
     bool Handle_isFloating(HandleRef _this);
-    void Handle_setIconSize(HandleRef _this, Common::Size size);
+    void Handle_setIconSize(HandleRef _this, Size size);
     void Handle_setMovable(HandleRef _this, bool value);
-    void Handle_setOrientation(HandleRef _this, Enums::Orientation value);
-    void Handle_setToolButtonStyle(HandleRef _this, Enums::ToolButtonStyle style);
+    void Handle_setOrientation(HandleRef _this, Orientation value);
+    void Handle_setToolButtonStyle(HandleRef _this, ToolButtonStyle style);
     Action::HandleRef Handle_addSeparator(HandleRef _this);
     void Handle_addWidget(HandleRef _this, Widget::HandleRef widget);
     void Handle_clear(HandleRef _this);

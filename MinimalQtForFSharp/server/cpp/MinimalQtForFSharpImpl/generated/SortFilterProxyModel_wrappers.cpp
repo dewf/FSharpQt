@@ -563,7 +563,7 @@ namespace SortFilterProxyModel
 
     void Handle_setFilterRegularExpression__wrapper() {
         auto _this = Handle__pop();
-        auto regex = Deferred__pop();
+        auto regex = RegularExpression::Deferred__pop();
         Handle_setFilterRegularExpression(_this, regex);
     }
 

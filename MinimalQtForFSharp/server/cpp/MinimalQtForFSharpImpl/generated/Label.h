@@ -48,14 +48,14 @@ namespace Label
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void linkActivated(std::string link) = 0;
         virtual void linkHovered(std::string link) = 0;
     };
 
-    void Handle_setAlignment(HandleRef _this, Enums::Alignment align);
+    void Handle_setAlignment(HandleRef _this, Alignment align);
     bool Handle_hasSelectedText(HandleRef _this);
     void Handle_setIndent(HandleRef _this, int32_t indent);
     void Handle_setMargin(HandleRef _this, int32_t margin);
@@ -64,8 +64,8 @@ namespace Label
     void Handle_setScaledContents(HandleRef _this, bool state);
     std::string Handle_selectedText(HandleRef _this);
     void Handle_setText(HandleRef _this, std::string text);
-    void Handle_setTextFormat(HandleRef _this, Enums::TextFormat format);
-    void Handle_setTextInteractionFlags(HandleRef _this, Enums::TextInteractionFlags interactionFlags);
+    void Handle_setTextFormat(HandleRef _this, TextFormat format);
+    void Handle_setTextInteractionFlags(HandleRef _this, TextInteractionFlags interactionFlags);
     void Handle_setWordWrap(HandleRef _this, bool state);
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);
     void Handle_dispose(HandleRef _this);

@@ -263,13 +263,13 @@ namespace CalendarWidget
 
     void Handle_setMaximumDate__wrapper() {
         auto _this = Handle__pop();
-        auto value = Deferred__pop();
+        auto value = Date::Deferred__pop();
         Handle_setMaximumDate(_this, value);
     }
 
     void Handle_setMinimumDate__wrapper() {
         auto _this = Handle__pop();
-        auto value = Deferred__pop();
+        auto value = Date::Deferred__pop();
         Handle_setMinimumDate(_this, value);
     }
 
@@ -286,7 +286,7 @@ namespace CalendarWidget
 
     void Handle_setSelectedDate__wrapper() {
         auto _this = Handle__pop();
-        auto selected = Deferred__pop();
+        auto selected = Date::Deferred__pop();
         Handle_setSelectedDate(_this, selected);
     }
 

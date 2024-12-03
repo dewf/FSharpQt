@@ -47,7 +47,7 @@ namespace StyledItemDelegate
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void closeEditor(Widget::HandleRef editor, AbstractItemDelegate::EndEditHint hint) = 0;
+        virtual void closeEditor(Widget::HandleRef editor, EndEditHint hint) = 0;
         virtual void commitData(Widget::HandleRef editor) = 0;
         virtual void sizeHintChanged(ModelIndex::HandleRef index) = 0;
     };

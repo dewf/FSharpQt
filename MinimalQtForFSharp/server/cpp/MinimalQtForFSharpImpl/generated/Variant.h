@@ -97,8 +97,8 @@ namespace Variant
     bool Handle_toBool(HandleRef _this);
     std::string Handle_toString2(HandleRef _this);
     int32_t Handle_toInt(HandleRef _this);
-    Common::Size Handle_toSize(HandleRef _this);
-    Enums::CheckState Handle_toCheckState(HandleRef _this);
+    Size Handle_toSize(HandleRef _this);
+    CheckState Handle_toCheckState(HandleRef _this);
     Color::OwnedRef Handle_toColor(HandleRef _this);
     std::shared_ptr<ServerValue::Base> Handle_toServerValue(HandleRef _this);
 
@@ -170,8 +170,8 @@ namespace Variant
 
         class FromCheckState : public Base {
         public:
-            const Enums::CheckState value;
-            FromCheckState(Enums::CheckState value) : value(value) {}
+            const CheckState value;
+            FromCheckState(CheckState value) : value(value) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromCheckState(this);
             }
@@ -179,8 +179,8 @@ namespace Variant
 
         class FromSize : public Base {
         public:
-            const Common::Size size;
-            FromSize(Common::Size size) : size(size) {}
+            const Size size;
+            FromSize(Size size) : size(size) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromSize(this);
             }
@@ -206,8 +206,8 @@ namespace Variant
 
         class FromAligment : public Base {
         public:
-            const Enums::Alignment value;
-            FromAligment(Enums::Alignment value) : value(value) {}
+            const Alignment value;
+            FromAligment(Alignment value) : value(value) {}
             void accept(Visitor* visitor) override {
                 visitor->onFromAligment(this);
             }

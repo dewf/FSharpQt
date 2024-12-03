@@ -57,14 +57,14 @@ namespace TreeView
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void activated(ModelIndex::HandleRef index) = 0;
         virtual void clicked(ModelIndex::HandleRef index) = 0;
         virtual void doubleClicked(ModelIndex::HandleRef index) = 0;
         virtual void entered(ModelIndex::HandleRef index) = 0;
-        virtual void iconSizeChanged(Common::Size size) = 0;
+        virtual void iconSizeChanged(Size size) = 0;
         virtual void pressed(ModelIndex::HandleRef index) = 0;
         virtual void viewportEntered() = 0;
         virtual void collapsed(ModelIndex::HandleRef index) = 0;

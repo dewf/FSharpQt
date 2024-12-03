@@ -370,7 +370,7 @@ namespace ComboBox
     void Handle_addItem__wrapper() {
         auto _this = Handle__pop();
         auto text = popStringInternal();
-        auto userData = Deferred__pop();
+        auto userData = Variant::Deferred__pop();
         Handle_addItem(_this, text, userData);
     }
 
@@ -378,7 +378,7 @@ namespace ComboBox
         auto _this = Handle__pop();
         auto icon = Icon::Handle__pop();
         auto text = popStringInternal();
-        auto userData = Deferred__pop();
+        auto userData = Variant::Deferred__pop();
         Handle_addItem(_this, icon, text, userData);
     }
 

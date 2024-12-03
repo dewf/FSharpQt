@@ -41,7 +41,7 @@ namespace Timer
     void Handle_setInterval(HandleRef _this, int32_t interval);
     int32_t Handle_remainingTime(HandleRef _this);
     void Handle_setSingleShot(HandleRef _this, bool state);
-    void Handle_setTimerType(HandleRef _this, Enums::TimerType type_);
+    void Handle_setTimerType(HandleRef _this, TimerType type_);
     void Handle_start(HandleRef _this, int32_t msec);
     void Handle_start(HandleRef _this);
     void Handle_stop(HandleRef _this);

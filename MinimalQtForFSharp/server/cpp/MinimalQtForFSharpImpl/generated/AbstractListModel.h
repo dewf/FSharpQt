@@ -67,10 +67,10 @@ namespace AbstractListModel
         virtual void columnsInserted(ModelIndex::HandleRef parent, int32_t first, int32_t last) = 0;
         virtual void columnsMoved(ModelIndex::HandleRef sourceParent, int32_t sourceStart, int32_t sourceEnd, ModelIndex::HandleRef destinationParent, int32_t destinationColumn) = 0;
         virtual void columnsRemoved(ModelIndex::HandleRef parent, int32_t first, int32_t last) = 0;
-        virtual void dataChanged(ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<Enums::ItemDataRole> roles) = 0;
-        virtual void headerDataChanged(Enums::Orientation orientation, int32_t first, int32_t last) = 0;
-        virtual void layoutAboutToBeChanged(std::vector<PersistentModelIndex::HandleRef> parents, AbstractItemModel::LayoutChangeHint hint) = 0;
-        virtual void layoutChanged(std::vector<PersistentModelIndex::HandleRef> parents, AbstractItemModel::LayoutChangeHint hint) = 0;
+        virtual void dataChanged(ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<ItemDataRole> roles) = 0;
+        virtual void headerDataChanged(Orientation orientation, int32_t first, int32_t last) = 0;
+        virtual void layoutAboutToBeChanged(std::vector<PersistentModelIndex::HandleRef> parents, LayoutChangeHint hint) = 0;
+        virtual void layoutChanged(std::vector<PersistentModelIndex::HandleRef> parents, LayoutChangeHint hint) = 0;
         virtual void modelAboutToBeReset() = 0;
         virtual void modelReset() = 0;
         virtual void rowsAboutToBeInserted(ModelIndex::HandleRef parent, int32_t start, int32_t end) = 0;
@@ -83,8 +83,8 @@ namespace AbstractListModel
 
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);
 
-    void Interior_emitDataChanged(InteriorRef _this, ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<Enums::ItemDataRole> roles);
-    void Interior_emitHeaderDataChanged(InteriorRef _this, Enums::Orientation orientation, int32_t first, int32_t last);
+    void Interior_emitDataChanged(InteriorRef _this, ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<ItemDataRole> roles);
+    void Interior_emitHeaderDataChanged(InteriorRef _this, Orientation orientation, int32_t first, int32_t last);
     void Interior_beginInsertRows(InteriorRef _this, ModelIndex::HandleRef parent, int32_t first, int32_t last);
     void Interior_endInsertRows(InteriorRef _this);
     void Interior_beginRemoveRows(InteriorRef _this, ModelIndex::HandleRef parent, int32_t first, int32_t last);
@@ -118,10 +118,10 @@ namespace AbstractListModel
     class MethodDelegate {
     public:
         virtual int32_t rowCount(ModelIndex::HandleRef parent) = 0;
-        virtual std::shared_ptr<Variant::Deferred::Base> data(ModelIndex::HandleRef index, Enums::ItemDataRole role) = 0;
-        virtual std::shared_ptr<Variant::Deferred::Base> headerData(int32_t section, Enums::Orientation orientation, Enums::ItemDataRole role) = 0;
+        virtual std::shared_ptr<Variant::Deferred::Base> data(ModelIndex::HandleRef index, ItemDataRole role) = 0;
+        virtual std::shared_ptr<Variant::Deferred::Base> headerData(int32_t section, Orientation orientation, ItemDataRole role) = 0;
         virtual ItemFlags getFlags(ModelIndex::HandleRef index, ItemFlags baseFlags) = 0;
-        virtual bool setData(ModelIndex::HandleRef index, Variant::HandleRef value, Enums::ItemDataRole role) = 0;
+        virtual bool setData(ModelIndex::HandleRef index, Variant::HandleRef value, ItemDataRole role) = 0;
         virtual int32_t columnCount(ModelIndex::HandleRef parent) = 0;
     };
     InteriorRef createSubclassed(std::shared_ptr<SignalHandler> handler, std::shared_ptr<MethodDelegate> methodDelegate, MethodMask methodMask);

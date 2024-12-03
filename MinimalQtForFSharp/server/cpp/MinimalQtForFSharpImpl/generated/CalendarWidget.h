@@ -49,7 +49,7 @@ namespace CalendarWidget
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void activated(Date::HandleRef date) = 0;
@@ -77,7 +77,7 @@ namespace CalendarWidget
 
     void Handle_setDateEditAcceptDelay(HandleRef _this, int32_t value);
     void Handle_setDateEditEnabled(HandleRef _this, bool enabled);
-    void Handle_setFirstDayOfWeek(HandleRef _this, Enums::QDayOfWeek value);
+    void Handle_setFirstDayOfWeek(HandleRef _this, QDayOfWeek value);
     void Handle_setGridVisible(HandleRef _this, bool visible);
     void Handle_setHorizontalHeaderFormat(HandleRef _this, HorizontalHeaderFormat format);
     void Handle_setMaximumDate(HandleRef _this, std::shared_ptr<Date::Deferred::Base> value);

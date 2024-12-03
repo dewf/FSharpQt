@@ -29,7 +29,7 @@ namespace PaintResources
     struct __PainterPathStroker; typedef struct __PainterPathStroker* PainterPathStrokerRef;
     struct __Handle; typedef struct __Handle* HandleRef;
 
-    void Gradient_setColorAt(GradientRef _this, double location, std::shared_ptr<Color::Deferred::Base> color);
+    void Gradient_setColorAt(GradientRef _this, double location, std::shared_ptr<Deferred::Base> color);
 
 
 
@@ -102,11 +102,11 @@ namespace PaintResources
         };
     }
 
-    void PainterPath_moveTo(PainterPathRef _this, Common::PointF p);
+    void PainterPath_moveTo(PainterPathRef _this, PointF p);
     void PainterPath_moveTo(PainterPathRef _this, double x, double y);
-    void PainterPath_lineto(PainterPathRef _this, Common::PointF p);
+    void PainterPath_lineto(PainterPathRef _this, PointF p);
     void PainterPath_lineTo(PainterPathRef _this, double x, double y);
-    void PainterPath_cubicTo(PainterPathRef _this, Common::PointF c1, Common::PointF c2, Common::PointF endPoint);
+    void PainterPath_cubicTo(PainterPathRef _this, PointF c1, PointF c2, PointF endPoint);
     void PainterPath_cubicTo(PainterPathRef _this, double c1X, double c1Y, double c2X, double c2Y, double endPointX, double endPointY);
 
     void PainterPathStroker_setWidth(PainterPathStrokerRef _this, double width);
@@ -116,20 +116,20 @@ namespace PaintResources
     void PainterPathStroker_setDashPattern(PainterPathStrokerRef _this, std::vector<double> dashPattern);
     PainterPathRef PainterPathStroker_createStroke(PainterPathStrokerRef _this, PainterPathRef path);
 
-    Color::HandleRef Handle_createColor(HandleRef _this, Color::Constant name);
+    Color::HandleRef Handle_createColor(HandleRef _this, Constant name);
     Color::HandleRef Handle_createColor(HandleRef _this, int32_t r, int32_t g, int32_t b);
     Color::HandleRef Handle_createColor(HandleRef _this, int32_t r, int32_t g, int32_t b, int32_t a);
     Color::HandleRef Handle_createColor(HandleRef _this, float r, float g, float b);
     Color::HandleRef Handle_createColor(HandleRef _this, float r, float g, float b, float a);
-    RadialGradientRef Handle_createRadialGradient(HandleRef _this, Common::PointF center, double radius);
-    LinearGradientRef Handle_createLinearGradient(HandleRef _this, Common::PointF start, Common::PointF stop);
+    RadialGradientRef Handle_createRadialGradient(HandleRef _this, PointF center, double radius);
+    LinearGradientRef Handle_createLinearGradient(HandleRef _this, PointF start, PointF stop);
     LinearGradientRef Handle_createLinearGradient(HandleRef _this, double x1, double y1, double x2, double y2);
     BrushRef Handle_createBrush(HandleRef _this, Brush::Style style);
-    BrushRef Handle_createBrush(HandleRef _this, std::shared_ptr<Color::Deferred::Base> color);
+    BrushRef Handle_createBrush(HandleRef _this, std::shared_ptr<Deferred::Base> color);
     BrushRef Handle_createBrush(HandleRef _this, GradientRef gradient);
     PenRef Handle_createPen(HandleRef _this);
     PenRef Handle_createPen(HandleRef _this, Pen::Style style);
-    PenRef Handle_createPen(HandleRef _this, std::shared_ptr<Color::Deferred::Base> color);
+    PenRef Handle_createPen(HandleRef _this, std::shared_ptr<Deferred::Base> color);
     PenRef Handle_createPen(HandleRef _this, BrushRef brush, double width, Pen::Style style, Pen::CapStyle cap, Pen::JoinStyle join);
     FontRef Handle_createFont(HandleRef _this, std::string family, int32_t pointSize);
     FontRef Handle_createFont(HandleRef _this, std::string family, int32_t pointSize, Font::Weight weight);

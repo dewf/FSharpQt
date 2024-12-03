@@ -48,7 +48,7 @@ namespace TabBar
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void currentChanged(int32_t index) = 0;
@@ -87,9 +87,9 @@ namespace TabBar
     int32_t Handle_currentIndex(HandleRef _this);
     void Handle_setDocumentMode(HandleRef _this, bool value);
     void Handle_setDrawBase(HandleRef _this, bool value);
-    void Handle_setElideMode(HandleRef _this, Enums::TextElideMode mode);
+    void Handle_setElideMode(HandleRef _this, TextElideMode mode);
     void Handle_setExpanding(HandleRef _this, bool value);
-    void Handle_setIconSize(HandleRef _this, Common::Size size);
+    void Handle_setIconSize(HandleRef _this, Size size);
     void Handle_setMovable(HandleRef _this, bool value);
     void Handle_setSelectionBehaviorOnRemove(HandleRef _this, SelectionBehavior value);
     void Handle_setShape(HandleRef _this, Shape shape);

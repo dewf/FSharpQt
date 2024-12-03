@@ -56,7 +56,7 @@ namespace PlainTextEdit
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void blockCountChanged(int32_t newBlockCount) = 0;
@@ -67,7 +67,7 @@ namespace PlainTextEdit
         virtual void selectionChanged() = 0;
         virtual void textChanged() = 0;
         virtual void undoAvailable(bool available) = 0;
-        virtual void updateRequest(Common::Rect rect, int32_t dy) = 0;
+        virtual void updateRequest(Rect rect, int32_t dy) = 0;
     };
 
     enum class LineWrapMode {
@@ -88,9 +88,9 @@ namespace PlainTextEdit
     void Handle_setReadOnly(HandleRef _this, bool state);
     void Handle_setTabChangesFocus(HandleRef _this, bool state);
     void Handle_setTabStopDistance(HandleRef _this, double distance);
-    void Handle_setTextInteractionFlags(HandleRef _this, Enums::TextInteractionFlags tiFlags);
+    void Handle_setTextInteractionFlags(HandleRef _this, TextInteractionFlags tiFlags);
     void Handle_setUndoRedoEnabled(HandleRef _this, bool enabled);
-    void Handle_setWordWrapMode(HandleRef _this, TextOption::WrapMode mode);
+    void Handle_setWordWrapMode(HandleRef _this, WrapMode mode);
     std::string Handle_toPlainText(HandleRef _this);
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);
     void Handle_dispose(HandleRef _this);

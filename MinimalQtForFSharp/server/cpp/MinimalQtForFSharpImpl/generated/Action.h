@@ -78,8 +78,8 @@ namespace Action
     void Handle_setIconVisibleInMenu(HandleRef _this, bool visible);
     void Handle_setMenuRole(HandleRef _this, MenuRole role);
     void Handle_setPriority(HandleRef _this, Priority priority);
-    void Handle_setShortcut(HandleRef _this, std::shared_ptr<KeySequence::Deferred::Base> shortcut);
-    void Handle_setShortcutContext(HandleRef _this, Enums::ShortcutContext context);
+    void Handle_setShortcut(HandleRef _this, std::shared_ptr<Deferred::Base> shortcut);
+    void Handle_setShortcutContext(HandleRef _this, ShortcutContext context);
     void Handle_setShortcutVisibleInContextMenu(HandleRef _this, bool visible);
     void Handle_setStatusTip(HandleRef _this, std::string tip);
     void Handle_setText(HandleRef _this, std::string text);

@@ -58,14 +58,14 @@ namespace AbstractItemView
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void activated(ModelIndex::HandleRef index) = 0;
         virtual void clicked(ModelIndex::HandleRef index) = 0;
         virtual void doubleClicked(ModelIndex::HandleRef index) = 0;
         virtual void entered(ModelIndex::HandleRef index) = 0;
-        virtual void iconSizeChanged(Common::Size size) = 0;
+        virtual void iconSizeChanged(Size size) = 0;
         virtual void pressed(ModelIndex::HandleRef index) = 0;
         virtual void viewportEntered() = 0;
     };
@@ -111,18 +111,18 @@ namespace AbstractItemView
     void Handle_setAlternatingRowColors(HandleRef _this, bool state);
     void Handle_setAutoScroll(HandleRef _this, bool state);
     void Handle_setAutoScrollMargin(HandleRef _this, int32_t margin);
-    void Handle_setDefaultDropAction(HandleRef _this, Enums::DropAction action);
+    void Handle_setDefaultDropAction(HandleRef _this, DropAction action);
     void Handle_setDragDropMode(HandleRef _this, DragDropMode mode);
     void Handle_setDragDropOverwriteMode(HandleRef _this, bool mode);
     void Handle_setDragEnabled(HandleRef _this, bool enabled);
     void Handle_setEditTriggers(HandleRef _this, EditTriggers triggers);
     void Handle_setHorizontalScrollMode(HandleRef _this, ScrollMode mode);
-    void Handle_setIconSize(HandleRef _this, Common::Size size);
+    void Handle_setIconSize(HandleRef _this, Size size);
     void Handle_setSelectionBehavior(HandleRef _this, SelectionBehavior behavior);
     void Handle_setSelectionMode(HandleRef _this, SelectionMode mode);
     void Handle_setDropIndicatorShown(HandleRef _this, bool state);
     void Handle_setTabKeyNavigation(HandleRef _this, bool state);
-    void Handle_setTextElideMode(HandleRef _this, Enums::TextElideMode mode);
+    void Handle_setTextElideMode(HandleRef _this, TextElideMode mode);
     void Handle_setVerticalScrollMode(HandleRef _this, ScrollMode mode);
     void Handle_setModel(HandleRef _this, AbstractItemModel::HandleRef model);
     void Handle_setItemDelegate(HandleRef _this, AbstractItemDelegate::HandleRef itemDelegate);

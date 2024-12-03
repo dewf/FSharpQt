@@ -256,7 +256,7 @@ namespace AbstractButton
 
     void Handle_setShortcut__wrapper() {
         auto _this = Handle__pop();
-        auto seq = Deferred__pop();
+        auto seq = KeySequence::Deferred__pop();
         Handle_setShortcut(_this, seq);
     }
 

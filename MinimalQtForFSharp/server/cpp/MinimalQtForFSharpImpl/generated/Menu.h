@@ -47,7 +47,7 @@ namespace Menu
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void aboutToHide() = 0;
@@ -63,7 +63,7 @@ namespace Menu
     void Handle_setToolTipsVisible(HandleRef _this, bool visible);
     void Handle_clear(HandleRef _this);
     Action::HandleRef Handle_addSeparator(HandleRef _this);
-    void Handle_popup(HandleRef _this, Common::Point p);
+    void Handle_popup(HandleRef _this, Point p);
     void Handle_setSignalMask(HandleRef _this, SignalMask mask);
     void Handle_dispose(HandleRef _this);
     HandleRef create(std::shared_ptr<SignalHandler> handler);

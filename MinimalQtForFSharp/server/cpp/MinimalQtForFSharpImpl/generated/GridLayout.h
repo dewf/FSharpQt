@@ -45,13 +45,13 @@ namespace GridLayout
     void Handle_setHorizontalSpacing(HandleRef _this, int32_t value);
     void Handle_setVerticalSpacing(HandleRef _this, int32_t value);
     void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t row, int32_t col);
-    void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t row, int32_t col, Enums::Alignment align);
+    void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t row, int32_t col, Alignment align);
     void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t row, int32_t col, int32_t rowSpan, int32_t colSpan);
-    void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t row, int32_t col, int32_t rowSpan, int32_t colSpan, Enums::Alignment align);
+    void Handle_addWidget(HandleRef _this, Widget::HandleRef widget, int32_t row, int32_t col, int32_t rowSpan, int32_t colSpan, Alignment align);
     void Handle_addLayout(HandleRef _this, Layout::HandleRef layout, int32_t row, int32_t col);
-    void Handle_addLayout(HandleRef _this, Layout::HandleRef layout, int32_t row, int32_t col, Enums::Alignment align);
+    void Handle_addLayout(HandleRef _this, Layout::HandleRef layout, int32_t row, int32_t col, Alignment align);
     void Handle_addLayout(HandleRef _this, Layout::HandleRef layout, int32_t row, int32_t col, int32_t rowSpan, int32_t colSpan);
-    void Handle_addLayout(HandleRef _this, Layout::HandleRef layout, int32_t row, int32_t col, int32_t rowSpan, int32_t colSpan, Enums::Alignment align);
+    void Handle_addLayout(HandleRef _this, Layout::HandleRef layout, int32_t row, int32_t col, int32_t rowSpan, int32_t colSpan, Alignment align);
     void Handle_setRowMinimumHeight(HandleRef _this, int32_t row, int32_t minHeight);
     void Handle_setRowStretch(HandleRef _this, int32_t row, int32_t stretch);
     void Handle_setColumnMinimumWidth(HandleRef _this, int32_t column, int32_t minWidth);

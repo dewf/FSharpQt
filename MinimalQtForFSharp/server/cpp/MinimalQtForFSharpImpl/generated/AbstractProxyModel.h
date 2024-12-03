@@ -65,10 +65,10 @@ namespace AbstractProxyModel
         virtual void columnsInserted(ModelIndex::HandleRef parent, int32_t first, int32_t last) = 0;
         virtual void columnsMoved(ModelIndex::HandleRef sourceParent, int32_t sourceStart, int32_t sourceEnd, ModelIndex::HandleRef destinationParent, int32_t destinationColumn) = 0;
         virtual void columnsRemoved(ModelIndex::HandleRef parent, int32_t first, int32_t last) = 0;
-        virtual void dataChanged(ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<Enums::ItemDataRole> roles) = 0;
-        virtual void headerDataChanged(Enums::Orientation orientation, int32_t first, int32_t last) = 0;
-        virtual void layoutAboutToBeChanged(std::vector<PersistentModelIndex::HandleRef> parents, AbstractItemModel::LayoutChangeHint hint) = 0;
-        virtual void layoutChanged(std::vector<PersistentModelIndex::HandleRef> parents, AbstractItemModel::LayoutChangeHint hint) = 0;
+        virtual void dataChanged(ModelIndex::HandleRef topLeft, ModelIndex::HandleRef bottomRight, std::vector<ItemDataRole> roles) = 0;
+        virtual void headerDataChanged(Orientation orientation, int32_t first, int32_t last) = 0;
+        virtual void layoutAboutToBeChanged(std::vector<PersistentModelIndex::HandleRef> parents, LayoutChangeHint hint) = 0;
+        virtual void layoutChanged(std::vector<PersistentModelIndex::HandleRef> parents, LayoutChangeHint hint) = 0;
         virtual void modelAboutToBeReset() = 0;
         virtual void modelReset() = 0;
         virtual void rowsAboutToBeInserted(ModelIndex::HandleRef parent, int32_t start, int32_t end) = 0;

@@ -59,12 +59,12 @@ namespace MainWindow
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
-        virtual void iconSizeChanged(Common::Size iconSize) = 0;
+        virtual void iconSizeChanged(Size iconSize) = 0;
         virtual void tabifiedDockWidgetActivated(DockWidget::HandleRef dockWidget) = 0;
-        virtual void toolButtonStyleChanged(Enums::ToolButtonStyle style) = 0;
+        virtual void toolButtonStyleChanged(ToolButtonStyle style) = 0;
         virtual void windowClosed() = 0;
     };
 
@@ -82,9 +82,9 @@ namespace MainWindow
     void Handle_setDockNestingEnabled(HandleRef _this, bool state);
     void Handle_setDockOptions(HandleRef _this, DockOptions dockOptions);
     void Handle_setDocumentMode(HandleRef _this, bool state);
-    void Handle_setIconSize(HandleRef _this, Common::Size size);
-    void Handle_setTabShape(HandleRef _this, TabWidget::TabShape tabShape);
-    void Handle_setToolButtonStyle(HandleRef _this, Enums::ToolButtonStyle style);
+    void Handle_setIconSize(HandleRef _this, Size size);
+    void Handle_setTabShape(HandleRef _this, TabShape tabShape);
+    void Handle_setToolButtonStyle(HandleRef _this, ToolButtonStyle style);
     void Handle_setUnifiedTitleAndToolBarOnMac(HandleRef _this, bool state);
     void Handle_setCentralWidget(HandleRef _this, Widget::HandleRef widget);
     void Handle_setMenuBar(HandleRef _this, MenuBar::HandleRef menubar);

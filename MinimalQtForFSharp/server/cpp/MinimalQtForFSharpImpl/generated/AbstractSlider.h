@@ -60,7 +60,7 @@ namespace AbstractSlider
     public:
         virtual void destroyed(Object::HandleRef obj) = 0;
         virtual void objectNameChanged(std::string objectName) = 0;
-        virtual void customContextMenuRequested(Common::Point pos) = 0;
+        virtual void customContextMenuRequested(Point pos) = 0;
         virtual void windowIconChanged(Icon::HandleRef icon) = 0;
         virtual void windowTitleChanged(std::string title) = 0;
         virtual void actionTriggered(SliderAction action) = 0;
@@ -75,7 +75,7 @@ namespace AbstractSlider
     void Handle_setInvertedControls(HandleRef _this, bool state);
     void Handle_setMaximum(HandleRef _this, int32_t value);
     void Handle_setMinimum(HandleRef _this, int32_t value);
-    void Handle_setOrientation(HandleRef _this, Enums::Orientation orient);
+    void Handle_setOrientation(HandleRef _this, Orientation orient);
     void Handle_setPageStep(HandleRef _this, int32_t pageStep);
     void Handle_setSingleStep(HandleRef _this, int32_t step);
     void Handle_setSliderDown(HandleRef _this, bool state);
